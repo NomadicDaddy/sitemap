@@ -1,0 +1,12 @@
+{
+	"category": "Visualization",
+	"complexity": "complex",
+	"createdAt": "2025-12-20T18:16:16.174Z",
+	"dependencies": ["d3-tree-diagram", "theme-system"],
+	"description": "Create an alternative visualization mode using React Flow or similar library to render nodes as flowchart-style boxes with connecting edges. Support for custom positioning.",
+	"id": "flowchart-mode",
+	"priority": 3,
+	"status": "backlog",
+	"title": "Flowchart Layout Mode",
+	"updatedAt": "2025-12-20T18:16:16.174Z"
+}

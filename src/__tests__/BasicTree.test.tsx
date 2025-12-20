@@ -211,6 +211,63 @@ describe('BasicTree', () => {
 			const bullets = container.querySelectorAll('.tree-node-bullet');
 			expect(bullets.length).toBeGreaterThan(0);
 		});
+
+		it('should apply theme overrides for depth colors and spacing', () => {
+			const nodes = createSimpleTree();
+			const theme = {
+				depthColors: {
+					0: { bg: '#0f172a', border: '#1e293b', text: '#e2e8f0' },
+					1: { bg: '#111827', border: '#1f2937', text: '#cbd5e1' },
+				},
+				spacing: {
+					indentSize: 30,
+					paddingX: 10,
+					paddingY: 6,
+					radius: 5,
+				},
+			};
+
+			const { container } = render(<BasicTree nodes={nodes} theme={theme} />);
+
+			const rootLabel = container.querySelector(
+				'[data-node-id="node-1"] > .tree-node-label'
+			) as HTMLElement;
+			const childLabel = container.querySelector(
+				'[data-node-id="node-2"] > .tree-node-label'
+			) as HTMLElement;
+
+			expect(rootLabel.style.backgroundColor).toBe('rgb(15, 23, 42)'); // #0f172a
+			expect(rootLabel.style.borderColor).toBe('rgb(30, 41, 59)'); // #1e293b
+			expect(rootLabel.style.color).toBe('rgb(226, 232, 240)'); // #e2e8f0
+			expect(rootLabel.style.paddingLeft).toBe('10px'); // depth 0 paddingX
+
+			// indentSize prop (default 24) is used for spacing; depth 1 * 24 + paddingX 10 = 34px
+			expect(childLabel.style.paddingLeft).toBe('34px');
+		});
+
+		it('should apply theme selection styles when nodes are selected', () => {
+			const nodes = createSimpleTree();
+			const theme = {
+				selection: {
+					bg: '#fff4e6',
+					outline: '3px solid rgb(34, 197, 94)',
+					outlineOffset: '2px',
+				},
+			};
+
+			const { container } = render(
+				<BasicTree nodes={nodes} theme={theme} selectedIds={new Set(['node-2'])} />
+			);
+
+			const selectedLabel = container.querySelector(
+				'[data-node-id="node-2"] > .tree-node-label'
+			) as HTMLElement;
+
+			expect(selectedLabel.style.backgroundColor).toBe('rgb(255, 244, 230)'); // #fff4e6
+			expect(selectedLabel.style.outline).toContain('rgb(34, 197, 94)');
+			expect(selectedLabel.style.outline).toContain('3px');
+			expect(selectedLabel.style.outlineOffset).toBe('2px');
+		});
 	});
 
 	describe('interactivity', () => {

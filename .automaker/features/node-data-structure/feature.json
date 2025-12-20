@@ -1,0 +1,15 @@
+{
+	"branchName": "master",
+	"category": "Core",
+	"complexity": "simple",
+	"createdAt": "2025-12-20T18:16:16.162Z",
+	"dependencies": [],
+	"description": "Define TypeScript interfaces and types for representing tree nodes with properties like id, label, depth, children, and metadata. Establishes the standard format used throughout the application.",
+	"id": "node-data-structure",
+	"justFinishedAt": "2025-12-20T18:27:21.426Z",
+	"priority": 1,
+	"startedAt": "2025-12-20T18:17:43.841Z",
+	"status": "verified",
+	"title": "Node Data Structure Definition",
+	"updatedAt": "2025-12-20T18:27:21.426Z"
+}

@@ -1,0 +1,12 @@
+{
+	"category": "Export",
+	"complexity": "moderate",
+	"createdAt": "2025-12-20T18:16:16.172Z",
+	"dependencies": ["basic-tree-component", "theme-system"],
+	"description": "Capture the tree visualization and export it as a scalable SVG file. Maintains all styling and hierarchy information for use in design tools like Figma.",
+	"id": "svg-export",
+	"priority": 2,
+	"status": "backlog",
+	"title": "SVG Export Functionality",
+	"updatedAt": "2025-12-20T18:16:16.172Z"
+}

@@ -1,0 +1,12 @@
+{
+	"category": "UI",
+	"complexity": "complex",
+	"createdAt": "2025-12-20T18:16:16.172Z",
+	"dependencies": ["node-selection", "tree-node-component"],
+	"description": "Implement drag-and-drop functionality to reorder nodes within the hierarchy. Updates the underlying data structure and reflects changes in real-time visualization.",
+	"id": "drag-drop-rearrange",
+	"priority": 3,
+	"status": "backlog",
+	"title": "Drag-and-Drop Node Rearrangement",
+	"updatedAt": "2025-12-20T18:16:16.172Z"
+}

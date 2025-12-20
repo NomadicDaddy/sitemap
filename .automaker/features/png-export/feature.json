@@ -1,0 +1,12 @@
+{
+	"category": "Export",
+	"complexity": "moderate",
+	"createdAt": "2025-12-20T18:16:16.173Z",
+	"dependencies": ["svg-export"],
+	"description": "Render the visualization to PNG format using canvas or html2canvas library. Allows users to share visualizations as raster images via email or social media.",
+	"id": "png-export",
+	"priority": 2,
+	"status": "backlog",
+	"title": "PNG Export Functionality",
+	"updatedAt": "2025-12-20T18:16:16.173Z"
+}

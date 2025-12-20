@@ -522,6 +522,67 @@ describe('SelectableTree', () => {
 			// depth 1 * 40 + 12 = 52px
 			expect(childLabel.style.paddingLeft).toBe('52px');
 		});
+
+		it('should apply theme overrides for depth colors and spacing', () => {
+			const nodes = createSimpleTree();
+			const theme = {
+				depthColors: {
+					0: { bg: '#101010', border: '#202020', text: '#303030' },
+					1: { bg: '#111111', border: '#222222', text: '#333333' },
+				},
+				spacing: {
+					indentSize: 32,
+					paddingX: 10,
+					paddingY: 6,
+					radius: 5,
+				},
+			};
+
+			const { container } = render(<SelectableTree nodes={nodes} theme={theme} />);
+
+			const rootLabel = container.querySelector(
+				'[data-node-id="node-1"] .tree-node-label'
+			) as HTMLElement;
+			const childLabel = container.querySelector(
+				'[data-node-id="node-2"] .tree-node-label'
+			) as HTMLElement;
+
+			expect(rootLabel.style.backgroundColor).toBe('rgb(16, 16, 16)'); // #101010
+			expect(rootLabel.style.borderColor).toBe('rgb(32, 32, 32)'); // #202020
+			expect(rootLabel.style.color).toBe('rgb(48, 48, 48)'); // #303030
+			expect(rootLabel.style.paddingLeft).toBe('10px'); // depth 0 paddingX
+
+			// indentSize prop (default 24) is used for spacing; depth 1 * 24 + paddingX 10 = 34px
+			expect(childLabel.style.paddingLeft).toBe('34px');
+		});
+
+		it('should apply theme selection styles when nodes are selected', () => {
+			const nodes = createSimpleTree();
+			const theme = {
+				selection: {
+					bg: '#ffeecc',
+					outline: '3px solid rgb(255, 0, 0)',
+					outlineOffset: '3px',
+				},
+			};
+
+			const { container } = render(
+				<SelectableTree
+					nodes={nodes}
+					theme={theme}
+					initialSelectedIds={new Set(['node-2'])}
+				/>
+			);
+
+			const selectedLabel = container.querySelector(
+				'[data-node-id="node-2"] .tree-node-label'
+			) as HTMLElement;
+
+			expect(selectedLabel.style.backgroundColor).toBe('rgb(255, 238, 204)'); // #ffeecc
+			expect(selectedLabel.style.outline).toContain('rgb(255, 0, 0)');
+			expect(selectedLabel.style.outline).toContain('3px');
+			expect(selectedLabel.style.outlineOffset).toBe('3px');
+		});
 	});
 
 	describe('deeply nested nodes', () => {

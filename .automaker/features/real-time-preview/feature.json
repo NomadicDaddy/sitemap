@@ -1,0 +1,15 @@
+{
+	"branchName": "master",
+	"category": "Core",
+	"complexity": "simple",
+	"createdAt": "2025-12-20T18:16:16.166Z",
+	"dependencies": ["text-input-parser", "basic-tree-component"],
+	"description": "Implement onChange handler for textarea input that instantly re-parses and re-renders the visualization. Provides immediate visual feedback as users type their sitemap structure.",
+	"id": "real-time-preview",
+	"justFinishedAt": "2025-12-20T19:03:35.561Z",
+	"priority": 1,
+	"startedAt": "2025-12-20T18:48:52.433Z",
+	"status": "verified",
+	"title": "Real-Time Preview Updates",
+	"updatedAt": "2025-12-20T19:03:35.561Z"
+}

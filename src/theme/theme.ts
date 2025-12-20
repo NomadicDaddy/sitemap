@@ -60,11 +60,30 @@ export const defaultTheme: TreeTheme = {
 	},
 };
 
+function mergeDepthColors(base: DepthColors, overrides?: DepthColors): DepthColors {
+	if (!overrides) return base;
+
+	const merged: DepthColors = { ...base };
+	for (const [depth, value] of Object.entries(overrides)) {
+		const numericDepth = Number(depth);
+		merged[numericDepth] = {
+			bg: value.bg ?? base[numericDepth]?.bg ?? defaultTheme.depthColors[0].bg,
+			border:
+				value.border ?? base[numericDepth]?.border ?? defaultTheme.depthColors[0].border,
+			text: value.text ?? base[numericDepth]?.text ?? defaultTheme.depthColors[0].text,
+		};
+	}
+
+	return merged;
+}
+
 export function createTheme(overrides?: Partial<TreeTheme>): TreeTheme {
 	if (!overrides) return defaultTheme;
 
+	const mergedDepthColors = mergeDepthColors(defaultTheme.depthColors, overrides.depthColors);
+
 	return {
-		depthColors: overrides.depthColors ?? defaultTheme.depthColors,
+		depthColors: mergedDepthColors,
 		selection: { ...defaultTheme.selection, ...overrides.selection },
 		spacing: { ...defaultTheme.spacing, ...overrides.spacing },
 		typography: { ...defaultTheme.typography, ...overrides.typography },

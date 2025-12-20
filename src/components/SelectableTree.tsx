@@ -21,6 +21,12 @@
  */
 import React from 'react';
 
+import {
+	type TreeTheme,
+	computeBulletThemeStyles,
+	computeNodeThemeStyles,
+	createTheme,
+} from '../theme';
 import { type SelectionState, type TreeNode } from '../types/TreeNode';
 import { useTreeNodeSelection } from './TreeNodeUtils';
 
@@ -99,6 +105,9 @@ export interface SelectableTreeProps {
 		selectedNodes: TreeNode[],
 		properties: Record<string, unknown>
 	) => void;
+
+	/** Optional theme overrides for depth colors, spacing, and typography */
+	theme?: Partial<TreeTheme>;
 
 	/** Aria label for the tree container */
 	ariaLabel?: string;
@@ -256,80 +265,6 @@ const bulkToolbarNoteStyles: React.CSSProperties = {
 };
 
 // ============================================================================
-// Depth Color Scheme (matching BasicTree)
-// ============================================================================
-
-const DEPTH_COLOR_SCHEME = {
-	component: { bg: '#f3f4f6', border: '#d1d5db', text: '#4b5563' },
-	componentLight: { bg: '#f9fafb', border: '#e5e7eb', text: '#6b7280' },
-	componentLighter: { bg: '#fafafa', border: '#f3f4f6', text: '#9ca3af' },
-	page: { bg: '#dbeafe', border: '#3b82f6', text: '#1e40af' },
-	section: { bg: '#ffffff', border: '#e5e7eb', text: '#374151' },
-} as const;
-
-// Selected state colors
-const SELECTED_COLORS = {
-	bg: '#dbeafe',
-	border: '#3b82f6',
-	outline: '2px solid #3b82f6',
-	outlineOffset: '1px',
-} as const;
-
-/**
- * Gets the font size based on depth for visual hierarchy.
- */
-function getDepthFontSize(depth: number): number {
-	const baseFontSize = 15;
-	const minFontSize = 12;
-	const reduction = Math.min(depth * 0.5, 3);
-	return Math.max(baseFontSize - reduction, minFontSize);
-}
-
-/**
- * Gets depth-based styles for a node.
- */
-function getDepthStyles(
-	depth: number,
-	showIndicators: boolean,
-	isSelected: boolean
-): React.CSSProperties {
-	if (!showIndicators && !isSelected) {
-		return {};
-	}
-
-	let colors: { bg: string; border: string; text: string };
-
-	if (depth === 0) {
-		colors = DEPTH_COLOR_SCHEME.page;
-	} else if (depth === 1) {
-		colors = DEPTH_COLOR_SCHEME.section;
-	} else if (depth === 2) {
-		colors = DEPTH_COLOR_SCHEME.component;
-	} else if (depth === 3) {
-		colors = DEPTH_COLOR_SCHEME.componentLight;
-	} else {
-		colors = DEPTH_COLOR_SCHEME.componentLighter;
-	}
-
-	const styles: React.CSSProperties = {};
-
-	if (showIndicators) {
-		styles.backgroundColor = colors.bg;
-		styles.borderColor = colors.border;
-		styles.color = colors.text;
-	}
-
-	// Apply selection styling
-	if (isSelected) {
-		styles.outline = SELECTED_COLORS.outline;
-		styles.outlineOffset = SELECTED_COLORS.outlineOffset;
-		styles.backgroundColor = SELECTED_COLORS.bg;
-	}
-
-	return styles;
-}
-
-// ============================================================================
 // SelectionInfo Component
 // ============================================================================
 
@@ -390,11 +325,13 @@ function SelectionInfo({
 
 interface SelectableTreeNodeItemProps {
 	node: TreeNode;
-	indentSize: number;
 	showDepthIndicators: boolean;
 	isSelected: boolean;
 	onNodeClick: (node: TreeNode, event: React.MouseEvent) => void;
 	renderLabel?: (node: TreeNode, isSelected: boolean) => React.ReactNode;
+	depthStyles: React.CSSProperties;
+	bulletStyles: React.CSSProperties;
+	resolvedTheme: TreeTheme;
 }
 
 /**
@@ -402,11 +339,13 @@ interface SelectableTreeNodeItemProps {
  */
 function SelectableTreeNodeItem({
 	node,
-	indentSize,
 	showDepthIndicators,
 	isSelected,
 	onNodeClick,
 	renderLabel,
+	depthStyles,
+	bulletStyles,
+	resolvedTheme,
 }: SelectableTreeNodeItemProps): React.ReactElement {
 	const hasChildren = node.children && node.children.length > 0;
 
@@ -427,8 +366,6 @@ function SelectableTreeNodeItem({
 			} as React.MouseEvent);
 		}
 	};
-
-	const depthStyles = getDepthStyles(node.depth, showDepthIndicators, isSelected);
 
 	// Build the label content
 	const labelContent = renderLabel ? (
@@ -456,19 +393,9 @@ function SelectableTreeNodeItem({
 				style={{
 					...depthStyles,
 					alignItems: 'center',
-					borderRadius: '4px',
-					borderStyle: 'solid',
-					borderWidth: showDepthIndicators ? '1px' : '0',
 					cursor: 'pointer',
 					display: 'flex',
-					fontSize: `${getDepthFontSize(node.depth)}px`,
-					fontWeight: node.depth === 0 ? 600 : node.depth === 1 ? 500 : 400,
 					margin: '2px 0',
-					paddingBottom: '8px',
-					paddingLeft: `${node.depth * indentSize + 12}px`,
-					paddingRight: '12px',
-					paddingTop: '8px',
-					transition: 'background-color 0.15s ease, outline 0.15s ease',
 				}}
 				onClick={handleClick}
 				onKeyDown={handleKeyDown}
@@ -478,19 +405,7 @@ function SelectableTreeNodeItem({
 				aria-expanded={hasChildren ? true : undefined}>
 				{/* Depth indicator bullet */}
 				{showDepthIndicators && (
-					<span
-						className="tree-node-bullet"
-						style={{
-							backgroundColor: depthStyles.borderColor || '#ccc',
-							borderRadius: '50%',
-							display: 'inline-block',
-							flexShrink: 0,
-							height: '8px',
-							marginRight: '8px',
-							width: '8px',
-						}}
-						aria-hidden="true"
-					/>
+					<span className="tree-node-bullet" style={bulletStyles} aria-hidden="true" />
 				)}
 
 				{/* Label content */}
@@ -515,14 +430,23 @@ function SelectableTreeNodeItem({
 			{hasChildren && (
 				<div className="tree-node-children">
 					{node.children!.map((child) => (
+						// Reuse themed styles for child nodes
 						<SelectableTreeNodeItem
 							key={child.id}
 							node={child}
-							indentSize={indentSize}
 							showDepthIndicators={showDepthIndicators}
-							isSelected={false} // Will be passed from parent
+							isSelected={false} // Will be passed from parent traversal
 							onNodeClick={onNodeClick}
 							renderLabel={renderLabel}
+							depthStyles={computeNodeThemeStyles(child.depth, {
+								isSelected: false,
+								showDepthIndicators,
+								theme: resolvedTheme,
+							})}
+							bulletStyles={computeBulletThemeStyles(child.depth, {
+								theme: resolvedTheme,
+							})}
+							resolvedTheme={resolvedTheme}
 						/>
 					))}
 				</div>
@@ -565,12 +489,6 @@ function SelectableTreeNodeItem({
  *   nodes={treeNodes}
  *   initialSelectedIds={new Set(['node-1', 'node-2'])}
  * />
- *
- * // Without selection info panel
- * <SelectableTree
- *   nodes={treeNodes}
- *   showSelectionInfo={false}
- * />
  * ```
  */
 export function SelectableTree({
@@ -591,12 +509,24 @@ export function SelectableTree({
 	onBulkChangeColor,
 	onBulkAddTag,
 	onBulkModifyProperties,
+	theme,
 	ariaLabel = 'Selectable tree structure',
 	selectionInfoLabel = 'Selection information',
 }: SelectableTreeProps): React.ReactElement {
 	// Use the selection hook for state management
 	const { selectedIds, isSelected, toggleSelection, selectOnly, clearSelection } =
 		useTreeNodeSelection(initialSelectedIds);
+
+	const resolvedTheme = React.useMemo(() => {
+		const base = createTheme(theme);
+		return {
+			...base,
+			spacing: {
+				...base.spacing,
+				indentSize,
+			},
+		};
+	}, [theme, indentSize]);
 
 	// Track the last selected ID for potential shift-click range selection (future enhancement)
 	const [lastSelectedId, setLastSelectedId] = React.useState<string | undefined>();
@@ -787,6 +717,11 @@ export function SelectableTree({
 
 		const traverse = (node: TreeNode) => {
 			const nodeIsSelected = isSelected(node.id);
+			const depthStyles = computeNodeThemeStyles(node.depth, {
+				isSelected: nodeIsSelected,
+				showDepthIndicators,
+				theme: resolvedTheme,
+			});
 
 			result.push(
 				<SelectableTreeNodeItem
@@ -795,11 +730,13 @@ export function SelectableTree({
 						...node,
 						children: undefined, // Don't pass children since we handle recursion here
 					}}
-					indentSize={indentSize}
 					showDepthIndicators={showDepthIndicators}
 					isSelected={nodeIsSelected}
 					onNodeClick={handleNodeClick}
 					renderLabel={renderLabel}
+					depthStyles={depthStyles}
+					bulletStyles={computeBulletThemeStyles(node.depth, { theme: resolvedTheme })}
+					resolvedTheme={resolvedTheme}
 				/>
 			);
 

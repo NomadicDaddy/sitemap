@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project_specification>
+  <project_name>UX Sitemap Visualizer</project_name>
+
+  <overview>
+    The UX Sitemap Visualizer is a web-based tool that transforms text-based tree structures into visual hierarchical layouts for UX/product design documentation. It allows designers and stakeholders to quickly parse indentation-based sitemaps or wireframe structures and render them as interactive, visually organized components. The tool supports both basic tree rendering and advanced visualization options like D3.js flowcharts, SVG export for Figma integration, and automatic node categorization. The primary goal is to bridge the gap between technical documentation and visual design communication, enabling teams to understand project structure at a glance.
+  </overview>
+
+  <technology_stack>
+    <technology>React</technology>
+    <technology>TypeScript</technology>
+    <technology>Tailwind CSS</technology>
+    <technology>D3.js</technology>
+    <technology>React Flow</technology>
+    <technology>SVG/Canvas API</technology>
+    <technology>HTML5</technology>
+    <technology>Node.js</technology>
+    <technology>npm/yarn</technology>
+    <technology>Git</technology>
+  </technology_stack>
+
+  <core_capabilities>
+    <capability>Parse text-based tree structures with indentation markers (├──, └──, │, spaces)</capability>
+    <capability>Render hierarchical layouts with nested cards and visual hierarchy</capability>
+    <capability>Support multiple visualization styles (flat layout, tree diagram, flowchart)</capability>
+    <capability>Export visualizations to SVG and PNG formats for design tools like Figma</capability>
+    <capability>Automatic categorization of nodes based on depth (Page, Section, Component labels)</capability>
+    <capability>Interactive node editing and customization</capability>
+    <capability>Responsive design for desktop and tablet viewing</capability>
+    <capability>Support for large sitemaps with performance optimization</capability>
+    <capability>Real-time parsing and preview updates</capability>
+    <capability>Customizable styling and theming options</capability>
+  </core_capabilities>
+
+  <implemented_features>
+    <feature>
+      <name>Text Parser Component</name>
+      <description>Parses raw text input with tree-like indentation markers (├──, └──, │, or spaces) and converts them into a structured array of node objects with depth and label properties</description>
+      <file_locations>
+        <location>src/components/SitemapVisualizer.tsx</location>
+        <location>src/utils/treeParser.ts</location>
+      </file_locations>
+    </feature>
+    <feature>
+      <name>Basic Tree Visualization</name>
+      <description>Renders parsed nodes as a hierarchical layout using React components styled with Tailwind CSS. Applies different styling based on depth levels (top-level pages in blue, sub-sections in white, sub-components in gray)</description>
+      <file_locations>
+        <location>src/components/SitemapVisualizer.tsx</location>
+        <location>src/components/TreeNode.tsx</location>
+      </file_locations>
+    </feature>
+    <feature>
+      <name>Responsive Layout</name>
+      <description>Flexbox-based responsive grid system that adapts to different screen sizes and handles card wrapping for large hierarchies</description>
+      <file_locations>
+        <location>src/components/SitemapVisualizer.tsx</location>
+        <location>src/styles/layout.css</location>
+      </file_locations>
+    </feature>
+    <feature>
+      <name>Real-time Preview</name>
+      <description>Updates visualization instantly as users type in the textarea input, providing immediate visual feedback</description>
+      <file_locations>
+        <location>src/components/SitemapVisualizer.tsx</location>
+        <location>src/hooks/useTreeParser.ts</location>
+      </file_locations>
+    </feature>
+    <feature>
+      <name>Node Depth Styling</name>
+      <description>Applies progressive styling and indentation based on node depth, with configurable colors and sizes for different hierarchy levels</description>
+      <file_locations>
+        <location>src/components/TreeNode.tsx</location>
+        <location>src/styles/theme.ts</location>
+      </file_locations>
+    </feature>
+    <feature>
+      <name>Large Sitemap Generation Utility</name>
+      <description>Provides a JavaScript utility function to programmatically generate large test sitemaps for performance testing</description>
+      <file_locations>
+        <location>src/utils/generateLargeSitemap.js</location>
+      </file_locations>
+    </feature>
+    <feature>
+      <name>Export Functionality (Planned)</name>
+      <description>Captures DOM elements and exports them as SVG or PNG images for integration with design tools</description>
+      <file_locations>
+        <location>src/components/ExportButton.tsx</location>
+        <location>src/utils/exportToSvg.ts</location>
+      </file_locations>
+    </feature>
+    <feature>
+      <name>Advanced Visualization Engine (Planned)</name>
+      <description>Integrates D3.js or React Flow for rendering complex tree diagrams with connecting lines and improved node relationships</description>
+      <file_locations>
+        <location>src/components/AdvancedTreeDiagram.tsx</location>
+        <location>src/utils/d3Integration.ts</location>
+      </file_locations>
+    </feature>
+  </implemented_features>
+
+  <additional_requirements>
+    <requirement>Node.js 14+ and npm/yarn for development</requirement>
+    <requirement>Modern browser with ES6+ support (Chrome, Firefox, Safari, Edge)</requirement>
+    <requirement>React 17+ for component framework</requirement>
+    <requirement>Tailwind CSS 2+ for styling</requirement>
+    <requirement>Optional: D3.js 7+ for advanced visualizations</requirement>
+    <requirement>Optional: canvas-related libraries for image export (html2canvas, jsPDF)</requirement>
+    <requirement>Minimum 4GB RAM recommended for handling large sitemaps (1000+ nodes)</requirement>
+    <requirement>Development environment: VS Code or similar IDE with TypeScript support</requirement>
+  </additional_requirements>
+
+  <development_guidelines>
+    <guideline>Use TypeScript for type safety and better IDE support</guideline>
+    <guideline>Follow React hooks pattern (functional components over class components)</guideline>
+    <guideline>Implement custom hooks for parser logic to keep components focused on rendering</guideline>
+    <guideline>Use Tailwind CSS utility classes for styling (avoid inline styles)</guideline>
+    <guideline>Maintain separation of concerns: parsing logic in utils, rendering in components</guideline>
+    <guideline>Write unit tests for parser functions using Jest</guideline>
+    <guideline>Use React.memo() and useMemo() for performance optimization when handling large node lists</guideline>
+    <guideline>Implement error handling for malformed tree structures with user-friendly messages</guideline>
+    <guideline>Follow BEM or component-scoped CSS naming conventions</guideline>
+    <guideline>Keep components modular and reusable (TreeNode, TreeContainer, etc.)</guideline>
+    <guideline>Document parsing algorithm and depth-calculation logic in comments</guideline>
+    <guideline>Use linting (ESLint) and formatting (Prettier) tools to maintain code quality</guideline>
+  </development_guidelines>
+
+  <implementation_roadmap>
+    <phase>
+      <name>Phase 1: Core Parser &amp; Basic Visualization</name>
+      <status>in_progress</status>
+      <description>Implement the text parser to handle indentation markers, create the basic React component structure, and render nodes with depth-based styling using Tailwind CSS. Include real-time preview functionality.</description>
+    </phase>
+    <phase>
+      <name>Phase 2: Enhanced Styling &amp; Responsive Layout</name>
+      <status>pending</status>
+      <description>Refine the visual presentation with improved card designs, color schemes, and responsive flexbox layout. Add customization options for colors, spacing, and node sizes.</description>
+    </phase>
+    <phase>
+      <name>Phase 3: Node Management &amp; Editing</name>
+      <status>pending</status>
+      <description>Add inline editing capabilities, node selection, and bulk operations. Implement drag-and-drop for rearranging nodes.</description>
+    </phase>
+    <phase>
+      <name>Phase 4: Export &amp; Integration</name>
+      <status>pending</status>
+      <description>Implement SVG and PNG export functionality, generate shareable links, and create integrations with design tools like Figma.</description>
+    </phase>
+    <phase>
+      <name>Phase 5: Advanced Visualizations</name>
+      <status>pending</status>
+      <description>Integrate D3.js or React Flow for rendering complex tree diagrams with connecting lines, better node relationship visualization, and interactive navigation.</description>
+    </phase>
+    <phase>
+      <name>Phase 6: Performance &amp; Scale</name>
+      <status>pending</status>
+      <description>Optimize for large sitemaps (1000+ nodes), implement virtual scrolling, and add performance monitoring. Handle edge cases in parsing.</description>
+    </phase>
+    <phase>
+      <name>Phase 7: Analytics &amp; Documentation</name>
+      <status>pending</status>
+      <description>Add usage analytics, comprehensive documentation, examples, and tutorials. Create interactive demo with sample sitemaps.</description>
+    </phase>
+  </implementation_roadmap>
+</project_specification>
