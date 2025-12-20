@@ -1,0 +1,7 @@
+.automaker
+.vscode
+.windsurf
+.worktrees
+CLAUDE.md
+dist
+node_modules
