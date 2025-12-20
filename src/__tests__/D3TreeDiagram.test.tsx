@@ -11,21 +11,6 @@ import { D3TreeDiagram } from '../components/D3TreeDiagram';
 import { type TreeNode } from '../types/TreeNode';
 import { parseAndBuildTree } from '../utils/treeParser';
 
-// Mock D3 transitions for testing
-jest.mock('d3', () => {
-	const actualD3 = jest.requireActual('d3');
-	return {
-		...actualD3,
-		// Speed up transitions for testing
-		transition: () => ({
-			duration: () => ({
-				attr: jest.fn().mockReturnThis(),
-				style: jest.fn().mockReturnThis(),
-			}),
-		}),
-	};
-});
-
 // ============================================================================
 // Test Data Helpers
 // ============================================================================

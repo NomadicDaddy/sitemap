@@ -20,7 +20,7 @@
  * ```
  */
 import * as d3 from 'd3';
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react';
 
 import { type TreeNode } from '../types/TreeNode';
 
@@ -331,36 +331,41 @@ function getDepthFontWeight(depth: number): number {
  * />
  * ```
  */
-export function D3TreeDiagram({
-	nodes,
-	width = DEFAULT_WIDTH,
-	height = DEFAULT_HEIGHT,
-	className = '',
-	layout = 'tree',
-	linkStyle = 'diagonal',
-	animationDuration = DEFAULT_ANIMATION_DURATION,
-	nodeSize = DEFAULT_NODE_SIZE,
-	linkColor = DEFAULT_LINK_COLOR,
-	nodeColor = DEFAULT_NODE_COLOR,
-	textColor = DEFAULT_TEXT_COLOR,
-	nodeSpacing = DEFAULT_NODE_SPACING,
-	enableZoom = true,
-	onNodeClick,
-	onNodeHover,
-	renderLabel,
-	margin = DEFAULT_MARGIN,
-}: D3TreeDiagramProps): React.ReactElement {
-	const svgRef = useRef<SVGSVGElement>(null);
-	const gRef = useRef<SVGGElement | null>(null);
-	// Track hovered state internally for potential future use
+export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
+	({
+		nodes,
+		width = DEFAULT_WIDTH,
+		height = DEFAULT_HEIGHT,
+		className = '',
+		layout = 'tree',
+		linkStyle = 'diagonal',
+		animationDuration = DEFAULT_ANIMATION_DURATION,
+		nodeSize = DEFAULT_NODE_SIZE,
+		linkColor = DEFAULT_LINK_COLOR,
+		nodeColor = DEFAULT_NODE_COLOR,
+		textColor = DEFAULT_TEXT_COLOR,
+		nodeSpacing = DEFAULT_NODE_SPACING,
+		enableZoom = true,
+		onNodeClick,
+		onNodeHover,
+		renderLabel,
+		margin = DEFAULT_MARGIN,
+	}: D3TreeDiagramProps, ref): React.ReactElement => {
+		const svgRef = useRef<SVGSVGElement>(null);
+		const gRef = useRef<SVGGElement | null>(null);
 
-	// Calculate inner dimensions
-	const innerWidth = width - margin.left - margin.right;
-	const innerHeight = height - margin.top - margin.bottom;
+		// Expose the SVG element to parent components via ref
+		useImperativeHandle(ref, () => svgRef.current!, []);
 
-	/**
-	 * Handles node click events.
-	 */
+		// Track hovered state internally for potential future use
+
+		// Calculate inner dimensions
+		const innerWidth = width - margin.left - margin.right;
+		const innerHeight = height - margin.top - margin.bottom;
+
+		/**
+		 * Handles node click events.
+		 */
 	const handleNodeClick = useCallback(
 		(event: MouseEvent, d: D3HierarchyNode) => {
 			event.stopPropagation();
@@ -678,7 +683,10 @@ export function D3TreeDiagram({
 			</svg>
 		</div>
 	);
-}
+});
+
+// Set display name for debugging
+D3TreeDiagram.displayName = 'D3TreeDiagram';
 
 // Default export for convenience
 export default D3TreeDiagram;

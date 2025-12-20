@@ -585,6 +585,111 @@ describe('SelectableTree', () => {
 		});
 	});
 
+	describe('bulk actions', () => {
+		afterEach(() => {
+			jest.restoreAllMocks();
+		});
+
+		it('should call onBulkDelete with selected nodes after confirmation', () => {
+			const nodes = createSimpleTree();
+			const handleBulkDelete = jest.fn();
+			jest.spyOn(window, 'confirm').mockReturnValue(true);
+
+			render(
+				<SelectableTree
+					nodes={nodes}
+					initialSelectedIds={new Set(['node-2'])}
+					onBulkDelete={handleBulkDelete}
+				/>
+			);
+
+			fireEvent.click(screen.getByText('Delete'));
+
+			expect(window.confirm).toHaveBeenCalled();
+			expect(handleBulkDelete).toHaveBeenCalledWith([
+				expect.objectContaining({ id: 'node-2', label: 'Child 1' }),
+			]);
+		});
+
+		it('should prompt for color, confirm, and call onBulkChangeColor', () => {
+			const nodes = createSimpleTree();
+			const handleBulkChangeColor = jest.fn();
+			jest.spyOn(window, 'prompt').mockReturnValue('#123456');
+			jest.spyOn(window, 'confirm').mockReturnValue(true);
+
+			render(
+				<SelectableTree
+					nodes={nodes}
+					initialSelectedIds={new Set(['node-2'])}
+					onBulkChangeColor={handleBulkChangeColor}
+				/>
+			);
+
+			fireEvent.click(screen.getByText('Change Color'));
+
+			expect(window.prompt).toHaveBeenCalled();
+			expect(window.confirm).toHaveBeenCalled();
+			expect(handleBulkChangeColor).toHaveBeenCalledWith(
+				[expect.objectContaining({ id: 'node-2' })],
+				'#123456'
+			);
+		});
+
+		it('should prompt for tag and call onBulkAddTag', () => {
+			const nodes = createSimpleTree();
+			const handleBulkAddTag = jest.fn();
+			jest.spyOn(window, 'prompt').mockReturnValue('Priority');
+
+			render(
+				<SelectableTree
+					nodes={nodes}
+					initialSelectedIds={new Set(['node-2'])}
+					onBulkAddTag={handleBulkAddTag}
+				/>
+			);
+
+			fireEvent.click(screen.getByText('Add Tag'));
+
+			expect(window.prompt).toHaveBeenCalled();
+			expect(handleBulkAddTag).toHaveBeenCalledWith(
+				[expect.objectContaining({ id: 'node-2' })],
+				'Priority'
+			);
+		});
+
+		it('should parse JSON properties and call onBulkModifyProperties', () => {
+			const nodes = createSimpleTree();
+			const handleBulkModifyProperties = jest.fn();
+			jest.spyOn(window, 'prompt').mockReturnValue('{"priority":"high"}');
+
+			render(
+				<SelectableTree
+					nodes={nodes}
+					initialSelectedIds={new Set(['node-2'])}
+					onBulkModifyProperties={handleBulkModifyProperties}
+				/>
+			);
+
+			fireEvent.click(screen.getByText('Modify Properties'));
+
+			expect(window.prompt).toHaveBeenCalled();
+			expect(handleBulkModifyProperties).toHaveBeenCalledWith(
+				[expect.objectContaining({ id: 'node-2' })],
+				{ priority: 'high' }
+			);
+		});
+
+		it('should disable bulk buttons when there is no selection', () => {
+			const nodes = createSimpleTree();
+			render(<SelectableTree nodes={nodes} />);
+
+			expect(screen.getByText('Delete')).toBeDisabled();
+			expect(screen.getByText('Change Color')).toBeDisabled();
+			expect(screen.getByText('Add Tag')).toBeDisabled();
+			expect(screen.getByText('Modify Properties')).toBeDisabled();
+		});
+	});
+
 	describe('deeply nested nodes', () => {
 		it('should select deeply nested nodes', () => {
 			const nodes = createDeepTree();

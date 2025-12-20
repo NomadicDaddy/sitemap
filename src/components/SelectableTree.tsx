@@ -28,6 +28,7 @@ import {
 	createTheme,
 } from '../theme';
 import { type SelectionState, type TreeNode } from '../types/TreeNode';
+import { ExportButton } from './ExportButton';
 import { useTreeNodeSelection } from './TreeNodeUtils';
 
 // ============================================================================
@@ -114,6 +115,15 @@ export interface SelectableTreeProps {
 
 	/** Aria label for the selection info panel */
 	selectionInfoLabel?: string;
+
+	/** Whether to show export buttons (default: false) */
+	showExportButtons?: boolean;
+
+	/** Callback when export completes */
+	onExportComplete?: (result: { svgContent: string; filename: string; size: number }) => void;
+
+	/** Callback when export fails */
+	onExportError?: (error: Error) => void;
 }
 
 // ============================================================================
@@ -512,7 +522,13 @@ export function SelectableTree({
 	theme,
 	ariaLabel = 'Selectable tree structure',
 	selectionInfoLabel = 'Selection information',
+	showExportButtons = false,
+	onExportComplete,
+	onExportError,
 }: SelectableTreeProps): React.ReactElement {
+	// Refs for export functionality
+	const basicTreeRef = React.useRef<HTMLDivElement>(null);
+
 	// Use the selection hook for state management
 	const { selectedIds, isSelected, toggleSelection, selectOnly, clearSelection } =
 		useTreeNodeSelection(initialSelectedIds);
@@ -814,11 +830,23 @@ export function SelectableTree({
 						style={getBulkButtonStyles(bulkActionsDisabled || !onBulkModifyProperties)}>
 						Modify Properties
 					</button>
+					{showExportButtons && (
+						<ExportButton
+							visualizationType="basic-tree"
+							elementRef={basicTreeRef}
+							nodes={nodes}
+							onExportComplete={onExportComplete}
+							onExportError={onExportError}
+							size="small"
+							variant="outline"
+						/>
+					)}
 				</div>
 			)}
 
 			{/* Tree container */}
 			<div
+				ref={basicTreeRef}
 				className="selectable-tree-content"
 				style={treeContainerStyles}
 				role="tree"

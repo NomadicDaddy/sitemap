@@ -18,7 +18,7 @@
  * <BasicTree nodes={tree} />
  * ```
  */
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { forwardRef, memo, useCallback, useMemo, useState } from 'react';
 
 import {
 	type TreeTheme,
@@ -431,26 +431,27 @@ const TreeNodeItem = memo(function TreeNodeItem({
  * />
  * ```
  */
-export function BasicTree({
-	nodes,
-	className = '',
-	indentSize = 24,
-	showDepthIndicators = true,
-	theme,
-	onNodeClick,
-	onNodeClickWithEvent,
-	renderLabel,
-	selectedIds,
-	// Inline editing props
-	editable = false,
-	editingState,
-	onNodeDoubleClick,
-	onEditValueChange,
-	onEditCommit,
-	onEditCancel,
-	showEditButton,
-	onEditButtonClick,
-}: BasicTreeProps): React.ReactElement {
+export const BasicTree = forwardRef<HTMLDivElement, BasicTreeProps>(
+	({
+		nodes,
+		className = '',
+		indentSize = 24,
+		showDepthIndicators = true,
+		theme,
+		onNodeClick,
+		onNodeClickWithEvent,
+		renderLabel,
+		selectedIds,
+		// Inline editing props
+		editable = false,
+		editingState,
+		onNodeDoubleClick,
+		onEditValueChange,
+		onEditCommit,
+		onEditCancel,
+		showEditButton,
+		onEditButtonClick,
+	}: BasicTreeProps, ref): React.ReactElement => {
 	if (!nodes || nodes.length === 0) {
 		return (
 			<div
@@ -470,6 +471,7 @@ export function BasicTree({
 
 	return (
 		<div
+			ref={ref}
 			className={`basic-tree ${className}`.trim()}
 			style={{
 				fontFamily:
@@ -504,7 +506,10 @@ export function BasicTree({
 			))}
 		</div>
 	);
-}
+});
+
+// Set display name for debugging
+BasicTree.displayName = 'BasicTree';
 
 // Default export for convenience
 export default BasicTree;
