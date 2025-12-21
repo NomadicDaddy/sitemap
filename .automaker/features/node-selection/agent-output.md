@@ -685,4 +685,4 @@ Excellent! Everything passes. Let me provide a final summary:
 - The `allowDeselect` prop controls whether clicking a selected node deselects it
 - Keyboard support: Enter/Space to select, Ctrl/Cmd+Enter/Space for multi-select
 - The `SelectionInfo` component shows selection count and labels, with a clear button
-  </summary>
+    </summary>

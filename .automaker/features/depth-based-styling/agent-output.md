@@ -688,4 +688,4 @@ The feature implementation is complete. Let me provide the summary:
 - Visual hierarchy follows the specification: Blue (Pages) → White (Sections) → Gray (Components)
 - The implementation maintains backward compatibility with existing `showDepthIndicators` prop
 - Metadata style overrides continue to work and take precedence over depth-based colors
-  </summary>
+    </summary>

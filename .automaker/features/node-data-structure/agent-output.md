@@ -727,4 +727,4 @@ Input: {
 - Type guards provide runtime validation that matches TypeScript compile-time checks
 - The branded `NodeId` type provides extra type safety for node identifiers at compile time
 - The `NodeMetadata` interface uses an index signature to allow custom properties while maintaining type safety for known properties
-  </summary>
+    </summary>

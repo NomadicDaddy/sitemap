@@ -960,4 +960,4 @@ function EditableTree({ tree, onTreeChange }) {
 - All 553 tests pass including 60 new tests for the inline editing feature
 - The implementation follows existing patterns (hooks, memoization, accessibility)
 - Changes update the visualization in real-time without requiring re-parsing of the tree text
-  </summary>
+    </summary>

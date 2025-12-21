@@ -987,4 +987,4 @@ The D3.js dependencies are properly added. Let me provide a summary of the imple
 - All 54 D3TreeDiagram tests pass; some pre-existing SitemapEditor tests fail (unrelated to this feature)
 - The component works with parseAndBuildTree output from the existing parser
 - Import example: `import { D3TreeDiagram, type D3TreeDiagramProps } from './components'`
-  </summary>
+    </summary>

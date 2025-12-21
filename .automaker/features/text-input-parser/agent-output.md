@@ -1111,4 +1111,4 @@ Let me now create a final summary of the implementation:
 - All functions are fully typed and exported for use by React components and other utilities
 - Run `npm test` to execute all 75 tests
 - Run `npm run build` to compile TypeScript to JavaScript in the `dist/` directory
-  </summary>
+    </summary>

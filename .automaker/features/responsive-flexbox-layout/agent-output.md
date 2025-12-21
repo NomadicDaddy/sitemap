@@ -656,4 +656,4 @@ Input: {
 - Pre-existing test failures in other components (SitemapEditor, TreeNodeComponent, D3TreeDiagram) are unrelated to these changes
 - The ESLint configuration needs to be migrated to ESLint v9 format (pre-existing issue)
 - Tailwind CSS is now available for use in all components via the configured content paths
-  </summary>
+    </summary>

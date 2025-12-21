@@ -27,3 +27,22 @@ export {
 } from './sitemapGenerator';
 
 export type { SitemapGeneratorOptions } from './sitemapGenerator';
+
+// Export utilities
+export {
+	exportD3TreeDiagramAsSvg,
+	exportBasicTreeAsSvg,
+	downloadSvg,
+	copySvgToClipboard,
+	type SvgExportOptions,
+	type SvgExportResult,
+} from './svgExport';
+
+export {
+	exportD3TreeDiagramAsPng,
+	exportBasicTreeAsPng,
+	downloadPng,
+	copyPngToClipboard,
+	type PngExportOptions,
+	type PngExportResult,
+} from './pngExport';

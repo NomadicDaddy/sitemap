@@ -8,6 +8,14 @@ import React, { useCallback, useState } from 'react';
 
 import { type TreeNode } from '../types/TreeNode';
 import {
+	type PngExportOptions,
+	type PngExportResult,
+	copyPngToClipboard,
+	downloadPng,
+	exportBasicTreeAsPng,
+	exportD3TreeDiagramAsPng,
+} from '../utils/pngExport';
+import {
 	type SvgExportOptions,
 	type SvgExportResult,
 	copySvgToClipboard,
@@ -51,6 +59,9 @@ export interface ExportButtonProps {
 	/** Optional callback when export completes successfully */
 	onExportComplete?: (result: SvgExportResult) => void;
 
+	/** Optional callback when PNG export completes successfully */
+	onPngExportComplete?: (result: PngExportResult) => void;
+
 	/** Optional callback when export fails */
 	onExportError?: (error: Error) => void;
 
@@ -59,6 +70,18 @@ export interface ExportButtonProps {
 
 	/** Button variant (default: 'primary') */
 	variant?: 'primary' | 'secondary' | 'outline';
+
+	/** Which formats to offer (default: ['svg']) */
+	exportFormats?: Array<'svg' | 'png'>;
+
+	/** Custom PNG export options */
+	pngExportOptions?: PngExportOptions;
+
+	/** Whether to show the copy button for PNG (default: true) */
+	showPngCopyButton?: boolean;
+
+	/** Whether to show the download button for PNG (default: true) */
+	showPngDownloadButton?: boolean;
 }
 
 // ============================================================================
@@ -135,18 +158,28 @@ export function ExportButton({
 	exportOptions,
 	onExportStart,
 	onExportComplete,
+	onPngExportComplete,
 	onExportError,
 	size = 'medium',
 	variant = 'primary',
+	exportFormats = ['svg'],
+	pngExportOptions,
+	showPngCopyButton = true,
+	showPngDownloadButton = true,
 }: ExportButtonProps): React.ReactElement {
 	const [isExporting, setIsExporting] = useState(false);
-	const [exportAction, setExportAction] = useState<'download' | 'copy' | null>(null);
+	const [exportAction, setExportAction] = useState<
+		'download-svg' | 'copy-svg' | 'download-png' | 'copy-png' | null
+	>(null);
+
+	const hasSvg = exportFormats.includes('svg');
+	const hasPng = exportFormats.includes('png');
 
 	/**
 	 * Performs the export operation.
 	 */
 	const performExport = useCallback(
-		async (action: 'download' | 'copy') => {
+		async (action: 'download-svg' | 'copy-svg' | 'download-png' | 'copy-png') => {
 			if (!elementRef.current || !nodes || nodes.length === 0) {
 				onExportError?.(new Error('No content to export'));
 				return;
@@ -157,31 +190,56 @@ export function ExportButton({
 			onExportStart?.();
 
 			try {
-				// Export based on visualization type
-				let result: SvgExportResult;
+				const isSvgAction = action.includes('svg');
+				const isDownload = action.startsWith('download');
 
-				if (visualizationType === 'd3-tree') {
-					result = await exportD3TreeDiagramAsSvg(
-						elementRef.current as SVGSVGElement,
-						nodes,
-						exportOptions
-					);
+				if (isSvgAction) {
+					let result: SvgExportResult;
+					if (visualizationType === 'd3-tree') {
+						result = await exportD3TreeDiagramAsSvg(
+							elementRef.current as SVGSVGElement,
+							nodes,
+							exportOptions
+						);
+					} else {
+						result = await exportBasicTreeAsSvg(
+							elementRef.current as HTMLElement,
+							nodes,
+							exportOptions
+						);
+					}
+
+					if (isDownload) {
+						downloadSvg(result);
+					} else {
+						await copySvgToClipboard(result);
+					}
+
+					onExportComplete?.(result);
 				} else {
-					result = await exportBasicTreeAsSvg(
-						elementRef.current as HTMLElement,
-						nodes,
-						exportOptions
-					);
-				}
+					let result: PngExportResult;
+					if (visualizationType === 'd3-tree') {
+						result = await exportD3TreeDiagramAsPng(
+							elementRef.current as SVGSVGElement,
+							nodes,
+							pngExportOptions ?? exportOptions
+						);
+					} else {
+						result = await exportBasicTreeAsPng(
+							elementRef.current as HTMLElement,
+							nodes,
+							pngExportOptions ?? exportOptions
+						);
+					}
 
-				// Perform the requested action
-				if (action === 'download') {
-					downloadSvg(result);
-				} else {
-					await copySvgToClipboard(result);
-				}
+					if (isDownload) {
+						downloadPng(result);
+					} else {
+						await copyPngToClipboard(result);
+					}
 
-				onExportComplete?.(result);
+					onPngExportComplete?.(result);
+				}
 			} catch (error) {
 				const err = error instanceof Error ? error : new Error('Export failed');
 				onExportError?.(err);
@@ -195,8 +253,10 @@ export function ExportButton({
 			nodes,
 			visualizationType,
 			exportOptions,
+			pngExportOptions,
 			onExportStart,
 			onExportComplete,
+			onPngExportComplete,
 			onExportError,
 		]
 	);
@@ -205,32 +265,46 @@ export function ExportButton({
 	 * Handles download button click.
 	 */
 	const handleDownload = useCallback(() => {
-		performExport('download');
+		performExport('download-svg');
 	}, [performExport]);
 
 	/**
 	 * Handles copy button click.
 	 */
 	const handleCopy = useCallback(() => {
-		performExport('copy');
+		performExport('copy-svg');
+	}, [performExport]);
+
+	const handleDownloadPng = useCallback(() => {
+		performExport('download-png');
+	}, [performExport]);
+
+	const handleCopyPng = useCallback(() => {
+		performExport('copy-png');
 	}, [performExport]);
 
 	// Don't render if no buttons are shown
-	if (!showDownloadButton && !showCopyButton) {
+	if (
+		(!hasSvg || (!showDownloadButton && !showCopyButton)) &&
+		(!hasPng || (!showPngDownloadButton && !showPngCopyButton))
+	) {
 		return <></>;
 	}
 
-	// Single button mode
-	if (!showDownloadButton || !showCopyButton) {
-		const action = showDownloadButton ? 'download' : 'copy';
+	const singleSvgButton = hasSvg && (!showDownloadButton || !showCopyButton) && !hasPng;
+	const singlePngButton = hasPng && (!showPngDownloadButton || !showPngCopyButton) && !hasSvg;
+
+	// Single button mode (SVG only)
+	if (singleSvgButton) {
+		const action = showDownloadButton ? 'download-svg' : 'copy-svg';
 		const isLoading = isExporting && exportAction === action;
 
 		return (
 			<button
 				className={`${getButtonClasses(variant, size)} ${className}`.trim()}
-				onClick={action === 'download' ? handleDownload : handleCopy}
+				onClick={action === 'download-svg' ? handleDownload : handleCopy}
 				disabled={isExporting || !nodes || nodes.length === 0}
-				title={action === 'download' ? 'Download as SVG' : 'Copy SVG to clipboard'}>
+				title={action === 'download-svg' ? 'Download as SVG' : 'Copy SVG to clipboard'}>
 				{isLoading ? (
 					<>
 						<svg
@@ -255,7 +329,7 @@ export function ExportButton({
 					</>
 				) : (
 					<>
-						{action === 'download' ? (
+						{action === 'download-svg' ? (
 							<svg
 								className="mr-2 -ml-1 h-4 w-4"
 								fill="none"
@@ -282,23 +356,25 @@ export function ExportButton({
 								/>
 							</svg>
 						)}
-						{action === 'download' ? 'Download SVG' : 'Copy SVG'}
+						{action === 'download-svg' ? 'Download SVG' : 'Copy SVG'}
 					</>
 				)}
 			</button>
 		);
 	}
 
-	// Two button mode
-	return (
-		<div className={`flex gap-2 ${className}`.trim()}>
-			{/* Download button */}
+	// Single button mode (PNG only)
+	if (singlePngButton) {
+		const action = showPngDownloadButton ? 'download-png' : 'copy-png';
+		const isLoading = isExporting && exportAction === action;
+
+		return (
 			<button
-				className={getButtonClasses(variant, size)}
-				onClick={handleDownload}
+				className={`${getButtonClasses(variant, size)} ${className}`.trim()}
+				onClick={action === 'download-png' ? handleDownloadPng : handleCopyPng}
 				disabled={isExporting || !nodes || nodes.length === 0}
-				title="Download as SVG file">
-				{isExporting && exportAction === 'download' ? (
+				title={action === 'download-png' ? 'Download as PNG' : 'Copy PNG'}>
+				{isLoading ? (
 					<>
 						<svg
 							className="mr-2 -ml-1 h-4 w-4 animate-spin"
@@ -322,69 +398,244 @@ export function ExportButton({
 					</>
 				) : (
 					<>
-						<svg
-							className="mr-2 -ml-1 h-4 w-4"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24">
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth="2"
-								d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-							/>
-						</svg>
-						Download
-					</>
-				)}
-			</button>
-
-			{/* Copy button */}
-			<button
-				className={`${getButtonClasses(variant === 'primary' ? 'secondary' : 'outline', size)}`}
-				onClick={handleCopy}
-				disabled={isExporting || !nodes || nodes.length === 0}
-				title="Copy SVG code to clipboard">
-				{isExporting && exportAction === 'copy' ? (
-					<>
-						<svg
-							className="mr-2 -ml-1 h-4 w-4 animate-spin"
-							fill="none"
-							viewBox="0 0 24 24">
-							<circle
-								className="opacity-25"
-								cx="12"
-								cy="12"
-								r="10"
+						{action === 'download-png' ? (
+							<svg
+								className="mr-2 -ml-1 h-4 w-4"
+								fill="none"
 								stroke="currentColor"
-								strokeWidth="4"
-							/>
-							<path
-								className="opacity-75"
-								fill="currentColor"
-								d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-							/>
-						</svg>
-						Copying...
-					</>
-				) : (
-					<>
-						<svg
-							className="mr-2 -ml-1 h-4 w-4"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24">
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth="2"
-								d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-							/>
-						</svg>
-						Copy SVG
+								viewBox="0 0 24 24">
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
+									d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+								/>
+							</svg>
+						) : (
+							<svg
+								className="mr-2 -ml-1 h-4 w-4"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24">
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
+									d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+								/>
+							</svg>
+						)}
+						{action === 'download-png' ? 'Download PNG' : 'Copy PNG'}
 					</>
 				)}
 			</button>
+		);
+	}
+
+	// Two button mode
+	return (
+		<div className={`flex flex-col gap-3 ${className}`.trim()}>
+			{hasSvg && showDownloadButton && showCopyButton && (
+				<div className="flex gap-2">
+					{/* Download SVG button */}
+					<button
+						className={getButtonClasses(variant, size)}
+						onClick={handleDownload}
+						disabled={isExporting || !nodes || nodes.length === 0}
+						title="Download as SVG file">
+						{isExporting && exportAction === 'download-svg' ? (
+							<>
+								<svg
+									className="mr-2 -ml-1 h-4 w-4 animate-spin"
+									fill="none"
+									viewBox="0 0 24 24">
+									<circle
+										className="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										strokeWidth="4"
+									/>
+									<path
+										className="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+									/>
+								</svg>
+								Exporting...
+							</>
+						) : (
+							<>
+								<svg
+									className="mr-2 -ml-1 h-4 w-4"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24">
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth="2"
+										d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+									/>
+								</svg>
+								Download SVG
+							</>
+						)}
+					</button>
+
+					{/* Copy SVG button */}
+					<button
+						className={`${getButtonClasses(
+							variant === 'primary' ? 'secondary' : 'outline',
+							size
+						)}`}
+						onClick={handleCopy}
+						disabled={isExporting || !nodes || nodes.length === 0}
+						title="Copy SVG code to clipboard">
+						{isExporting && exportAction === 'copy-svg' ? (
+							<>
+								<svg
+									className="mr-2 -ml-1 h-4 w-4 animate-spin"
+									fill="none"
+									viewBox="0 0 24 24">
+									<circle
+										className="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										strokeWidth="4"
+									/>
+									<path
+										className="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+									/>
+								</svg>
+								Copying...
+							</>
+						) : (
+							<>
+								<svg
+									className="mr-2 -ml-1 h-4 w-4"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24">
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth="2"
+										d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+									/>
+								</svg>
+								Copy SVG
+							</>
+						)}
+					</button>
+				</div>
+			)}
+
+			{hasPng && showPngDownloadButton && showPngCopyButton && (
+				<div className="flex gap-2">
+					{/* Download PNG button */}
+					<button
+						className={getButtonClasses(variant, size)}
+						onClick={handleDownloadPng}
+						disabled={isExporting || !nodes || nodes.length === 0}
+						title="Download as PNG file">
+						{isExporting && exportAction === 'download-png' ? (
+							<>
+								<svg
+									className="mr-2 -ml-1 h-4 w-4 animate-spin"
+									fill="none"
+									viewBox="0 0 24 24">
+									<circle
+										className="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										strokeWidth="4"
+									/>
+									<path
+										className="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+									/>
+								</svg>
+								Exporting...
+							</>
+						) : (
+							<>
+								<svg
+									className="mr-2 -ml-1 h-4 w-4"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24">
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth="2"
+										d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+									/>
+								</svg>
+								Download PNG
+							</>
+						)}
+					</button>
+
+					{/* Copy PNG button */}
+					<button
+						className={`${getButtonClasses(
+							variant === 'primary' ? 'secondary' : 'outline',
+							size
+						)}`}
+						onClick={handleCopyPng}
+						disabled={isExporting || !nodes || nodes.length === 0}
+						title="Copy PNG to clipboard">
+						{isExporting && exportAction === 'copy-png' ? (
+							<>
+								<svg
+									className="mr-2 -ml-1 h-4 w-4 animate-spin"
+									fill="none"
+									viewBox="0 0 24 24">
+									<circle
+										className="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										strokeWidth="4"
+									/>
+									<path
+										className="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+									/>
+								</svg>
+								Copying...
+							</>
+						) : (
+							<>
+								<svg
+									className="mr-2 -ml-1 h-4 w-4"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24">
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth="2"
+										d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+									/>
+								</svg>
+								Copy PNG
+							</>
+						)}
+					</button>
+				</div>
+			)}
 		</div>
 	);
 }
