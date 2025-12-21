@@ -12,10 +12,11 @@
 		"test": "bunx jest",
 		"test:watch": "bunx jest --watch",
 		"test:coverage": "bunx jest --coverage",
-		"lint": "eslint src --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
+		"lint": "eslint src --report-unused-disable-directives --max-warnings 0",
+		"lint:fix": "eslint src --report-unused-disable-directives --max-warnings 0 --fix",
 		"typecheck": "tsc --noEmit",
 		"format": "prettier --write .",
-		"smoke:qc": "bun run test && bun run lint && bun run typecheck && bun run format && bun run build"
+		"smoke:qc": "bun run lint:fix && bun run typecheck && bun run format && bun run build && bun run test"
 	},
 	"keywords": [
 		"sitemap",

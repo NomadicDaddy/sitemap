@@ -1,5 +1,6 @@
 {
 	"category": "Export",
+	"commit": "8c1e0a5",
 	"complexity": "moderate",
 	"createdAt": "2025-12-20T18:16:16.173Z",
 	"dependencies": ["svg-export"],

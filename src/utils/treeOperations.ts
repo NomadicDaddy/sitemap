@@ -1,4 +1,4 @@
-import { type NodeMetadata, type TreeNode } from '../types/TreeNode';
+import { type DropPosition, type NodeMetadata, type TreeNode } from '../types/TreeNode';
 
 function cloneMetadata(metadata?: NodeMetadata): NodeMetadata {
 	return metadata
@@ -66,4 +66,156 @@ export function modifyNodeProperties(
 		const merged: NodeMetadata = { ...metadata, ...properties };
 		return { ...node, metadata: merged };
 	});
+}
+
+// ============================================================================
+// Drag & Drop helpers
+// ============================================================================
+
+interface RemoveResult {
+	nodes: TreeNode[];
+	removed?: TreeNode;
+}
+
+function findNodeById(nodes: TreeNode[], id: string): TreeNode | undefined {
+	const stack = [...nodes];
+	while (stack.length > 0) {
+		const current = stack.shift()!;
+		if (current.id === id) {
+			return current;
+		}
+		if (current.children) {
+			stack.push(...current.children);
+		}
+	}
+	return undefined;
+}
+
+function removeNode(nodes: TreeNode[], targetId: string): RemoveResult {
+	let removed: TreeNode | undefined;
+
+	const updated = nodes
+		.map((node) => {
+			if (node.id === targetId) {
+				removed = node;
+				return null;
+			}
+
+			if (node.children) {
+				const result = removeNode(node.children, targetId);
+				if (result.removed) {
+					removed ??= result.removed;
+				}
+				if (result.nodes !== node.children) {
+					return { ...node, children: result.nodes };
+				}
+			}
+
+			return node;
+		})
+		.filter((node): node is TreeNode => node !== null);
+
+	return { nodes: updated, removed };
+}
+
+function insertNode(
+	nodes: TreeNode[],
+	targetId: string,
+	position: DropPosition,
+	nodeToInsert: TreeNode
+): { nodes: TreeNode[]; inserted: boolean } {
+	const index = nodes.findIndex((candidate) => candidate.id === targetId);
+	if (index >= 0) {
+		const updated = [...nodes];
+		if (position === 'before') {
+			updated.splice(index, 0, nodeToInsert);
+		} else if (position === 'after') {
+			updated.splice(index + 1, 0, nodeToInsert);
+		} else {
+			const target = updated[index];
+			const children = target.children ? [...target.children, nodeToInsert] : [nodeToInsert];
+			updated[index] = { ...target, children };
+		}
+		return { inserted: true, nodes: updated };
+	}
+
+	for (let i = 0; i < nodes.length; i++) {
+		const node = nodes[i];
+		if (!node.children) {
+			continue;
+		}
+
+		const childResult = insertNode(node.children, targetId, position, nodeToInsert);
+		if (childResult.inserted) {
+			const updatedNode = { ...node, children: childResult.nodes };
+			const updated = [...nodes];
+			updated[i] = updatedNode;
+			return { inserted: true, nodes: updated };
+		}
+	}
+
+	return { inserted: false, nodes };
+}
+
+function normalizeDepths(nodes: TreeNode[], depth = 0): TreeNode[] {
+	return nodes.map((node) => {
+		const normalizedChildren = node.children
+			? normalizeDepths(node.children, depth + 1)
+			: undefined;
+		return {
+			...node,
+			children: normalizedChildren,
+			depth,
+		};
+	});
+}
+
+export function isDescendant(nodes: TreeNode[], ancestorId: string, descendantId: string): boolean {
+	if (ancestorId === descendantId) {
+		return false;
+	}
+	const ancestor = findNodeById(nodes, ancestorId);
+	if (!ancestor) {
+		return false;
+	}
+
+	const stack = [...(ancestor.children ?? [])];
+	while (stack.length > 0) {
+		const current = stack.shift()!;
+		if (current.id === descendantId) {
+			return true;
+		}
+		if (current.children) {
+			stack.push(...current.children);
+		}
+	}
+
+	return false;
+}
+
+export function moveNode(
+	nodes: TreeNode[],
+	payload: { draggedId: string; targetId: string; position: DropPosition }
+): TreeNode[] {
+	const { draggedId, targetId, position } = payload;
+	if (!draggedId || !targetId || draggedId === targetId) {
+		return nodes;
+	}
+
+	if (isDescendant(nodes, draggedId, targetId)) {
+		return nodes;
+	}
+
+	const { nodes: withoutDragged, removed } = removeNode(nodes, draggedId);
+	if (!removed) {
+		return nodes;
+	}
+
+	const { nodes: inserted, inserted: didInsert } = insertNode(
+		withoutDragged,
+		targetId,
+		position,
+		removed
+	);
+	return didInsert ? normalizeDepths(inserted) : nodes;
 }

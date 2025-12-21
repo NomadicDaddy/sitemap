@@ -27,7 +27,13 @@ import {
 	computeNodeThemeStyles,
 	createTheme,
 } from '../theme';
-import { type SelectionState, type TreeNode } from '../types/TreeNode';
+import {
+	type DragState,
+	type DropPosition,
+	type SelectionState,
+	type TreeNode,
+} from '../types/TreeNode';
+import { isDescendant, moveNode } from '../utils/treeOperations';
 import { ExportButton } from './ExportButton';
 import { useTreeNodeSelection } from './TreeNodeUtils';
 
@@ -73,6 +79,9 @@ export interface SelectableTreeProps {
 
 	/** Callback when selection changes */
 	onSelectionChange?: (selectedIds: Set<string>, selectionState: SelectionState) => void;
+
+	/** Callback when nodes are reordered via drag-and-drop */
+	onTreeReorder?: (nodes: TreeNode[]) => void;
 
 	/** Callback when a node is clicked (before selection is updated) */
 	onNodeClick?: (event: NodeClickEvent) => void;
@@ -274,6 +283,28 @@ const bulkToolbarNoteStyles: React.CSSProperties = {
 	fontWeight: 500,
 };
 
+function resolveDropPositionFromEvent(event: React.DragEvent<HTMLDivElement>): DropPosition {
+	const { top, height } = event.currentTarget.getBoundingClientRect();
+	if (height === 0) {
+		return 'inside';
+	}
+
+	const offset = event.clientY - top;
+	const threshold = Math.max(height / 3, 4);
+
+	if (offset <= threshold) {
+		return 'before';
+	}
+
+	if (offset >= height - threshold) {
+		return 'after';
+	}
+
+	return 'inside';
+}
+
+const DRAG_DATA_TYPE = 'application/x-ux-sitemap-node';
+
 // ============================================================================
 // SelectionInfo Component
 // ============================================================================
@@ -333,6 +364,10 @@ function SelectionInfo({
 // SelectableTreeNodeItem Component (Internal)
 // ============================================================================
 
+interface DragAttributes extends React.HTMLAttributes<HTMLDivElement> {
+	'data-drop-invalid'?: string;
+}
+
 interface SelectableTreeNodeItemProps {
 	node: TreeNode;
 	showDepthIndicators: boolean;
@@ -341,7 +376,8 @@ interface SelectableTreeNodeItemProps {
 	renderLabel?: (node: TreeNode, isSelected: boolean) => React.ReactNode;
 	depthStyles: React.CSSProperties;
 	bulletStyles: React.CSSProperties;
-	resolvedTheme: TreeTheme;
+	dragProps?: DragAttributes;
+	theme?: TreeTheme;
 }
 
 /**
@@ -355,7 +391,8 @@ function SelectableTreeNodeItem({
 	renderLabel,
 	depthStyles,
 	bulletStyles,
-	resolvedTheme,
+	dragProps,
+	theme,
 }: SelectableTreeNodeItemProps): React.ReactElement {
 	const hasChildren = node.children && node.children.length > 0;
 
@@ -409,10 +446,10 @@ function SelectableTreeNodeItem({
 				}}
 				onClick={handleClick}
 				onKeyDown={handleKeyDown}
-				role="button"
-				tabIndex={0}
+				{...dragProps}
+				draggable={Boolean(dragProps?.onDragStart)}
 				aria-selected={isSelected}
-				aria-expanded={hasChildren ? true : undefined}>
+				role="button">
 				{/* Depth indicator bullet */}
 				{showDepthIndicators && (
 					<span className="tree-node-bullet" style={bulletStyles} aria-hidden="true" />
@@ -439,24 +476,23 @@ function SelectableTreeNodeItem({
 			{/* Render children recursively */}
 			{hasChildren && (
 				<div className="tree-node-children">
-					{node.children!.map((child) => (
-						// Reuse themed styles for child nodes
+					{node.children!.map((child, _index) => (
 						<SelectableTreeNodeItem
 							key={child.id}
 							node={child}
 							showDepthIndicators={showDepthIndicators}
-							isSelected={false} // Will be passed from parent traversal
+							isSelected={isSelected}
 							onNodeClick={onNodeClick}
 							renderLabel={renderLabel}
 							depthStyles={computeNodeThemeStyles(child.depth, {
-								isSelected: false,
+								isSelected,
 								showDepthIndicators,
-								theme: resolvedTheme,
+								theme,
 							})}
 							bulletStyles={computeBulletThemeStyles(child.depth, {
-								theme: resolvedTheme,
+								theme,
 							})}
-							resolvedTheme={resolvedTheme}
+							theme={theme}
 						/>
 					))}
 				</div>
@@ -525,6 +561,7 @@ export function SelectableTree({
 	showExportButtons = false,
 	onExportComplete,
 	onExportError,
+	onTreeReorder,
 }: SelectableTreeProps): React.ReactElement {
 	// Refs for export functionality
 	const basicTreeRef = React.useRef<HTMLDivElement>(null);
@@ -544,6 +581,92 @@ export function SelectableTree({
 		};
 	}, [theme, indentSize]);
 
+	const [internalNodes, setInternalNodes] = React.useState<TreeNode[]>(() => nodes);
+	const nodesPropRef = React.useRef(nodes);
+	const [dragState, setDragState] = React.useState<DragState | null>(null);
+
+	React.useEffect(() => {
+		if (nodes !== nodesPropRef.current) {
+			nodesPropRef.current = nodes;
+			setInternalNodes(nodes);
+			setDragState(null);
+		}
+	}, [nodes]);
+
+	const handleDragStart = React.useCallback(
+		(nodeId: string) => (event: React.DragEvent<HTMLDivElement>) => {
+			event.stopPropagation();
+			event.dataTransfer?.setData(DRAG_DATA_TYPE, nodeId);
+			event.dataTransfer?.setDragImage(event.currentTarget, 0, 0);
+			setDragState({
+				draggedId: nodeId,
+				isValidDrop: false,
+			});
+		},
+		[]
+	);
+
+	const handleDragEnd = React.useCallback(() => {
+		setDragState(null);
+	}, []);
+
+	const handleDragOver = React.useCallback(
+		(targetId: string) => (event: React.DragEvent<HTMLDivElement>) => {
+			event.preventDefault();
+			event.stopPropagation();
+
+			setDragState((prev) => {
+				if (!prev) {
+					return prev;
+				}
+				const position = resolveDropPositionFromEvent(event);
+				const invalidTarget =
+					prev.draggedId === targetId ||
+					isDescendant(internalNodes, prev.draggedId, targetId);
+				return {
+					...prev,
+					isValidDrop: !invalidTarget,
+					position,
+					targetId,
+				};
+			});
+		},
+		[internalNodes]
+	);
+
+	const handleDrop = React.useCallback(
+		(targetId: string) => (event: React.DragEvent<HTMLDivElement>) => {
+			event.preventDefault();
+			event.stopPropagation();
+
+			if (!dragState) {
+				setDragState(null);
+				return;
+			}
+
+			const dropPosition = dragState.position ?? resolveDropPositionFromEvent(event);
+			const invalidDrop =
+				dragState.draggedId === targetId ||
+				isDescendant(internalNodes, dragState.draggedId, targetId);
+
+			if (!dragState.isValidDrop || invalidDrop) {
+				setDragState(null);
+				return;
+			}
+
+			const reordered = moveNode(internalNodes, {
+				draggedId: dragState.draggedId,
+				position: dropPosition,
+				targetId,
+			});
+
+			setInternalNodes(reordered);
+			onTreeReorder?.(reordered);
+			setDragState(null);
+		},
+		[dragState, internalNodes, onTreeReorder]
+	);
+
 	// Track the last selected ID for potential shift-click range selection (future enhancement)
 	const [lastSelectedId, setLastSelectedId] = React.useState<string | undefined>();
 
@@ -558,9 +681,9 @@ export function SelectableTree({
 			}
 		}
 
-		nodes.forEach(traverse);
+		internalNodes.forEach(traverse);
 		return map;
-	}, [nodes]);
+	}, [internalNodes]);
 
 	// Get selected nodes for display
 	const selectedNodes = React.useMemo(() => {
@@ -744,7 +867,7 @@ export function SelectableTree({
 					key={node.id}
 					node={{
 						...node,
-						children: undefined, // Don't pass children since we handle recursion here
+						children: undefined,
 					}}
 					showDepthIndicators={showDepthIndicators}
 					isSelected={nodeIsSelected}
@@ -752,7 +875,17 @@ export function SelectableTree({
 					renderLabel={renderLabel}
 					depthStyles={depthStyles}
 					bulletStyles={computeBulletThemeStyles(node.depth, { theme: resolvedTheme })}
-					resolvedTheme={resolvedTheme}
+					dragProps={{
+						'data-drop-invalid':
+							dragState && dragState.targetId === node.id && !dragState.isValidDrop
+								? 'true'
+								: undefined,
+						onDragEnd: handleDragEnd,
+						onDragOver: handleDragOver(node.id),
+						onDragStart: handleDragStart(node.id),
+						onDrop: handleDrop(node.id),
+					}}
+					theme={resolvedTheme}
 				/>
 			);
 
@@ -852,7 +985,7 @@ export function SelectableTree({
 				role="tree"
 				aria-label={ariaLabel}
 				aria-multiselectable="true">
-				{renderTree(nodes)}
+				{renderTree(internalNodes)}
 			</div>
 		</div>
 	);
