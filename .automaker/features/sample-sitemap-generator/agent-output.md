@@ -713,4 +713,4 @@ Input: {
 - Performance tested: generates 3906 nodes in under 1 second, handles depth of 50+ without stack overflow
 - The `seed` option allows reproducible random generation for consistent test scenarios
 - Pre-existing test failures in `parserErrors.test.ts` and `BasicTree.test.tsx` are unrelated to this feature
-      </summary>
+  </summary>

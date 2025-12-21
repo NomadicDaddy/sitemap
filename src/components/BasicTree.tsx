@@ -432,81 +432,85 @@ const TreeNodeItem = memo(function TreeNodeItem({
  * ```
  */
 export const BasicTree = forwardRef<HTMLDivElement, BasicTreeProps>(
-	({
-		nodes,
-		className = '',
-		indentSize = 24,
-		showDepthIndicators = true,
-		theme,
-		onNodeClick,
-		onNodeClickWithEvent,
-		renderLabel,
-		selectedIds,
-		// Inline editing props
-		editable = false,
-		editingState,
-		onNodeDoubleClick,
-		onEditValueChange,
-		onEditCommit,
-		onEditCancel,
-		showEditButton,
-		onEditButtonClick,
-	}: BasicTreeProps, ref): React.ReactElement => {
-	if (!nodes || nodes.length === 0) {
+	(
+		{
+			nodes,
+			className = '',
+			indentSize = 24,
+			showDepthIndicators = true,
+			theme,
+			onNodeClick,
+			onNodeClickWithEvent,
+			renderLabel,
+			selectedIds,
+			// Inline editing props
+			editable = false,
+			editingState,
+			onNodeDoubleClick,
+			onEditValueChange,
+			onEditCommit,
+			onEditCancel,
+			showEditButton,
+			onEditButtonClick,
+		}: BasicTreeProps,
+		ref
+	): React.ReactElement => {
+		if (!nodes || nodes.length === 0) {
+			return (
+				<div
+					className={`basic-tree basic-tree--empty ${className}`.trim()}
+					style={{
+						color: '#6b7280',
+						fontStyle: 'italic',
+						padding: '16px',
+						textAlign: 'center',
+					}}
+					role="tree"
+					aria-label="Empty tree">
+					No nodes to display
+				</div>
+			);
+		}
+
 		return (
 			<div
-				className={`basic-tree basic-tree--empty ${className}`.trim()}
+				ref={ref}
+				className={`basic-tree ${className}`.trim()}
 				style={{
-					color: '#6b7280',
-					fontStyle: 'italic',
-					padding: '16px',
-					textAlign: 'center',
+					fontFamily:
+						'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+					fontSize: '14px',
+					lineHeight: '1.5',
 				}}
 				role="tree"
-				aria-label="Empty tree">
-				No nodes to display
+				aria-label="Tree structure"
+				aria-multiselectable={Boolean(selectedIds)}>
+				{nodes.map((node) => (
+					<TreeNodeItem
+						key={node.id}
+						node={node}
+						indentSize={indentSize}
+						showDepthIndicators={showDepthIndicators}
+						theme={theme}
+						onNodeClick={onNodeClick}
+						onNodeClickWithEvent={onNodeClickWithEvent}
+						renderLabel={renderLabel}
+						selectedIds={selectedIds}
+						// Pass inline editing props
+						editable={editable}
+						editingState={editingState}
+						onNodeDoubleClick={onNodeDoubleClick}
+						onEditValueChange={onEditValueChange}
+						onEditCommit={onEditCommit}
+						onEditCancel={onEditCancel}
+						showEditButton={showEditButton}
+						onEditButtonClick={onEditButtonClick}
+					/>
+				))}
 			</div>
 		);
 	}
-
-	return (
-		<div
-			ref={ref}
-			className={`basic-tree ${className}`.trim()}
-			style={{
-				fontFamily:
-					'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-				fontSize: '14px',
-				lineHeight: '1.5',
-			}}
-			role="tree"
-			aria-label="Tree structure"
-			aria-multiselectable={Boolean(selectedIds)}>
-			{nodes.map((node) => (
-				<TreeNodeItem
-					key={node.id}
-					node={node}
-					indentSize={indentSize}
-					showDepthIndicators={showDepthIndicators}
-					theme={theme}
-					onNodeClick={onNodeClick}
-					onNodeClickWithEvent={onNodeClickWithEvent}
-					renderLabel={renderLabel}
-					selectedIds={selectedIds}
-					// Pass inline editing props
-					editable={editable}
-					editingState={editingState}
-					onNodeDoubleClick={onNodeDoubleClick}
-					onEditValueChange={onEditValueChange}
-					onEditCommit={onEditCommit}
-					onEditCancel={onEditCancel}
-					showEditButton={showEditButton}
-					onEditButtonClick={onEditButtonClick}
-				/>
-			))}
-		</div>
-	);
-});
+);
 
 // Set display name for debugging
 BasicTree.displayName = 'BasicTree';

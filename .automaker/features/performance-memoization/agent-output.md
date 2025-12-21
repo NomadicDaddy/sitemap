@@ -652,4 +652,4 @@ Input: {
 - Event handlers are properly stabilized with `useCallback()` to prevent child component re-renders
 - Style objects are memoized to maintain referential equality between renders
 - The optimizations follow React best practices for performance in recursive tree components
-      </summary>
+  </summary>

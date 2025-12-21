@@ -4,7 +4,6 @@
  * Provides functionality to export tree visualizations as SVG files.
  * Supports both D3TreeDiagram (native SVG) and BasicTree (HTML to SVG conversion).
  */
-
 import { type TreeNode } from '../types/TreeNode';
 
 // ============================================================================
@@ -82,14 +81,31 @@ function getComputedStyles(element: Element, includeStyles: boolean): string {
 
 	// Extract relevant CSS properties
 	const relevantProperties = [
-		'color', 'background-color', 'border-color', 'border-width', 'border-style',
-		'border-radius', 'padding', 'margin', 'font-family', 'font-size', 'font-weight',
-		'line-height', 'text-align', 'display', 'position', 'width', 'height',
-		'opacity', 'visibility', 'transform', 'box-shadow'
+		'color',
+		'background-color',
+		'border-color',
+		'border-width',
+		'border-style',
+		'border-radius',
+		'padding',
+		'margin',
+		'font-family',
+		'font-size',
+		'font-weight',
+		'line-height',
+		'text-align',
+		'display',
+		'position',
+		'width',
+		'height',
+		'opacity',
+		'visibility',
+		'transform',
+		'box-shadow',
 	];
 
 	const styleString = relevantProperties
-		.map(prop => `${prop}: ${computedStyle.getPropertyValue(prop)};`)
+		.map((prop) => `${prop}: ${computedStyle.getPropertyValue(prop)};`)
 		.join(' ');
 
 	if (styleString) {
@@ -108,10 +124,7 @@ function getComputedStyles(element: Element, includeStyles: boolean): string {
  * Converts an HTML element to SVG using foreignObject.
  * This is used for the BasicTree component which renders HTML.
  */
-function htmlToSvg(
-	element: HTMLElement,
-	options: Required<SvgExportOptions>
-): string {
+function htmlToSvg(element: HTMLElement, options: Required<SvgExportOptions>): string {
 	const rect = element.getBoundingClientRect();
 	const width = options.width || Math.ceil(rect.width) + options.padding * 2;
 	const height = options.height || Math.ceil(rect.height) + options.padding * 2;
@@ -209,13 +222,13 @@ export async function exportD3TreeDiagramAsSvg(
 	}
 
 	const finalOptions: Required<SvgExportOptions> = {
+		backgroundColor: options.backgroundColor || DEFAULT_BACKGROUND_COLOR,
+		customClasses: options.customClasses || [],
 		filename: options.filename || DEFAULT_FILENAME,
-		width: options.width || 800,
 		height: options.height || 600,
 		includeStyles: options.includeStyles ?? true,
-		customClasses: options.customClasses || [],
-		backgroundColor: options.backgroundColor || DEFAULT_BACKGROUND_COLOR,
 		padding: options.padding || DEFAULT_PADDING,
+		width: options.width || 800,
 	};
 
 	// Serialize the SVG
@@ -309,12 +322,12 @@ export async function copySvgToClipboard(result: SvgExportResult): Promise<void>
 	try {
 		await navigator.clipboard.writeText(result.svgContent);
 	} catch {
-			// Fallback for older browsers
-			const textArea = document.createElement('textarea');
-			textArea.value = result.svgContent;
-			document.body.appendChild(textArea);
-			textArea.select();
-			document.execCommand('copy');
-			document.body.removeChild(textArea);
-		}
+		// Fallback for older browsers
+		const textArea = document.createElement('textarea');
+		textArea.value = result.svgContent;
+		document.body.appendChild(textArea);
+		textArea.select();
+		document.execCommand('copy');
+		document.body.removeChild(textArea);
+	}
 }

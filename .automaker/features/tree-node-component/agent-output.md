@@ -633,4 +633,4 @@ Input: {
 - The `useTreeNodeSelection` and `useTreeNodeExpansion` hooks can be used independently to manage tree state
 - All 81 TreeNodeComponent tests pass, and the build compiles without errors
 - The D3TreeDiagram test failures are pre-existing issues unrelated to this feature
-      </summary>
+  </summary>

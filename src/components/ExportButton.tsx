@@ -4,7 +4,6 @@
  * Provides buttons to export tree visualizations as SVG files.
  * Supports both download and copy-to-clipboard functionality.
  */
-
 import React, { useCallback, useState } from 'react';
 
 import { type TreeNode } from '../types/TreeNode';
@@ -14,7 +13,7 @@ import {
 	copySvgToClipboard,
 	downloadSvg,
 	exportBasicTreeAsSvg,
-	exportD3TreeDiagramAsSvg
+	exportD3TreeDiagramAsSvg,
 } from '../utils/svgExport';
 
 // ============================================================================
@@ -70,10 +69,12 @@ export interface ExportButtonProps {
  * Gets the CSS classes for the button based on variant and size.
  */
 function getButtonClasses(variant: string, size: string): string {
-	const baseClasses = 'inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2';
+	const baseClasses =
+		'inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2';
 
 	const variantClasses = {
-		outline: 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-blue-500',
+		outline:
+			'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-blue-500',
 		primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
 		secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500',
 	};
@@ -144,58 +145,61 @@ export function ExportButton({
 	/**
 	 * Performs the export operation.
 	 */
-	const performExport = useCallback(async (action: 'download' | 'copy') => {
-		if (!elementRef.current || !nodes || nodes.length === 0) {
-			onExportError?.(new Error('No content to export'));
-			return;
-		}
-
-		setIsExporting(true);
-		setExportAction(action);
-		onExportStart?.();
-
-		try {
-			// Export based on visualization type
-			let result: SvgExportResult;
-
-			if (visualizationType === 'd3-tree') {
-				result = await exportD3TreeDiagramAsSvg(
-					elementRef.current as SVGSVGElement,
-					nodes,
-					exportOptions
-				);
-			} else {
-				result = await exportBasicTreeAsSvg(
-					elementRef.current as HTMLElement,
-					nodes,
-					exportOptions
-				);
+	const performExport = useCallback(
+		async (action: 'download' | 'copy') => {
+			if (!elementRef.current || !nodes || nodes.length === 0) {
+				onExportError?.(new Error('No content to export'));
+				return;
 			}
 
-			// Perform the requested action
-			if (action === 'download') {
-				downloadSvg(result);
-			} else {
-				await copySvgToClipboard(result);
-			}
+			setIsExporting(true);
+			setExportAction(action);
+			onExportStart?.();
 
-			onExportComplete?.(result);
-		} catch (error) {
-			const err = error instanceof Error ? error : new Error('Export failed');
-			onExportError?.(err);
-		} finally {
-			setIsExporting(false);
-			setExportAction(null);
-		}
-	}, [
-		elementRef,
-		nodes,
-		visualizationType,
-		exportOptions,
-		onExportStart,
-		onExportComplete,
-		onExportError,
-	]);
+			try {
+				// Export based on visualization type
+				let result: SvgExportResult;
+
+				if (visualizationType === 'd3-tree') {
+					result = await exportD3TreeDiagramAsSvg(
+						elementRef.current as SVGSVGElement,
+						nodes,
+						exportOptions
+					);
+				} else {
+					result = await exportBasicTreeAsSvg(
+						elementRef.current as HTMLElement,
+						nodes,
+						exportOptions
+					);
+				}
+
+				// Perform the requested action
+				if (action === 'download') {
+					downloadSvg(result);
+				} else {
+					await copySvgToClipboard(result);
+				}
+
+				onExportComplete?.(result);
+			} catch (error) {
+				const err = error instanceof Error ? error : new Error('Export failed');
+				onExportError?.(err);
+			} finally {
+				setIsExporting(false);
+				setExportAction(null);
+			}
+		},
+		[
+			elementRef,
+			nodes,
+			visualizationType,
+			exportOptions,
+			onExportStart,
+			onExportComplete,
+			onExportError,
+		]
+	);
 
 	/**
 	 * Handles download button click.
@@ -230,7 +234,7 @@ export function ExportButton({
 				{isLoading ? (
 					<>
 						<svg
-							className="animate-spin -ml-1 mr-2 h-4 w-4"
+							className="mr-2 -ml-1 h-4 w-4 animate-spin"
 							fill="none"
 							viewBox="0 0 24 24">
 							<circle
@@ -252,7 +256,11 @@ export function ExportButton({
 				) : (
 					<>
 						{action === 'download' ? (
-							<svg className="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<svg
+								className="mr-2 -ml-1 h-4 w-4"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24">
 								<path
 									strokeLinecap="round"
 									strokeLinejoin="round"
@@ -261,7 +269,11 @@ export function ExportButton({
 								/>
 							</svg>
 						) : (
-							<svg className="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<svg
+								className="mr-2 -ml-1 h-4 w-4"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24">
 								<path
 									strokeLinecap="round"
 									strokeLinejoin="round"
@@ -289,7 +301,7 @@ export function ExportButton({
 				{isExporting && exportAction === 'download' ? (
 					<>
 						<svg
-							className="animate-spin -ml-1 mr-2 h-4 w-4"
+							className="mr-2 -ml-1 h-4 w-4 animate-spin"
 							fill="none"
 							viewBox="0 0 24 24">
 							<circle
@@ -310,7 +322,11 @@ export function ExportButton({
 					</>
 				) : (
 					<>
-						<svg className="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg
+							className="mr-2 -ml-1 h-4 w-4"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24">
 							<path
 								strokeLinecap="round"
 								strokeLinejoin="round"
@@ -332,7 +348,7 @@ export function ExportButton({
 				{isExporting && exportAction === 'copy' ? (
 					<>
 						<svg
-							className="animate-spin -ml-1 mr-2 h-4 w-4"
+							className="mr-2 -ml-1 h-4 w-4 animate-spin"
 							fill="none"
 							viewBox="0 0 24 24">
 							<circle
@@ -353,7 +369,11 @@ export function ExportButton({
 					</>
 				) : (
 					<>
-						<svg className="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg
+							className="mr-2 -ml-1 h-4 w-4"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24">
 							<path
 								strokeLinecap="round"
 								strokeLinejoin="round"

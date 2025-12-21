@@ -1,7 +1,6 @@
 /**
  * Tests for SVG Export Utility
  */
-
 import { jest } from '@jest/globals';
 
 import { type TreeNode } from '../types/TreeNode';
@@ -17,25 +16,59 @@ import {
 Object.defineProperty(global, 'navigator', {
 	value: {
 		clipboard: {
-			writeText: jest.fn(),
+			writeText: jest.fn(() => Promise.resolve()),
 		},
 	},
 	writable: true,
 });
 
-Object.defineProperty(global, 'document', {
-	value: {
-		body: {
+Object.defineProperty(document.body, 'appendChild', {
+	value: jest.fn(),
+	writable: true,
+});
+
+Object.defineProperty(document.body, 'removeChild', {
+	value: jest.fn(),
+	writable: true,
+});
+
+Object.defineProperty(document, 'createElement', {
+	value: jest.fn((tag: string) => {
+		if (tag === 'a') {
+			return {
+				click: jest.fn(),
+				download: '',
+				href: '',
+				rel: '',
+				style: {},
+			};
+		}
+		if (tag === 'textarea') {
+			return {
+				select: jest.fn(),
+				style: {},
+				value: '',
+			};
+		}
+		// Return a basic element mock for other tags
+		const mockElement = {
 			appendChild: jest.fn(),
-			removeChild: jest.fn(),
-		},
-		createElement: jest.fn(() => ({
-			appendChild: jest.fn(),
+			children: [],
+			classList: {
+				add: jest.fn(),
+			},
 			click: jest.fn(),
-			outerHTML: '<div>Test</div>',
+			cloneNode: jest.fn(() => ({
+				children: [],
+				classList: { add: jest.fn() },
+				outerHTML: `<${tag}></${tag}>`,
+			})),
+			getBoundingClientRect: jest.fn(() => ({ height: 600, width: 800 })),
+			outerHTML: `<${tag}></${tag}>`,
 			setAttribute: jest.fn(),
-		})),
-	},
+		};
+		return mockElement;
+	}),
 	writable: true,
 });
 
@@ -97,7 +130,10 @@ describe('svgExport', () => {
 	describe('exportD3TreeDiagramAsSvg', () => {
 		it('should export D3 tree diagram as SVG', async () => {
 			// Create mock SVG element
-			const mockSvg = document.createElement('svg');
+			const mockSvg = document.createElementNS(
+				'http://www.w3.org/2000/svg',
+				'svg'
+			) as SVGSVGElement;
 			mockSvg.setAttribute('width', '800');
 			mockSvg.setAttribute('height', '600');
 
@@ -106,7 +142,9 @@ describe('svgExport', () => {
 			expect(result).toHaveProperty('svgContent');
 			expect(result).toHaveProperty('filename');
 			expect(result).toHaveProperty('size');
-			expect(result.filename).toMatch(/^sitemap-visualization-\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}\.svg$/);
+			expect(result.filename).toMatch(
+				/^sitemap-visualization-\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}\.svg$/
+			);
 		});
 
 		it('should throw error when SVG element is null', async () => {
@@ -116,7 +154,10 @@ describe('svgExport', () => {
 		});
 
 		it('should throw error when nodes array is empty', async () => {
-			const mockSvg = document.createElement('svg');
+			const mockSvg = document.createElementNS(
+				'http://www.w3.org/2000/svg',
+				'svg'
+			) as SVGSVGElement;
 
 			await expect(exportD3TreeDiagramAsSvg(mockSvg, [])).rejects.toThrow(
 				'No nodes to export'
@@ -124,22 +165,36 @@ describe('svgExport', () => {
 		});
 
 		it('should use custom filename when provided', async () => {
-			const mockSvg = document.createElement('svg');
+			const mockSvg = document.createElementNS(
+				'http://www.w3.org/2000/svg',
+				'svg'
+			) as SVGSVGElement;
 			const options = { filename: 'custom-sitemap' };
 
 			const result = await exportD3TreeDiagramAsSvg(mockSvg, mockNodes, options);
 
-			expect(result.filename).toMatch(/^custom-sitemap-\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}\.svg$/);
+			expect(result.filename).toMatch(
+				/^custom-sitemap-\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}\.svg$/
+			);
 		});
 
 		it('should use custom dimensions when provided', async () => {
-			const mockSvg = document.createElement('svg');
+			const mockSvg = document.createElementNS(
+				'http://www.w3.org/2000/svg',
+				'svg'
+			) as SVGSVGElement;
 			const options = { height: 800, width: 1200 };
+
+			const originalSerializer = XMLSerializer;
+			const serializeSpy = jest.fn();
+			(global as any).XMLSerializer = class {
+				serializeToString = serializeSpy;
+			};
 
 			await exportD3TreeDiagramAsSvg(mockSvg, mockNodes, options);
 
-			const mockSerializer = new (XMLSerializer as any)();
-			expect(mockSerializer.serializeToString).toHaveBeenCalled();
+			expect(serializeSpy).toHaveBeenCalled();
+			(global as any).XMLSerializer = originalSerializer;
 		});
 	});
 
@@ -173,9 +228,7 @@ describe('svgExport', () => {
 		it('should throw error when nodes array is empty', async () => {
 			const mockDiv = document.createElement('div');
 
-			await expect(exportBasicTreeAsSvg(mockDiv, [])).rejects.toThrow(
-				'No nodes to export'
-			);
+			await expect(exportBasicTreeAsSvg(mockDiv, [])).rejects.toThrow('No nodes to export');
 		});
 
 		it('should use custom background color when provided', async () => {
@@ -225,8 +278,8 @@ describe('svgExport', () => {
 
 		it('should fallback to execCommand when clipboard API fails', async () => {
 			// Mock clipboard API failure
-			(navigator.clipboard.writeText as jest.Mock).mockRejectedValueOnce(
-				new Error('Clipboard API not available')
+			(navigator.clipboard.writeText as jest.Mock).mockImplementationOnce(() =>
+				Promise.reject(new Error('Clipboard API not available'))
 			);
 
 			// Mock execCommand
@@ -241,7 +294,8 @@ describe('svgExport', () => {
 				value: '',
 			};
 
-			(document.createElement as jest.Mock).mockImplementation((tag) => {
+			// @ts-expect-error - Jest mock type issue
+			(document.createElement as jest.Mock).mockImplementation((tag: string) => {
 				if (tag === 'textarea') return mockTextArea;
 				return document.createElement(tag);
 			});
