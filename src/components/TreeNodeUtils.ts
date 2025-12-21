@@ -95,10 +95,13 @@ export function computeNodeStyles(
 
 	const baseStyles: React.CSSProperties = {
 		backgroundColor: showDepthIndicators ? depthColor.bg : undefined,
+		borderBottomWidth: showDepthIndicators ? '1px' : undefined,
 		borderColor: showDepthIndicators ? depthColor.border : undefined,
+		borderLeftWidth: showDepthIndicators ? '1px' : undefined,
 		borderRadius: '4px',
-		borderStyle: 'solid',
-		borderWidth: showDepthIndicators ? '1px' : '0',
+		borderRightWidth: showDepthIndicators ? '1px' : undefined,
+		borderStyle: showDepthIndicators ? 'solid' : undefined,
+		borderTopWidth: showDepthIndicators ? '1px' : undefined,
 		color: showDepthIndicators ? depthColor.text : undefined,
 		fontFamily:
 			'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
