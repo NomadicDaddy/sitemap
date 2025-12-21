@@ -148,11 +148,12 @@ const previewContainerStyles: React.CSSProperties = {
 	backgroundColor: '#fafafa',
 	border: '1px solid #e5e7eb',
 	borderRadius: '6px',
-	flex: '1 1 300px',
-	maxHeight: '400px',
-	minWidth: '300px',
+	flex: '1 1 600px',
+	minHeight: '500px',
+	minWidth: '600px',
 	overflow: 'auto',
 	padding: '12px',
+	resize: 'both',
 };
 
 const errorListStyles: React.CSSProperties = {
@@ -622,11 +623,11 @@ export function SitemapEditor({
 								<HorizontalNavBar nodes={viewTree} />
 							</div>
 						) : (
-							<div style={{ marginTop: '12px', overflow: 'auto' }}>
+							<div style={{ marginTop: '12px', overflow: 'auto', minHeight: '450px' }}>
 								<D3TreeDiagram
 									nodes={viewTree}
-									width={600}
-									height={400}
+									width={900}
+									height={600}
 									orientation={
 										previewType === 'd3-vertical' ? 'vertical' : 'horizontal'
 									}
