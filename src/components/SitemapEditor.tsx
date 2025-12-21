@@ -34,6 +34,7 @@ import {
 	toggleNodeExpanded,
 } from '../utils/treeOperations';
 import { D3TreeDiagram } from './D3TreeDiagram';
+import { HorizontalNavBar } from './HorizontalNavBar';
 import { SelectableTree, type SelectableTreeProps } from './SelectableTree';
 
 // ============================================================================
@@ -65,8 +66,8 @@ export interface SitemapEditorProps {
 	/** Whether to show the tree preview (default: true) */
 	showPreview?: boolean;
 
-	/** Preview type to show: 'list' (default), 'd3-horizontal', or 'd3-vertical' */
-	previewType?: 'list' | 'd3-horizontal' | 'd3-vertical';
+	/** Preview type to show: 'list' (default), 'd3-horizontal', 'd3-vertical', or 'navbar' */
+	previewType?: 'list' | 'd3-horizontal' | 'd3-vertical' | 'navbar';
 
 	/** Whether to show preview type selector (default: true) */
 	showPreviewSelector?: boolean;
@@ -362,9 +363,9 @@ export function SitemapEditor({
 	const [viewTree, setViewTree] = useState<TreeNode[]>(tree);
 
 	// Preview type state
-	const [previewType, setPreviewType] = useState<'list' | 'd3-horizontal' | 'd3-vertical'>(
-		initialPreviewType
-	);
+	const [previewType, setPreviewType] = useState<
+		'list' | 'd3-horizontal' | 'd3-vertical' | 'navbar'
+	>(initialPreviewType);
 
 	// Sync parsed tree into local view when parser output changes
 	useEffect(() => {
@@ -564,11 +565,17 @@ export function SitemapEditor({
 								</button>
 								<button
 									type="button"
+									onClick={() => setPreviewType('navbar')}
+									style={previewType === 'navbar' ? activeButtonStyles : buttonStyles}>
+									Nav Bar
+								</button>
+								<button
+									type="button"
 									onClick={() => setPreviewType('d3-horizontal')}
 									style={
 										previewType === 'd3-horizontal' ? activeButtonStyles : buttonStyles
 									}>
-									Horizontal
+									Tree (H)
 								</button>
 								<button
 									type="button"
@@ -576,7 +583,7 @@ export function SitemapEditor({
 									style={
 										previewType === 'd3-vertical' ? activeButtonStyles : buttonStyles
 									}>
-									Vertical
+									Tree (V)
 								</button>
 								<div style={{ marginLeft: 'auto', display: 'flex', gap: '8px' }}>
 									<button
@@ -610,6 +617,10 @@ export function SitemapEditor({
 								onToggleCollapse={handleToggleCollapse}
 								{...restTreeProps}
 							/>
+						) : previewType === 'navbar' ? (
+							<div style={{ marginTop: '12px' }}>
+								<HorizontalNavBar nodes={viewTree} />
+							</div>
 						) : (
 							<div style={{ marginTop: '12px', overflow: 'auto' }}>
 								<D3TreeDiagram

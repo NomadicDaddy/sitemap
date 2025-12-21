@@ -58,3 +58,6 @@ export {
 	type EditButtonProps,
 } from './InlineEditInput';
 export { default as InlineEditInputDefault } from './InlineEditInput';
+
+export { HorizontalNavBar, type HorizontalNavBarProps } from './HorizontalNavBar';
+export { default as HorizontalNavBarDefault } from './HorizontalNavBar';

@@ -18,7 +18,8 @@ export function DemoApp(): React.ReactElement {
 				<strong>Features:</strong>
 			</p>
 			<ul>
-				<li>Toggle between List, Horizontal, and Vertical preview modes</li>
+				<li>Toggle between List, Nav Bar, Tree (Horizontal), and Tree (Vertical) views</li>
+				<li>Nav Bar view shows a website-style navigation with dropdown menus</li>
 				<li>Expand/Collapse individual nodes by clicking the arrow buttons</li>
 				<li>Use Expand All / Collapse All buttons to control all nodes at once</li>
 			</ul>
