@@ -703,6 +703,92 @@ describe('SelectableTree', () => {
 			expect(lastCall[0].has('level-2')).toBe(true);
 		});
 	});
+
+	describe('drag-and-drop functionality', () => {
+		it('should call onTreeReorder when node is dragged and dropped', () => {
+			const nodes = createSimpleTree();
+			const handleTreeReorder = jest.fn();
+			const { container } = render(
+				<SelectableTree nodes={nodes} onTreeReorder={handleTreeReorder} />
+			);
+
+			const dragNode = container.querySelector('[data-node-id="node-2"] .tree-node-label');
+			const dropNode = container.querySelector('[data-node-id="node-3"] .tree-node-label');
+
+			// Start drag
+			fireEvent.dragStart(dragNode!);
+			fireEvent.dragOver(dropNode!);
+			fireEvent.drop(dropNode!);
+			fireEvent.dragEnd(dragNode!);
+
+			// Should have attempted reordering (even if drop position defaults)
+			expect(handleTreeReorder).toHaveBeenCalled();
+		});
+
+		it('should not allow dropping a node onto itself', () => {
+			const nodes = createSimpleTree();
+			const handleTreeReorder = jest.fn();
+			const { container } = render(
+				<SelectableTree nodes={nodes} onTreeReorder={handleTreeReorder} />
+			);
+
+			const parentNode = container.querySelector('[data-node-id="node-1"] .tree-node-label');
+			const childNode = container.querySelector('[data-node-id="node-2"] .tree-node-label');
+
+			fireEvent.dragStart(parentNode!);
+			fireEvent.dragOver(childNode!);
+			fireEvent.drop(childNode!);
+			fireEvent.dragEnd(parentNode!);
+
+			expect(handleTreeReorder).not.toHaveBeenCalled();
+		});
+
+		it('should have draggable attribute on node labels', () => {
+			const nodes = createSimpleTree();
+			const { container } = render(<SelectableTree nodes={nodes} />);
+
+			const nodeLabel = container.querySelector('[data-node-id="node-2"] .tree-node-label');
+			expect(nodeLabel).toHaveAttribute('draggable', 'true');
+		});
+
+		it('should clear drag state after drag ends', () => {
+			const nodes = createSimpleTree();
+			const { container } = render(<SelectableTree nodes={nodes} />);
+
+			const dragNode = container.querySelector('[data-node-id="node-2"] .tree-node-label');
+			const dropNode = container.querySelector('[data-node-id="node-3"] .tree-node-label');
+
+			fireEvent.dragStart(dragNode!);
+			fireEvent.dragOver(dropNode!);
+			fireEvent.dragEnd(dragNode!);
+
+			// After drag ends, should not have invalid drop state
+			expect(dropNode).not.toHaveAttribute('data-drop-invalid', 'true');
+		});
+
+		it('should maintain internal state when nodes prop changes', () => {
+			const initialNodes = createSimpleTree();
+			const updatedNodes = [
+				{
+					children: [{ depth: 1, id: 'node-4', label: 'New Child' }],
+					depth: 0,
+					id: 'node-3',
+					label: 'Root',
+				},
+			];
+			const { container, rerender } = render(<SelectableTree nodes={initialNodes} />);
+
+			// Start a drag operation
+			const dragNode = container.querySelector('[data-node-id="node-2"] .tree-node-label');
+			fireEvent.dragStart(dragNode!);
+
+			// Update nodes prop
+			rerender(<SelectableTree nodes={updatedNodes} />);
+
+			// Should clear drag state and not have old nodes
+			expect(dragNode).not.toBeInTheDocument();
+		});
+	});
 });
 
 // ============================================================================

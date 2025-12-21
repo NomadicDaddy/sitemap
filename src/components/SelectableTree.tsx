@@ -284,7 +284,7 @@ const bulkToolbarNoteStyles: React.CSSProperties = {
 };
 
 function resolveDropPositionFromEvent(event: React.DragEvent<HTMLDivElement>): DropPosition {
-	const { top, height } = event.currentTarget.getBoundingClientRect();
+	const { top, height } = event.currentTarget?.getBoundingClientRect() ?? { height: 0, top: 0 };
 	if (height === 0) {
 		return 'inside';
 	}
