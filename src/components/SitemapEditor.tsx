@@ -27,9 +27,13 @@ import { treeNodesToText } from '../utils/sitemapGenerator';
 import {
 	addTagToNodes,
 	changeNodesColor,
+	collapseAllNodes,
 	deleteNodes,
+	expandAllNodes,
 	modifyNodeProperties,
+	toggleNodeExpanded,
 } from '../utils/treeOperations';
+import { D3TreeDiagram } from './D3TreeDiagram';
 import { SelectableTree, type SelectableTreeProps } from './SelectableTree';
 
 // ============================================================================
@@ -60,6 +64,12 @@ export interface SitemapEditorProps {
 
 	/** Whether to show the tree preview (default: true) */
 	showPreview?: boolean;
+
+	/** Preview type to show: 'list' (default), 'd3-horizontal', or 'd3-vertical' */
+	previewType?: 'list' | 'd3-horizontal' | 'd3-vertical';
+
+	/** Whether to show preview type selector (default: true) */
+	showPreviewSelector?: boolean;
 
 	/** Whether to show parsing errors (default: true) */
 	showErrors?: boolean;
@@ -190,6 +200,33 @@ const labelStyles: React.CSSProperties = {
 	marginBottom: '6px',
 };
 
+const previewControlsStyles: React.CSSProperties = {
+	alignItems: 'center',
+	display: 'flex',
+	flexWrap: 'wrap',
+	gap: '8px',
+	marginBottom: '8px',
+};
+
+const buttonStyles: React.CSSProperties = {
+	backgroundColor: '#f3f4f6',
+	border: '1px solid #d1d5db',
+	borderRadius: '4px',
+	color: '#374151',
+	cursor: 'pointer',
+	fontSize: '12px',
+	fontWeight: 500,
+	padding: '4px 10px',
+	transition: 'all 0.15s ease',
+};
+
+const activeButtonStyles: React.CSSProperties = {
+	...buttonStyles,
+	backgroundColor: '#3b82f6',
+	borderColor: '#2563eb',
+	color: '#ffffff',
+};
+
 // ============================================================================
 // Helper Components
 // ============================================================================
@@ -291,6 +328,8 @@ export function SitemapEditor({
 	rows = 10,
 	disabled = false,
 	showPreview = true,
+	previewType: initialPreviewType = 'list',
+	showPreviewSelector = true,
 	showErrors = true,
 	showStats = false,
 	onTreeChange,
@@ -321,6 +360,11 @@ export function SitemapEditor({
 
 	// Local view of the tree that can diverge via bulk operations
 	const [viewTree, setViewTree] = useState<TreeNode[]>(tree);
+
+	// Preview type state
+	const [previewType, setPreviewType] = useState<'list' | 'd3-horizontal' | 'd3-vertical'>(
+		initialPreviewType
+	);
 
 	// Sync parsed tree into local view when parser output changes
 	useEffect(() => {
@@ -440,6 +484,18 @@ export function SitemapEditor({
 		[applyTreeUpdate]
 	);
 
+	const handleToggleCollapse = useCallback((node: TreeNode) => {
+		setViewTree((prev) => toggleNodeExpanded(prev, node.id));
+	}, []);
+
+	const handleExpandAll = useCallback(() => {
+		setViewTree((prev) => expandAllNodes(prev));
+	}, []);
+
+	const handleCollapseAll = useCallback(() => {
+		setViewTree((prev) => collapseAllNodes(prev));
+	}, []);
+
 	const { showBulkActions: propShowBulkActions = true, ...restTreeProps } = treeProps ?? {};
 
 	return (
@@ -495,18 +551,77 @@ export function SitemapEditor({
 						role="region"
 						aria-label={previewLabel}
 						aria-live="polite">
-						<label style={{ ...labelStyles, marginBottom: '12px' }}>
-							{previewLabel}
-						</label>
-						<SelectableTree
-							nodes={viewTree}
-							showBulkActions={propShowBulkActions}
-							onBulkDelete={handleBulkDelete}
-							onBulkChangeColor={handleBulkChangeColor}
-							onBulkAddTag={handleBulkAddTag}
-							onBulkModifyProperties={handleBulkModifyProperties}
-							{...restTreeProps}
-						/>
+						<label style={{ ...labelStyles, marginBottom: '8px' }}>{previewLabel}</label>
+
+						{/* Preview controls */}
+						{showPreviewSelector && (
+							<div style={previewControlsStyles}>
+								<button
+									type="button"
+									onClick={() => setPreviewType('list')}
+									style={previewType === 'list' ? activeButtonStyles : buttonStyles}>
+									List
+								</button>
+								<button
+									type="button"
+									onClick={() => setPreviewType('d3-horizontal')}
+									style={
+										previewType === 'd3-horizontal' ? activeButtonStyles : buttonStyles
+									}>
+									Horizontal
+								</button>
+								<button
+									type="button"
+									onClick={() => setPreviewType('d3-vertical')}
+									style={
+										previewType === 'd3-vertical' ? activeButtonStyles : buttonStyles
+									}>
+									Vertical
+								</button>
+								<div style={{ marginLeft: 'auto', display: 'flex', gap: '8px' }}>
+									<button
+										type="button"
+										onClick={handleExpandAll}
+										style={buttonStyles}
+										title="Expand all nodes">
+										Expand All
+									</button>
+									<button
+										type="button"
+										onClick={handleCollapseAll}
+										style={buttonStyles}
+										title="Collapse all nodes">
+										Collapse All
+									</button>
+								</div>
+							</div>
+						)}
+
+						{/* Render preview based on type */}
+						{previewType === 'list' ? (
+							<SelectableTree
+								nodes={viewTree}
+								showBulkActions={propShowBulkActions}
+								onBulkDelete={handleBulkDelete}
+								onBulkChangeColor={handleBulkChangeColor}
+								onBulkAddTag={handleBulkAddTag}
+								onBulkModifyProperties={handleBulkModifyProperties}
+								collapsible={true}
+								onToggleCollapse={handleToggleCollapse}
+								{...restTreeProps}
+							/>
+						) : (
+							<div style={{ marginTop: '12px', overflow: 'auto' }}>
+								<D3TreeDiagram
+									nodes={viewTree}
+									width={600}
+									height={400}
+									orientation={
+										previewType === 'd3-vertical' ? 'vertical' : 'horizontal'
+									}
+								/>
+							</div>
+						)}
 					</div>
 				)}
 			</div>

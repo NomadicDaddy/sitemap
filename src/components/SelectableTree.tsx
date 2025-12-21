@@ -128,6 +128,12 @@ export interface SelectableTreeProps {
 	/** Whether to show export buttons (default: false) */
 	showExportButtons?: boolean;
 
+	/** Whether nodes should be collapsible (default: false) */
+	collapsible?: boolean;
+
+	/** Callback when a node's expand/collapse state changes */
+	onToggleCollapse?: (node: TreeNode) => void;
+
 	/** Callback when export completes */
 	onExportComplete?: (result: { svgContent: string; filename: string; size: number }) => void;
 
@@ -378,6 +384,8 @@ interface SelectableTreeNodeItemProps {
 	bulletStyles: React.CSSProperties;
 	dragProps?: DragAttributes;
 	theme?: TreeTheme;
+	collapsible?: boolean;
+	onToggleCollapse?: (node: TreeNode) => void;
 }
 
 /**
@@ -393,8 +401,11 @@ function SelectableTreeNodeItem({
 	bulletStyles,
 	dragProps,
 	theme,
+	collapsible = false,
+	onToggleCollapse,
 }: SelectableTreeNodeItemProps): React.ReactElement {
 	const hasChildren = node.children && node.children.length > 0;
+	const isExpanded = node.metadata?.expanded !== false;
 
 	const handleClick = (event: React.MouseEvent) => {
 		event.stopPropagation();
@@ -405,12 +416,18 @@ function SelectableTreeNodeItem({
 		if (event.key === 'Enter' || event.key === ' ') {
 			event.preventDefault();
 			event.stopPropagation();
-			// Create a synthetic mouse event for keyboard activation
 			onNodeClick(node, {
 				ctrlKey: event.ctrlKey,
 				metaKey: event.metaKey,
 				shiftKey: event.shiftKey,
 			} as React.MouseEvent);
+		}
+	};
+
+	const handleToggleCollapse = (event: React.MouseEvent) => {
+		event.stopPropagation();
+		if (onToggleCollapse) {
+			onToggleCollapse(node);
 		}
 	};
 
@@ -450,6 +467,25 @@ function SelectableTreeNodeItem({
 				draggable={Boolean(dragProps?.onDragStart)}
 				aria-selected={isSelected}
 				role="button">
+				{/* Collapse/expand button */}
+				{collapsible && hasChildren && (
+					<button
+						onClick={handleToggleCollapse}
+						style={{
+							background: 'none',
+							border: 'none',
+							cursor: 'pointer',
+							fontSize: '12px',
+							marginRight: '4px',
+							padding: '0 4px',
+						}}
+						aria-label={isExpanded ? 'Collapse' : 'Expand'}
+						aria-expanded={isExpanded}
+						type="button">
+						{isExpanded ? '▼' : '▶'}
+					</button>
+				)}
+
 				{/* Depth indicator bullet */}
 				{showDepthIndicators && (
 					<span className="tree-node-bullet" style={bulletStyles} aria-hidden="true" />
@@ -474,7 +510,7 @@ function SelectableTreeNodeItem({
 			</div>
 
 			{/* Render children recursively */}
-			{hasChildren && (
+			{hasChildren && isExpanded && (
 				<div className="tree-node-children">
 					{node.children!.map((child, _index) => (
 						<SelectableTreeNodeItem
@@ -493,6 +529,8 @@ function SelectableTreeNodeItem({
 								theme,
 							})}
 							theme={theme}
+							collapsible={collapsible}
+							onToggleCollapse={onToggleCollapse}
 						/>
 					))}
 				</div>
@@ -562,6 +600,8 @@ export function SelectableTree({
 	onExportComplete,
 	onExportError,
 	onTreeReorder,
+	collapsible = false,
+	onToggleCollapse,
 }: SelectableTreeProps): React.ReactElement {
 	// Refs for export functionality
 	const basicTreeRef = React.useRef<HTMLDivElement>(null);
@@ -861,6 +901,7 @@ export function SelectableTree({
 				showDepthIndicators,
 				theme: resolvedTheme,
 			});
+			const isExpanded = node.metadata?.expanded !== false;
 
 			result.push(
 				<SelectableTreeNodeItem
@@ -886,10 +927,12 @@ export function SelectableTree({
 						onDrop: handleDrop(node.id),
 					}}
 					theme={resolvedTheme}
+					collapsible={collapsible}
+					onToggleCollapse={onToggleCollapse}
 				/>
 			);
 
-			if (node.children) {
+			if (node.children && isExpanded) {
 				node.children.forEach(traverse);
 			}
 		};

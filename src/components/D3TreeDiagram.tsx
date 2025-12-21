@@ -39,6 +39,11 @@ export type LayoutType = 'tree' | 'radial' | 'cluster';
 export type LinkStyle = 'diagonal' | 'elbow' | 'straight';
 
 /**
+ * Orientation options for tree layout.
+ */
+export type OrientationType = 'horizontal' | 'vertical';
+
+/**
  * Props for the D3TreeDiagram component.
  */
 export interface D3TreeDiagramProps {
@@ -56,6 +61,9 @@ export interface D3TreeDiagramProps {
 
 	/** Layout algorithm to use (default: 'tree') */
 	layout?: LayoutType;
+
+	/** Orientation of the tree (default: 'horizontal') */
+	orientation?: OrientationType;
 
 	/** Style of connecting lines (default: 'diagonal') */
 	linkStyle?: LinkStyle;
@@ -153,11 +161,12 @@ function convertToD3Hierarchy(nodes: TreeNode[]): d3.HierarchyNode<TreeNode> {
 }
 
 /**
- * Gets the link path generator based on link style.
+ * Gets the link path generator based on link style and orientation.
  */
 function getLinkPathGenerator(
 	linkStyle: LinkStyle,
-	layout: LayoutType
+	layout: LayoutType,
+	orientation: OrientationType
 ): (link: D3HierarchyLink) => string {
 	if (layout === 'radial') {
 		return (link: D3HierarchyLink): string => {
@@ -175,7 +184,6 @@ function getLinkPathGenerator(
 				return `M${sourceX},${sourceY}L${targetX},${targetY}`;
 			}
 
-			// Default to curved path for radial layout
 			return (
 				d3
 					.linkRadial<D3HierarchyLink, D3HierarchyNode>()
@@ -185,7 +193,31 @@ function getLinkPathGenerator(
 		};
 	}
 
-	// Tree and cluster layouts
+	if (orientation === 'vertical') {
+		switch (linkStyle) {
+			case 'straight':
+				return (link: D3HierarchyLink): string =>
+					`M${link.source.x},${link.source.y}L${link.target.x},${link.target.y}`;
+
+			case 'elbow':
+				return (link: D3HierarchyLink): string => {
+					const midY = (link.source.y + link.target.y) / 2;
+					return `M${link.source.x},${link.source.y}
+	                V${midY}
+	                H${link.target.x}
+	                V${link.target.y}`;
+				};
+
+			case 'diagonal':
+			default:
+				return (link: D3HierarchyLink): string =>
+					d3
+						.linkVertical<D3HierarchyLink, D3HierarchyNode>()
+						.x((d) => d.x)
+						.y((d) => d.y)(link) || '';
+		}
+	}
+
 	switch (linkStyle) {
 		case 'straight':
 			return (link: D3HierarchyLink): string =>
@@ -339,6 +371,7 @@ export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 			height = DEFAULT_HEIGHT,
 			className = '',
 			layout = 'tree',
+			orientation = 'horizontal',
 			linkStyle = 'diagonal',
 			animationDuration = DEFAULT_ANIMATION_DURATION,
 			nodeSize = DEFAULT_NODE_SIZE,
@@ -476,6 +509,8 @@ export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 			// Configure layout size
 			if (layout === 'radial') {
 				treeLayout.size([360, Math.min(innerWidth, innerHeight) / 2 - nodeSpacing]);
+			} else if (orientation === 'vertical') {
+				treeLayout.size([innerWidth, innerHeight]);
 			} else {
 				treeLayout.size([innerHeight, innerWidth]);
 			}
@@ -501,7 +536,7 @@ export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 			}
 
 			// Get link path generator
-			const linkPathGenerator = getLinkPathGenerator(linkStyle, layout);
+			const linkPathGenerator = getLinkPathGenerator(linkStyle, layout, orientation);
 
 			// Create links group
 			const linksGroup = g.append('g').attr('class', 'd3-tree-links');
@@ -541,6 +576,9 @@ export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 						const y = radius * Math.sin(angle);
 						return `translate(${x},${y})`;
 					}
+					if (orientation === 'vertical') {
+						return `translate(${d.x},${d.y})`;
+					}
 					return `translate(${d.y},${d.x})`;
 				})
 				.style('cursor', onNodeClick ? 'pointer' : 'default')
@@ -571,16 +609,27 @@ export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 			// Add text labels with depth-based styling
 			nodeGroups
 				.append('text')
-				.attr('dy', '0.31em')
+				.attr('dy', (d) => {
+					if (orientation === 'vertical') {
+						return d.children ? -15 : 15;
+					}
+					return '0.31em';
+				})
 				.attr('x', (d) => {
 					if (layout === 'radial') {
 						return d.x < 180 === !d.children ? 12 : -12;
+					}
+					if (orientation === 'vertical') {
+						return 0;
 					}
 					return d.children ? -12 : 12;
 				})
 				.attr('text-anchor', (d) => {
 					if (layout === 'radial') {
 						return d.x < 180 === !d.children ? 'start' : 'end';
+					}
+					if (orientation === 'vertical') {
+						return 'middle';
 					}
 					return d.children ? 'end' : 'start';
 				})
@@ -628,6 +677,7 @@ export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 			width,
 			height,
 			layout,
+			orientation,
 			linkStyle,
 			animationDuration,
 			nodeSize,

@@ -46,3 +46,16 @@ export {
 	type PngExportOptions,
 	type PngExportResult,
 } from './pngExport';
+
+export {
+	deleteNodes,
+	changeNodesColor,
+	addTagToNodes,
+	modifyNodeProperties,
+	toggleNodeExpanded,
+	expandAllNodes,
+	collapseAllNodes,
+	filterCollapsedNodes,
+	moveNode,
+	isDescendant,
+} from './treeOperations';

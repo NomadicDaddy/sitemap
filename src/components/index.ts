@@ -12,6 +12,7 @@ export {
 	type D3TreeDiagramProps,
 	type LayoutType,
 	type LinkStyle,
+	type OrientationType,
 } from './D3TreeDiagram';
 export { default as D3TreeDiagramDefault } from './D3TreeDiagram';
 

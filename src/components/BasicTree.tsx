@@ -91,6 +91,12 @@ export interface BasicTreeProps {
 
 	/** Callback when the edit button is clicked */
 	onEditButtonClick?: (node: TreeNode) => void;
+
+	/** Whether nodes should be collapsible (default: false) */
+	collapsible?: boolean;
+
+	/** Callback when a node's expand/collapse state changes */
+	onToggleCollapse?: (node: TreeNode) => void;
 }
 
 /**
@@ -130,6 +136,10 @@ interface TreeNodeItemProps {
 	onEditCancel?: () => void;
 	showEditButton?: boolean;
 	onEditButtonClick?: (node: TreeNode) => void;
+
+	// Collapse/expand props
+	collapsible?: boolean;
+	onToggleCollapse?: (node: TreeNode) => void;
 }
 
 // ============================================================================
@@ -162,6 +172,9 @@ const TreeNodeItem = memo(function TreeNodeItem({
 	onEditCancel,
 	showEditButton,
 	onEditButtonClick,
+	// Collapse/expand props
+	collapsible = false,
+	onToggleCollapse,
 }: TreeNodeItemProps): React.ReactElement {
 	const [isHovered, setIsHovered] = useState(false);
 
@@ -247,6 +260,21 @@ const TreeNodeItem = memo(function TreeNodeItem({
 		}
 	}, [onEditButtonClick, onNodeDoubleClick, node]);
 
+	const handleToggleCollapse = useCallback(
+		(event: React.MouseEvent) => {
+			event.stopPropagation();
+			if (onToggleCollapse) {
+				onToggleCollapse(node);
+			}
+		},
+		[onToggleCollapse, node]
+	);
+
+	const isExpanded = useMemo(
+		() => node.metadata?.expanded !== false,
+		[node.metadata?.expanded]
+	);
+
 	// Merge theme with indent override so prop indentSize wins
 	const mergedTheme = useMemo(() => {
 		const base = createTheme(theme);
@@ -325,6 +353,25 @@ const TreeNodeItem = memo(function TreeNodeItem({
 				tabIndex={isClickable ? 0 : undefined}
 				onKeyDown={isClickable ? handleKeyDown : undefined}
 				aria-selected={isSelected}>
+				{/* Collapse/expand button */}
+				{collapsible && hasChildren && (
+					<button
+						onClick={handleToggleCollapse}
+						style={{
+							background: 'none',
+							border: 'none',
+							cursor: 'pointer',
+							fontSize: '12px',
+							marginRight: '4px',
+							padding: '0 4px',
+						}}
+						aria-label={isExpanded ? 'Collapse' : 'Expand'}
+						aria-expanded={isExpanded}
+						type="button">
+						{isExpanded ? '▼' : '▶'}
+					</button>
+				)}
+
 				{/* Depth indicator bullet */}
 				{showDepthIndicators && (
 					<span
@@ -355,7 +402,7 @@ const TreeNodeItem = memo(function TreeNodeItem({
 			</div>
 
 			{/* Render children recursively */}
-			{hasChildren && (
+			{hasChildren && isExpanded && (
 				<div className="tree-node-children">
 					{node.children!.map((child) => (
 						<TreeNodeItem
@@ -377,6 +424,9 @@ const TreeNodeItem = memo(function TreeNodeItem({
 							onEditCancel={onEditCancel}
 							showEditButton={showEditButton}
 							onEditButtonClick={onEditButtonClick}
+							// Pass collapse/expand props
+							collapsible={collapsible}
+							onToggleCollapse={onToggleCollapse}
 						/>
 					))}
 				</div>
@@ -452,6 +502,9 @@ export const BasicTree = forwardRef<HTMLDivElement, BasicTreeProps>(
 			onEditCancel,
 			showEditButton,
 			onEditButtonClick,
+			// Collapse/expand props
+			collapsible = false,
+			onToggleCollapse,
 		}: BasicTreeProps,
 		ref
 	): React.ReactElement => {
@@ -505,6 +558,9 @@ export const BasicTree = forwardRef<HTMLDivElement, BasicTreeProps>(
 						onEditCancel={onEditCancel}
 						showEditButton={showEditButton}
 						onEditButtonClick={onEditButtonClick}
+						// Pass collapse/expand props
+						collapsible={collapsible}
+						onToggleCollapse={onToggleCollapse}
 					/>
 				))}
 			</div>

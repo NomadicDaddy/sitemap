@@ -68,6 +68,49 @@ export function modifyNodeProperties(
 	});
 }
 
+export function toggleNodeExpanded(nodes: TreeNode[], nodeId: string): TreeNode[] {
+	const targets = new Set([nodeId]);
+	return updateTree(nodes, targets, (node) => {
+		const metadata = cloneMetadata(node.metadata);
+		metadata.expanded = metadata.expanded === false ? true : false;
+		return { ...node, metadata };
+	});
+}
+
+export function expandAllNodes(nodes: TreeNode[]): TreeNode[] {
+	function expand(nodeList: TreeNode[]): TreeNode[] {
+		return nodeList.map((node) => {
+			const metadata = cloneMetadata(node.metadata);
+			metadata.expanded = true;
+			const children = node.children ? expand(node.children) : undefined;
+			return { ...node, children, metadata };
+		});
+	}
+	return expand(nodes);
+}
+
+export function collapseAllNodes(nodes: TreeNode[]): TreeNode[] {
+	function collapse(nodeList: TreeNode[]): TreeNode[] {
+		return nodeList.map((node) => {
+			const metadata = cloneMetadata(node.metadata);
+			metadata.expanded = false;
+			const children = node.children ? collapse(node.children) : undefined;
+			return { ...node, children, metadata };
+		});
+	}
+	return collapse(nodes);
+}
+
+export function filterCollapsedNodes(nodes: TreeNode[]): TreeNode[] {
+	return nodes.map((node) => {
+		const isExpanded = node.metadata?.expanded !== false;
+		if (!node.children || !isExpanded) {
+			return { ...node, children: undefined };
+		}
+		return { ...node, children: filterCollapsedNodes(node.children) };
+	});
+}
+
 // ============================================================================
 // Drag & Drop helpers
 // ============================================================================
