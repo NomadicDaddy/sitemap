@@ -250,8 +250,8 @@ const buttonGroupStyles: React.CSSProperties = {
 
 const smallButtonStyles: React.CSSProperties = {
 	...buttonStyles,
-	padding: '4px 8px',
 	fontSize: '11px',
+	padding: '4px 8px',
 };
 
 // ============================================================================
@@ -601,8 +601,8 @@ export function SitemapEditor({
 					{pasteError && (
 						<div
 							style={{
-								fontSize: '12px',
 								color: '#dc2626',
+								fontSize: '12px',
 								marginBottom: '6px',
 								marginTop: '-4px',
 							}}>
@@ -675,7 +675,7 @@ export function SitemapEditor({
 									}>
 									Tree (V)
 								</button>
-								<div style={{ marginLeft: 'auto', display: 'flex', gap: '8px' }}>
+								<div style={{ display: 'flex', gap: '8px', marginLeft: 'auto' }}>
 									<button
 										type="button"
 										onClick={handleExpandAll}
@@ -712,7 +712,7 @@ export function SitemapEditor({
 								<HorizontalNavBar nodes={viewTree} />
 							</div>
 						) : (
-							<div style={{ marginTop: '12px', overflow: 'auto', minHeight: '450px' }}>
+							<div style={{ marginTop: '12px', minHeight: '450px', overflow: 'auto' }}>
 								<D3TreeDiagram
 									nodes={viewTree}
 									width={900}
