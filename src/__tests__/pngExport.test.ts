@@ -193,7 +193,6 @@ describe('pngExport', () => {
 	});
 
 	it('falls back to writing data URL text when ClipboardItem is missing', async () => {
-		// @ts-expect-error remove ClipboardItem
 		global.ClipboardItem = undefined;
 		const mockResult = {
 			dataUrl: 'data:image/png;base64,aGVsbG8=',

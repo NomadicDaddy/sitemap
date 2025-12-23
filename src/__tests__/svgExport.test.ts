@@ -294,7 +294,6 @@ describe('svgExport', () => {
 				value: '',
 			};
 
-			// @ts-expect-error - Jest mock type issue
 			(document.createElement as jest.Mock).mockImplementation((tag: string) => {
 				if (tag === 'textarea') return mockTextArea;
 				return document.createElement(tag);

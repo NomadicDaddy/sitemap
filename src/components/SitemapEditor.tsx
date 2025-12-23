@@ -580,8 +580,12 @@ export function SitemapEditor({
 								onClick={handleCopy}
 								style={{
 									...smallButtonStyles,
-									backgroundColor: copyFeedback ? '#10b981' : buttonStyles.backgroundColor,
-									borderColor: copyFeedback ? '#059669' : buttonStyles.borderColor,
+									backgroundColor: copyFeedback
+										? '#10b981'
+										: buttonStyles.backgroundColor,
+									borderColor: copyFeedback
+										? '#059669'
+										: buttonStyles.borderColor,
 									color: copyFeedback ? '#ffffff' : buttonStyles.color,
 								}}
 								title="Copy to clipboard"
@@ -642,7 +646,9 @@ export function SitemapEditor({
 						role="region"
 						aria-label={previewLabel}
 						aria-live="polite">
-						<label style={{ ...labelStyles, marginBottom: '8px' }}>{previewLabel}</label>
+						<label style={{ ...labelStyles, marginBottom: '8px' }}>
+							{previewLabel}
+						</label>
 
 						{/* Preview controls */}
 						{showPreviewSelector && (
@@ -650,20 +656,26 @@ export function SitemapEditor({
 								<button
 									type="button"
 									onClick={() => setPreviewType('list')}
-									style={previewType === 'list' ? activeButtonStyles : buttonStyles}>
+									style={
+										previewType === 'list' ? activeButtonStyles : buttonStyles
+									}>
 									List
 								</button>
 								<button
 									type="button"
 									onClick={() => setPreviewType('navbar')}
-									style={previewType === 'navbar' ? activeButtonStyles : buttonStyles}>
+									style={
+										previewType === 'navbar' ? activeButtonStyles : buttonStyles
+									}>
 									Nav Bar
 								</button>
 								<button
 									type="button"
 									onClick={() => setPreviewType('d3-horizontal')}
 									style={
-										previewType === 'd3-horizontal' ? activeButtonStyles : buttonStyles
+										previewType === 'd3-horizontal'
+											? activeButtonStyles
+											: buttonStyles
 									}>
 									Tree (H)
 								</button>
@@ -671,7 +683,9 @@ export function SitemapEditor({
 									type="button"
 									onClick={() => setPreviewType('d3-vertical')}
 									style={
-										previewType === 'd3-vertical' ? activeButtonStyles : buttonStyles
+										previewType === 'd3-vertical'
+											? activeButtonStyles
+											: buttonStyles
 									}>
 									Tree (V)
 								</button>
@@ -712,7 +726,8 @@ export function SitemapEditor({
 								<HorizontalNavBar nodes={viewTree} />
 							</div>
 						) : (
-							<div style={{ marginTop: '12px', minHeight: '450px', overflow: 'auto' }}>
+							<div
+								style={{ marginTop: '12px', minHeight: '450px', overflow: 'auto' }}>
 								<D3TreeDiagram
 									nodes={viewTree}
 									width={900}

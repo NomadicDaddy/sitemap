@@ -15,12 +15,9 @@ import { type ParseError } from '../types/TreeNode';
 // ============================================================================
 
 describe('SitemapEditor', () => {
-	// Use debounceDelay={0} in tests that expect instant updates for backward compatibility
-	const defaultTestProps = { debounceDelay: 0 };
-
 	describe('rendering', () => {
 		it('should render textarea and preview sections', () => {
-			render(<SitemapEditor {...defaultTestProps} />);
+			render(<SitemapEditor />);
 
 			expect(screen.getByRole('textbox')).toBeInTheDocument();
 			expect(screen.getByRole('region', { name: /preview/i })).toBeInTheDocument();
@@ -37,21 +34,19 @@ describe('SitemapEditor', () => {
 
 		it('should display placeholder text when empty', () => {
 			const placeholder = 'Enter your sitemap...';
-			render(<SitemapEditor {...defaultTestProps} placeholder={placeholder} />);
+			render(<SitemapEditor placeholder={placeholder} />);
 
 			expect(screen.getByPlaceholderText(placeholder)).toBeInTheDocument();
 		});
 
 		it('should apply custom className', () => {
-			const { container } = render(
-				<SitemapEditor {...defaultTestProps} className="my-editor" />
-			);
+			const { container } = render(<SitemapEditor className="my-editor" />);
 
 			expect(container.querySelector('.sitemap-editor')).toHaveClass('my-editor');
 		});
 
 		it('should set correct number of rows on textarea', () => {
-			render(<SitemapEditor {...defaultTestProps} rows={15} />);
+			render(<SitemapEditor rows={15} />);
 
 			const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
 			expect(textarea.getAttribute('rows')).toBe('15');
@@ -60,7 +55,7 @@ describe('SitemapEditor', () => {
 
 	describe('real-time preview', () => {
 		it('should update preview instantly when typing', async () => {
-			const { container } = render(<SitemapEditor {...defaultTestProps} />);
+			const { container } = render(<SitemapEditor />);
 
 			const textarea = screen.getByRole('textbox');
 			fireEvent.change(textarea, { target: { value: 'Home' } });
@@ -71,7 +66,7 @@ describe('SitemapEditor', () => {
 		});
 
 		it('should parse tree structure and display in preview', async () => {
-			const { container } = render(<SitemapEditor {...defaultTestProps} />);
+			const { container } = render(<SitemapEditor />);
 
 			const textarea = screen.getByRole('textbox');
 			fireEvent.change(textarea, {
@@ -87,7 +82,7 @@ describe('SitemapEditor', () => {
 		});
 
 		it('should update preview on every keystroke', async () => {
-			const { container } = render(<SitemapEditor {...defaultTestProps} />);
+			const { container } = render(<SitemapEditor />);
 
 			const textarea = screen.getByRole('textbox');
 
@@ -103,7 +98,7 @@ describe('SitemapEditor', () => {
 		});
 
 		it('should display empty state message when no nodes', async () => {
-			render(<SitemapEditor {...defaultTestProps} />);
+			render(<SitemapEditor />);
 
 			await waitFor(() => {
 				expect(screen.getByText('No nodes to display')).toBeInTheDocument();
@@ -113,7 +108,7 @@ describe('SitemapEditor', () => {
 
 	describe('error display', () => {
 		it('should display parsing errors when showErrors is true', async () => {
-			const { container } = render(<SitemapEditor {...defaultTestProps} showErrors />);
+			const { container } = render(<SitemapEditor showErrors />);
 
 			const textarea = screen.getByRole('textbox');
 			// Invalid depth jump should cause an error
@@ -127,9 +122,7 @@ describe('SitemapEditor', () => {
 		});
 
 		it('should hide errors when showErrors is false', async () => {
-			const { container } = render(
-				<SitemapEditor {...defaultTestProps} showErrors={false} />
-			);
+			const { container } = render(<SitemapEditor showErrors={false} />);
 
 			const textarea = screen.getByRole('textbox');
 			// Invalid depth jump
@@ -141,7 +134,7 @@ describe('SitemapEditor', () => {
 		});
 
 		it('should clear errors when input becomes valid', async () => {
-			const { container } = render(<SitemapEditor {...defaultTestProps} showErrors />);
+			const { container } = render(<SitemapEditor showErrors />);
 
 			const textarea = screen.getByRole('textbox');
 
@@ -167,7 +160,7 @@ describe('SitemapEditor', () => {
 
 	describe('statistics display', () => {
 		it('should show stats when showStats is true', () => {
-			const { container } = render(<SitemapEditor {...defaultTestProps} showStats />);
+			const { container } = render(<SitemapEditor showStats />);
 
 			const textarea = screen.getByRole('textbox');
 			fireEvent.change(textarea, { target: { value: 'Root\n├── Child 1\n└── Child 2' } });
@@ -180,14 +173,14 @@ describe('SitemapEditor', () => {
 		});
 
 		it('should hide stats when showStats is false', () => {
-			render(<SitemapEditor {...defaultTestProps} showStats={false} initialValue="Root" />);
+			render(<SitemapEditor showStats={false} initialValue="Root" />);
 
 			expect(screen.queryByText(/Nodes:/)).not.toBeInTheDocument();
 			expect(screen.queryByText(/Max Depth:/)).not.toBeInTheDocument();
 		});
 
 		it('should update stats in real-time', () => {
-			const { container } = render(<SitemapEditor {...defaultTestProps} showStats />);
+			const { container } = render(<SitemapEditor showStats />);
 
 			const textarea = screen.getByRole('textbox');
 			const statsSection = container.querySelector('.sitemap-editor-stats');
@@ -203,13 +196,13 @@ describe('SitemapEditor', () => {
 
 	describe('preview visibility', () => {
 		it('should show preview by default', () => {
-			render(<SitemapEditor {...defaultTestProps} />);
+			render(<SitemapEditor />);
 
 			expect(screen.getByRole('region', { name: /preview/i })).toBeInTheDocument();
 		});
 
 		it('should hide preview when showPreview is false', () => {
-			render(<SitemapEditor {...defaultTestProps} showPreview={false} />);
+			render(<SitemapEditor showPreview={false} />);
 
 			expect(screen.queryByRole('region', { name: /preview/i })).not.toBeInTheDocument();
 		});
@@ -217,14 +210,14 @@ describe('SitemapEditor', () => {
 
 	describe('disabled state', () => {
 		it('should disable textarea when disabled prop is true', () => {
-			render(<SitemapEditor {...defaultTestProps} disabled />);
+			render(<SitemapEditor disabled />);
 
 			const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
 			expect(textarea).toBeDisabled();
 		});
 
 		it('should not be disabled by default', () => {
-			render(<SitemapEditor {...defaultTestProps} />);
+			render(<SitemapEditor />);
 
 			const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
 			expect(textarea).not.toBeDisabled();
@@ -234,7 +227,7 @@ describe('SitemapEditor', () => {
 	describe('callbacks', () => {
 		it('should call onTreeChange when tree changes', async () => {
 			const handleTreeChange = jest.fn();
-			render(<SitemapEditor {...defaultTestProps} onTreeChange={handleTreeChange} />);
+			render(<SitemapEditor onTreeChange={handleTreeChange} />);
 
 			const textarea = screen.getByRole('textbox');
 			fireEvent.change(textarea, { target: { value: 'Root' } });
@@ -251,7 +244,7 @@ describe('SitemapEditor', () => {
 
 		it('should call onErrorsChange when errors change', async () => {
 			const handleErrorsChange = jest.fn();
-			render(<SitemapEditor {...defaultTestProps} onErrorsChange={handleErrorsChange} />);
+			render(<SitemapEditor onErrorsChange={handleErrorsChange} />);
 
 			const textarea = screen.getByRole('textbox');
 			fireEvent.change(textarea, { target: { value: '├── Orphaned' } });
@@ -263,7 +256,7 @@ describe('SitemapEditor', () => {
 
 		it('should call onInputChange when input changes', () => {
 			const handleInputChange = jest.fn();
-			render(<SitemapEditor {...defaultTestProps} onInputChange={handleInputChange} />);
+			render(<SitemapEditor onInputChange={handleInputChange} />);
 
 			const textarea = screen.getByRole('textbox');
 			fireEvent.change(textarea, { target: { value: 'New Value' } });
@@ -276,11 +269,7 @@ describe('SitemapEditor', () => {
 		it('should pass treeProps to BasicTree', () => {
 			const handleNodeClick = jest.fn();
 			const { container } = render(
-				<SitemapEditor
-					{...defaultTestProps}
-					initialValue="Root"
-					treeProps={{ onNodeClick: handleNodeClick }}
-				/>
+				<SitemapEditor initialValue="Root" treeProps={{ onNodeClick: handleNodeClick }} />
 			);
 
 			// Click on the tree node label in the preview
@@ -290,9 +279,7 @@ describe('SitemapEditor', () => {
 		});
 
 		it('should apply custom indentSize from treeProps', () => {
-			const { container } = render(
-				<SitemapEditor {...defaultTestProps} treeProps={{ indentSize: 40 }} />
-			);
+			const { container } = render(<SitemapEditor treeProps={{ indentSize: 40 }} />);
 
 			const textarea = screen.getByRole('textbox');
 			fireEvent.change(textarea, { target: { value: 'Root\n├── Child' } });
@@ -301,6 +288,22 @@ describe('SitemapEditor', () => {
 				'[data-node-id="node-2"] > .tree-node-label'
 			) as HTMLElement;
 			expect(childNode.style.paddingLeft).toBe('52px'); // 1 * 40 + 12
+		});
+	});
+
+	describe('parser options', () => {
+		it('should pass parser options to the hook', () => {
+			const { container } = render(<SitemapEditor parserOptions={{ indentSize: 2 }} />);
+
+			const textarea = screen.getByRole('textbox');
+			// 2-space indent should work with custom parser options
+			fireEvent.change(textarea, { target: { value: 'Root\n  Child' } });
+
+			// Child should be parsed as depth 1 - check it exists in preview
+			const nodeTexts = container.querySelectorAll('.tree-node-text');
+			const labels = Array.from(nodeTexts).map((el) => el.textContent);
+			expect(labels).toContain('Root');
+			expect(labels).toContain('Child');
 		});
 	});
 
@@ -314,9 +317,7 @@ describe('SitemapEditor', () => {
 				</div>
 			);
 
-			render(
-				<SitemapEditor {...defaultTestProps} showErrors renderErrors={customRenderErrors} />
-			);
+			render(<SitemapEditor showErrors renderErrors={customRenderErrors} />);
 
 			const textarea = screen.getByRole('textbox');
 			// Use input that causes an actual error
@@ -332,9 +333,7 @@ describe('SitemapEditor', () => {
 				</div>
 			);
 
-			render(
-				<SitemapEditor {...defaultTestProps} showStats renderStats={customRenderStats} />
-			);
+			render(<SitemapEditor showStats renderStats={customRenderStats} />);
 
 			const textarea = screen.getByRole('textbox');
 			fireEvent.change(textarea, { target: { value: 'Root\n├── Child' } });
@@ -358,7 +357,7 @@ describe('SitemapEditor', () => {
 		});
 
 		it('should set aria-invalid when there are errors', () => {
-			render(<SitemapEditor {...defaultTestProps} />);
+			render(<SitemapEditor />);
 
 			const textarea = screen.getByRole('textbox');
 			// Input that causes actual errors (depth jump)
@@ -381,28 +380,9 @@ describe('SitemapEditor', () => {
 		});
 	});
 
-	describe('parser options', () => {
-		it('should pass parser options to the hook', () => {
-			const { container } = render(
-				<SitemapEditor {...defaultTestProps} parserOptions={{ indentSize: 2 }} />
-			);
-
-			const textarea = screen.getByRole('textbox');
-			// 2-space indent should work with custom parser options
-			fireEvent.change(textarea, { target: { value: 'Root\n  Child' } });
-
-			// Child should be parsed as depth 1 - check it exists in preview
-			const nodeTexts = container.querySelectorAll('.tree-node-text');
-			const labels = Array.from(nodeTexts).map((el) => el.textContent);
-			expect(labels).toContain('Root');
-			expect(labels).toContain('Child');
-		});
-	});
-
 	describe('complex interactions', () => {
 		it('should handle rapid typing', async () => {
-			// Use debounceDelay={0} to get instant parsing for this test
-			const { container } = render(<SitemapEditor {...defaultTestProps} />);
+			const { container } = render(<SitemapEditor />);
 
 			const textarea = screen.getByRole('textbox');
 			const values = [
@@ -490,74 +470,6 @@ describe('SitemapEditor', () => {
 			render(<SitemapEditor previewLabel="Visualization" />);
 
 			expect(screen.getByText('Visualization')).toBeInTheDocument();
-		});
-	});
-
-	describe('debouncing', () => {
-		it('should debounce parsing with default 300ms delay', async () => {
-			// With default 300ms debounce, the tree should not update immediately
-			const { container } = render(<SitemapEditor />);
-
-			const textarea = screen.getByRole('textbox');
-			fireEvent.change(textarea, { target: { value: 'Home' } });
-
-			// Immediately after change, preview should still be empty (debouncing)
-			const nodeTexts = container.querySelectorAll('.tree-node-text');
-			expect(nodeTexts.length).toBe(0);
-
-			// Wait for debounce to complete (300ms default + buffer)
-			await waitFor(
-				() => {
-					const updatedNodeTexts = container.querySelectorAll('.tree-node-text');
-					expect(updatedNodeTexts.length).toBeGreaterThan(0);
-					expect(updatedNodeTexts[0]).toHaveTextContent('Home');
-				},
-				{ timeout: 500 }
-			);
-		});
-
-		it('should parse immediately when debounceDelay is 0', () => {
-			const { container } = render(<SitemapEditor debounceDelay={0} />);
-
-			const textarea = screen.getByRole('textbox');
-			fireEvent.change(textarea, { target: { value: 'Instant' } });
-
-			// Immediately after change, preview should be updated (no debouncing)
-			const nodeTexts = container.querySelectorAll('.tree-node-text');
-			expect(nodeTexts.length).toBe(1);
-			expect(nodeTexts[0]).toHaveTextContent('Instant');
-		});
-
-		it('should respect custom debounceDelay prop', async () => {
-			// Use a custom 100ms debounce delay
-			const { container } = render(<SitemapEditor debounceDelay={100} />);
-
-			const textarea = screen.getByRole('textbox');
-			fireEvent.change(textarea, { target: { value: 'Custom' } });
-
-			// Immediately after change, preview should still be empty
-			const nodeTexts = container.querySelectorAll('.tree-node-text');
-			expect(nodeTexts.length).toBe(0);
-
-			// Wait for the custom debounce to complete
-			await waitFor(
-				() => {
-					const updatedNodeTexts = container.querySelectorAll('.tree-node-text');
-					expect(updatedNodeTexts.length).toBeGreaterThan(0);
-					expect(updatedNodeTexts[0]).toHaveTextContent('Custom');
-				},
-				{ timeout: 200 }
-			);
-		});
-
-		it('should update textarea immediately while debouncing parsing', () => {
-			render(<SitemapEditor />);
-
-			const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
-			fireEvent.change(textarea, { target: { value: 'Typing...' } });
-
-			// Textarea should update immediately, even if parsing is debounced
-			expect(textarea.value).toBe('Typing...');
 		});
 	});
 });
