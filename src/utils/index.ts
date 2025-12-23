@@ -59,3 +59,26 @@ export {
 	moveNode,
 	isDescendant,
 } from './treeOperations';
+
+// Tree flattening utilities for virtualization
+export { flattenTree, countVisibleNodes, type FlattenedNode } from './treeFlattening';
+
+// Tree search utilities
+export {
+	searchTree,
+	filterTreeByMatches,
+	markMatchingNodes,
+	getHighlightSegments,
+	expandAncestors,
+	countVisibleMatches,
+	getMatchingNodesInOrder,
+	getNextMatchId,
+	getPreviousMatchId,
+	DEFAULT_SEARCH_OPTIONS,
+	DEFAULT_HIGHLIGHT_STYLE,
+	type SearchOptions,
+	type SearchField,
+	type SearchResult,
+	type MatchDetail,
+	type HighlightConfig,
+} from './treeSearch';

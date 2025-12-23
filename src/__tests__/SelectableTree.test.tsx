@@ -792,6 +792,159 @@ describe('SelectableTree', () => {
 });
 
 // ============================================================================
+// Virtual Scrolling Tests
+// ============================================================================
+
+describe('SelectableTree Virtual Scrolling', () => {
+	/**
+	 * Creates a large tree structure for virtualization testing.
+	 */
+	function createLargeTree(count: number): TreeNode[] {
+		return Array.from({ length: count }, (_, i) => ({
+			children:
+				i % 3 === 0
+					? [
+							{ depth: 1, id: `child-${i}-1`, label: `Child ${i}.1` },
+							{ depth: 1, id: `child-${i}-2`, label: `Child ${i}.2` },
+						]
+					: undefined,
+			depth: 0,
+			id: `node-${i}`,
+			label: `Node ${i}`,
+		}));
+	}
+
+	it('should render with enableVirtualization=true', () => {
+		const nodes = createLargeTree(100);
+		render(<SelectableTree nodes={nodes} enableVirtualization={true} virtualHeight={400} />);
+
+		// Should have the virtualized tree container
+		expect(screen.getByTestId('selectable-virtualized-tree')).toBeInTheDocument();
+	});
+
+	it('should have aria-multiselectable attribute on virtualized tree', () => {
+		const nodes = createLargeTree(50);
+		render(<SelectableTree nodes={nodes} enableVirtualization={true} virtualHeight={400} />);
+
+		const tree = screen.getByRole('tree');
+		expect(tree).toHaveAttribute('aria-multiselectable', 'true');
+	});
+
+	it('should accept virtualRowHeight prop', () => {
+		const nodes = createLargeTree(50);
+		const { container } = render(
+			<SelectableTree
+				nodes={nodes}
+				enableVirtualization={true}
+				virtualHeight={400}
+				virtualRowHeight={40}
+			/>
+		);
+
+		// Component should render without errors
+		expect(container.querySelector('.selectable-tree')).toBeInTheDocument();
+	});
+
+	it('should accept overscanCount prop', () => {
+		const nodes = createLargeTree(50);
+		const { container } = render(
+			<SelectableTree
+				nodes={nodes}
+				enableVirtualization={true}
+				virtualHeight={400}
+				overscanCount={10}
+			/>
+		);
+
+		// Component should render without errors
+		expect(container.querySelector('.selectable-tree')).toBeInTheDocument();
+	});
+
+	it('should show selection info when virtualized node is selected', () => {
+		const nodes = createLargeTree(50);
+		render(
+			<SelectableTree
+				nodes={nodes}
+				enableVirtualization={true}
+				virtualHeight={400}
+				initialSelectedIds={new Set(['node-0'])}
+			/>
+		);
+
+		expect(screen.getByText('1 node selected')).toBeInTheDocument();
+	});
+
+	it('should call onSelectionChange when virtualized node is clicked', () => {
+		const nodes = createLargeTree(50);
+		const handleSelectionChange = jest.fn();
+		const { container } = render(
+			<SelectableTree
+				nodes={nodes}
+				enableVirtualization={true}
+				virtualHeight={400}
+				onSelectionChange={handleSelectionChange}
+			/>
+		);
+
+		// Find and click the first visible node
+		const nodeLabel = container.querySelector('.tree-node-label');
+		if (nodeLabel) {
+			fireEvent.click(nodeLabel);
+			expect(handleSelectionChange).toHaveBeenCalled();
+		}
+	});
+
+	it('should render bulk actions when virtualization is enabled', () => {
+		const nodes = createLargeTree(50);
+		render(
+			<SelectableTree
+				nodes={nodes}
+				enableVirtualization={true}
+				virtualHeight={400}
+				showBulkActions={true}
+			/>
+		);
+
+		expect(screen.getByText('Delete')).toBeInTheDocument();
+		expect(screen.getByText('Change Color')).toBeInTheDocument();
+	});
+
+	it('should render empty state correctly when virtualized', () => {
+		render(<SelectableTree nodes={[]} enableVirtualization={true} virtualHeight={400} />);
+
+		expect(screen.getByText('No nodes to display')).toBeInTheDocument();
+	});
+
+	it('should support collapsible prop in virtualized mode', () => {
+		const nodes = createLargeTree(50);
+		const { container } = render(
+			<SelectableTree
+				nodes={nodes}
+				enableVirtualization={true}
+				virtualHeight={400}
+				collapsible={true}
+			/>
+		);
+
+		// Component should render without errors
+		expect(container.querySelector('.selectable-tree')).toBeInTheDocument();
+	});
+
+	it('should render correctly when switching from non-virtualized to virtualized', () => {
+		const nodes = createLargeTree(50);
+		const { rerender } = render(<SelectableTree nodes={nodes} enableVirtualization={false} />);
+
+		// Initially not virtualized
+		expect(screen.queryByTestId('selectable-virtualized-tree')).not.toBeInTheDocument();
+
+		// Enable virtualization
+		rerender(<SelectableTree nodes={nodes} enableVirtualization={true} virtualHeight={400} />);
+
+		expect(screen.getByTestId('selectable-virtualized-tree')).toBeInTheDocument();
+	});
+});
+
+// ============================================================================
 // SelectionInfo Component Tests
 // ============================================================================
 

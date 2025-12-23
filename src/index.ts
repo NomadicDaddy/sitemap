@@ -67,12 +67,37 @@ export {
 
 export { SitemapEditor, type SitemapEditorProps } from './components/SitemapEditor';
 
+export {
+	FlowchartDiagram,
+	type FlowchartDiagramProps,
+	type FlowchartDirection,
+	type FlowchartNodeStyle,
+} from './components/FlowchartDiagram';
+
 // React Hooks
 export {
 	useTreeParser,
 	type UseTreeParserOptions,
 	type UseTreeParserResult,
 } from './hooks/useTreeParser';
+
+export {
+	useTreeKeyboardNavigation,
+	type KeyboardNavigationOptions,
+	type KeyboardNavigationState,
+	type KeyboardNavigationActions,
+	type UseTreeKeyboardNavigationResult,
+} from './hooks/useTreeKeyboardNavigation';
+
+// Keyboard Shortcuts Help Component
+export {
+	KeyboardShortcutsHelp,
+	KeyboardShortcutsHelpButton,
+	DEFAULT_TREE_SHORTCUTS,
+	type KeyboardShortcut,
+	type KeyboardShortcutsHelpProps,
+	type KeyboardShortcutsHelpButtonProps,
+} from './components/KeyboardShortcutsHelp';
 
 // Types
 export type {
@@ -120,3 +145,60 @@ export {
 	validateTreeStructure,
 	validateInputText,
 } from './utils/parserErrors';
+
+// Comparison & Diff Components
+export { DiffViewer, type DiffViewerProps } from './components/DiffViewer';
+export { VersionManager, type VersionManagerProps } from './components/VersionManager';
+export {
+	SitemapEditorWithComparison,
+	type SitemapEditorWithComparisonProps,
+} from './components/SitemapEditorWithComparison';
+
+// Comparison Hook
+export {
+	useTreeComparison,
+	type UseTreeComparisonOptions,
+	type UseTreeComparisonResult,
+} from './hooks/useTreeComparison';
+
+// Tree Comparison Utilities
+export {
+	compareTrees,
+	flattenDifferences,
+	getChangedNodes,
+	describeDifference,
+	areTreesIdentical,
+	hashNode,
+	hashTree,
+} from './utils/treeComparison';
+
+// Version Storage Utilities
+export {
+	getVersions,
+	getVersion,
+	saveVersion,
+	updateVersion,
+	deleteVersion,
+	clearAllVersions,
+	exportVersions,
+	importVersions,
+	getLatestVersion,
+	getLatestManualSave,
+	createCurrentVersion,
+	isStorageAvailable,
+	getStorageInfo,
+	type VersionStorageOptions,
+	type VersionExport,
+} from './utils/versionStorage';
+
+// Comparison Types
+export type {
+	DiffType,
+	PropertyChange,
+	NodeDifference,
+	ComparisonResult,
+	ComparisonSummary,
+	SitemapVersion,
+	ComparisonOptions,
+	ComparisonState,
+} from './types/TreeNode';

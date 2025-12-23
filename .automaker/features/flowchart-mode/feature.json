@@ -6,7 +6,8 @@
 	"description": "Create an alternative visualization mode using React Flow or similar library to render nodes as flowchart-style boxes with connecting edges. Support for custom positioning.",
 	"id": "flowchart-mode",
 	"priority": 3,
-	"status": "backlog",
+	"startedAt": "2025-12-23T00:32:32.891Z",
+	"status": "completed",
 	"title": "Flowchart Layout Mode",
-	"updatedAt": "2025-12-20T18:16:16.174Z"
+	"updatedAt": "2025-12-23T00:44:19.853Z"
 }

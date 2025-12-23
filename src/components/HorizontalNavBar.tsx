@@ -196,9 +196,9 @@ function DropdownItem({ node, onNodeClick }: DropdownItemProps): React.ReactElem
 				style={{
 					...dropdownItemStyles,
 					...(isHovered ? dropdownItemHoverStyles : {}),
+					alignItems: 'center',
 					display: 'flex',
 					justifyContent: 'space-between',
-					alignItems: 'center',
 				}}
 				onClick={handleClick}>
 				<span>{node.label}</span>

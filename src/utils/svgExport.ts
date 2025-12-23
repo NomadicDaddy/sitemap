@@ -113,7 +113,7 @@ function getComputedStyles(element: Element, includeStyles: boolean): string {
 	}
 
 	// Recursively get styles for children
-	for (const child of element.children) {
+	for (const child of Array.from(element.children)) {
 		styles.push(getComputedStyles(child, includeStyles));
 	}
 

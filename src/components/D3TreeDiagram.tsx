@@ -20,7 +20,16 @@
  * ```
  */
 import * as d3 from 'd3';
-import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react';
+import React, {
+	forwardRef,
+	memo,
+	useCallback,
+	useEffect,
+	useImperativeHandle,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
 
 import { type TreeNode } from '../types/TreeNode';
 
@@ -100,6 +109,15 @@ export interface D3TreeDiagramProps {
 
 	/** Margin around the tree diagram */
 	margin?: { top: number; right: number; bottom: number; left: number };
+
+	/** Minimum zoom level at which to show text labels (default: 0.5) */
+	labelVisibilityThreshold?: number;
+
+	/** Maximum label width before clipping in pixels (default: 150) */
+	maxLabelWidth?: number;
+
+	/** Enable GPU-accelerated CSS transforms for smoother animations (default: true) */
+	useGPUAcceleration?: boolean;
 }
 
 /**
@@ -125,6 +143,53 @@ const DEFAULT_NODE_COLOR = '#4A90A4';
 const DEFAULT_TEXT_COLOR = '#333';
 const DEFAULT_NODE_SPACING = 180;
 const DEFAULT_MARGIN = { bottom: 40, left: 120, right: 120, top: 40 };
+const DEFAULT_LABEL_VISIBILITY_THRESHOLD = 0.5;
+const DEFAULT_MAX_LABEL_WIDTH = 150;
+const DEFAULT_USE_GPU_ACCELERATION = true;
+
+// ============================================================================
+// CSS Styles for GPU-accelerated animations
+// ============================================================================
+
+/**
+ * Injects CSS styles for GPU-accelerated transforms and smooth animations.
+ * Uses will-change and transform for hardware acceleration.
+ */
+function injectGPUStyles(): void {
+	const styleId = 'd3-tree-gpu-styles';
+	if (document.getElementById(styleId)) return;
+
+	const style = document.createElement('style');
+	style.id = styleId;
+	style.textContent = `
+		.d3-tree-node {
+			will-change: transform, opacity;
+		}
+		.d3-tree-node circle {
+			will-change: r, transform;
+			transition: r 150ms ease-out;
+		}
+		.d3-tree-node text {
+			will-change: opacity;
+			transition: opacity 200ms ease-out;
+		}
+		.d3-tree-node text.label-hidden {
+			opacity: 0;
+			pointer-events: none;
+		}
+		.d3-tree-node text.label-visible {
+			opacity: 1;
+		}
+		.d3-tree-node:hover circle {
+			transform: scale(1.3);
+			transform-origin: center;
+		}
+		.d3-tree-link {
+			will-change: opacity;
+		}
+	`;
+	document.head.appendChild(style);
+}
 
 // ============================================================================
 // Utility Functions
@@ -340,6 +405,9 @@ function getDepthFontWeight(depth: number): number {
  * - Customizable styling
  * - Accessible with ARIA labels
  *
+ * Performance optimized with React.memo() and split useEffect hooks
+ * to minimize unnecessary re-renders.
+ *
  * @example
  * ```tsx
  * // Basic usage
@@ -363,7 +431,7 @@ function getDepthFontWeight(depth: number): number {
  * />
  * ```
  */
-export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
+const D3TreeDiagramInner = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 	(
 		{
 			nodes,
@@ -376,7 +444,9 @@ export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 			animationDuration = DEFAULT_ANIMATION_DURATION,
 			nodeSize = DEFAULT_NODE_SIZE,
 			linkColor = DEFAULT_LINK_COLOR,
-			nodeColor = DEFAULT_NODE_COLOR,
+			// Note: nodeColor prop is kept for API compatibility but depth-based
+			// colors are used instead. To use custom nodeColor, override via metadata.
+			nodeColor: _nodeColor = DEFAULT_NODE_COLOR,
 			textColor = DEFAULT_TEXT_COLOR,
 			nodeSpacing = DEFAULT_NODE_SPACING,
 			enableZoom = true,
@@ -384,20 +454,58 @@ export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 			onNodeHover,
 			renderLabel,
 			margin = DEFAULT_MARGIN,
+			labelVisibilityThreshold = DEFAULT_LABEL_VISIBILITY_THRESHOLD,
+			maxLabelWidth = DEFAULT_MAX_LABEL_WIDTH,
+			useGPUAcceleration = DEFAULT_USE_GPU_ACCELERATION,
 		}: D3TreeDiagramProps,
 		ref
 	): React.ReactElement => {
 		const svgRef = useRef<SVGSVGElement>(null);
 		const gRef = useRef<SVGGElement | null>(null);
 
+		// Track current zoom scale for lazy label rendering
+		const [currentZoomScale, setCurrentZoomScale] = useState<number>(1);
+		const zoomBehaviorRef = useRef<d3.ZoomBehavior<SVGSVGElement, unknown> | null>(null);
+
 		// Expose the SVG element to parent components via ref
 		useImperativeHandle(ref, () => svgRef.current!, []);
 
-		// Track hovered state internally for potential future use
+		// ====================================================================
+		// Memoized computed values to prevent recalculation on every render
+		// ====================================================================
 
-		// Calculate inner dimensions
-		const innerWidth = width - margin.left - margin.right;
-		const innerHeight = height - margin.top - margin.bottom;
+		/**
+		 * Inner dimensions after accounting for margins.
+		 */
+		const dimensions = useMemo(
+			() => ({
+				innerHeight: height - margin.top - margin.bottom,
+				innerWidth: width - margin.left - margin.right,
+			}),
+			[width, height, margin.left, margin.right, margin.top, margin.bottom]
+		);
+
+		/**
+		 * Memoized D3 hierarchy from nodes array.
+		 * Only recalculates when nodes change.
+		 */
+		const hierarchyRoot = useMemo(() => {
+			if (!nodes || nodes.length === 0) return null;
+			return convertToD3Hierarchy(nodes);
+		}, [nodes]);
+
+		/**
+		 * Memoized link path generator based on layout and style.
+		 * Only recalculates when layout options change.
+		 */
+		const linkPathGenerator = useMemo(
+			() => getLinkPathGenerator(linkStyle, layout, orientation),
+			[linkStyle, layout, orientation]
+		);
+
+		// ====================================================================
+		// Memoized callback functions to prevent unnecessary effect triggers
+		// ====================================================================
 
 		/**
 		 * Handles node click events.
@@ -436,9 +544,23 @@ export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 			[renderLabel]
 		);
 
-		/**
-		 * Main effect for rendering the D3 tree diagram.
-		 */
+		// ====================================================================
+		// Effect 0: Inject/remove GPU-accelerated CSS styles
+		// ====================================================================
+		useEffect(() => {
+			if (useGPUAcceleration) {
+				injectGPUStyles();
+			}
+			return () => {
+				// Only remove if no other instances are using the styles
+				// In practice, we keep them around for better performance
+			};
+		}, [useGPUAcceleration]);
+
+		// ====================================================================
+		// Effect 1: Initialize SVG container and accessibility elements
+		// Only depends on basic container setup
+		// ====================================================================
 		useEffect(() => {
 			if (!svgRef.current) return;
 
@@ -451,8 +573,8 @@ export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 			svg.append('title').text('Tree Diagram');
 			svg.append('desc').text('A hierarchical tree diagram');
 
-			// Handle empty nodes
-			if (!nodes || nodes.length === 0) {
+			// Handle empty nodes - render empty state message
+			if (!hierarchyRoot) {
 				svg.append('text')
 					.attr('x', width / 2)
 					.attr('y', height / 2)
@@ -463,9 +585,20 @@ export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 				return;
 			}
 
+			// Add defs for clipPath (SVG text clipping)
+			const defs = svg.append('defs');
+
+			// Create clipPath for text labels to prevent overflow
+			defs.append('clipPath')
+				.attr('id', 'label-clip')
+				.append('rect')
+				.attr('x', 0)
+				.attr('y', -10)
+				.attr('width', maxLabelWidth)
+				.attr('height', 20);
+
 			// Create container group with margins
 			const g = svg.append('g').attr('class', 'd3-tree-container');
-
 			gRef.current = g.node();
 
 			// Set initial transform based on layout
@@ -474,28 +607,89 @@ export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 			} else {
 				g.attr('transform', `translate(${margin.left},${margin.top})`);
 			}
+		}, [hierarchyRoot, width, height, layout, margin.left, margin.top, maxLabelWidth]);
 
-			// Setup zoom behavior
-			if (enableZoom) {
-				const zoom = d3
-					.zoom<SVGSVGElement, unknown>()
-					.scaleExtent([0.1, 4])
-					.on('zoom', (event) => {
+		// ====================================================================
+		// Effect 2: Setup zoom behavior with scale tracking for lazy labels
+		// Only depends on zoom-related props
+		// ====================================================================
+		useEffect(() => {
+			if (!svgRef.current || !gRef.current || !enableZoom || !hierarchyRoot) return undefined;
+
+			const svg = d3.select(svgRef.current);
+			const g = d3.select(gRef.current);
+
+			// Throttle function to limit zoom scale updates for performance
+			let lastUpdateTime = 0;
+			const throttleMs = 16; // ~60fps
+
+			const zoom = d3
+				.zoom<SVGSVGElement, unknown>()
+				.scaleExtent([0.1, 4])
+				.on('zoom', (event) => {
+					// Use CSS transform for GPU acceleration when available
+					if (useGPUAcceleration) {
+						const { x, y, k } = event.transform;
+						g.style('transform', `translate(${x}px, ${y}px) scale(${k})`);
+						g.style('transform-origin', '0 0');
+					} else {
 						g.attr('transform', event.transform);
-					});
+					}
 
-				svg.call(zoom);
+					// Throttle zoom scale state updates to reduce React re-renders
+					const now = Date.now();
+					if (now - lastUpdateTime > throttleMs) {
+						lastUpdateTime = now;
+						const newScale = event.transform.k;
+						setCurrentZoomScale(newScale);
 
-				// Set initial transform
-				if (layout === 'radial') {
-					svg.call(zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2));
-				} else {
-					svg.call(zoom.transform, d3.zoomIdentity.translate(margin.left, margin.top));
-				}
+						// Update label visibility based on zoom level
+						const labelsVisible = newScale >= labelVisibilityThreshold;
+						g.selectAll('.d3-tree-node text')
+							.classed('label-visible', labelsVisible)
+							.classed('label-hidden', !labelsVisible);
+					}
+				});
+
+			zoomBehaviorRef.current = zoom;
+			svg.call(zoom);
+
+			// Set initial transform
+			if (layout === 'radial') {
+				svg.call(zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2));
+			} else {
+				svg.call(zoom.transform, d3.zoomIdentity.translate(margin.left, margin.top));
 			}
 
-			// Convert to D3 hierarchy
-			const root = convertToD3Hierarchy(nodes);
+			// Cleanup: remove zoom behavior on unmount
+			return () => {
+				svg.on('.zoom', null);
+				zoomBehaviorRef.current = null;
+			};
+		}, [
+			enableZoom,
+			layout,
+			width,
+			height,
+			margin.left,
+			margin.top,
+			hierarchyRoot,
+			labelVisibilityThreshold,
+			useGPUAcceleration,
+		]);
+
+		// ====================================================================
+		// Effect 3: Render tree layout, links, and nodes
+		// Core rendering logic with optimized dependencies
+		// ====================================================================
+		useEffect(() => {
+			if (!svgRef.current || !gRef.current || !hierarchyRoot) return;
+
+			const g = d3.select(gRef.current);
+			const { innerWidth, innerHeight } = dimensions;
+
+			// Clear previous tree content but keep container
+			g.selectAll('.d3-tree-links, .d3-tree-nodes').remove();
 
 			// Create layout
 			let treeLayout: d3.TreeLayout<TreeNode> | d3.ClusterLayout<TreeNode>;
@@ -519,7 +713,7 @@ export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 			treeLayout.separation((a, b) => (a.parent === b.parent ? 1 : 1.5));
 
 			// Apply layout
-			const layoutRoot = treeLayout(root) as D3HierarchyNode;
+			const layoutRoot = treeLayout(hierarchyRoot) as D3HierarchyNode;
 
 			// Get all nodes and links (excluding virtual root if present)
 			let allNodes = layoutRoot.descendants();
@@ -534,9 +728,6 @@ export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 						d.target.data.id !== '__virtual_root__'
 				);
 			}
-
-			// Get link path generator
-			const linkPathGenerator = getLinkPathGenerator(linkStyle, layout, orientation);
 
 			// Create links group
 			const linksGroup = g.append('g').attr('class', 'd3-tree-links');
@@ -606,9 +797,16 @@ export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 					d.data.depth === 0 ? 2.5 : d.data.depth === 1 ? 2 : 1.5
 				);
 
-			// Add text labels with depth-based styling
-			nodeGroups
+			// Add text labels with depth-based styling and lazy rendering
+			// Labels are initially visible/hidden based on current zoom level
+			const initialLabelsVisible = currentZoomScale >= labelVisibilityThreshold;
+
+			// Create a wrapper group for each text element to apply clipping
+			const textGroups = nodeGroups.append('g').attr('class', 'd3-tree-label-group');
+
+			textGroups
 				.append('text')
+				.attr('class', () => (initialLabelsVisible ? 'label-visible' : 'label-hidden'))
 				.attr('dy', (d) => {
 					if (orientation === 'vertical') {
 						return d.children ? -15 : 15;
@@ -646,7 +844,29 @@ export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 					'font-family',
 					'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
 				)
-				.text((d) => getNodeLabel(d));
+				// Apply text clipping via textLength and lengthAdjust for overflow
+				.each(function (d) {
+					const text = d3.select(this);
+					const label = getNodeLabel(d);
+					text.text(label);
+
+					// Truncate text if it exceeds maxLabelWidth
+					// This is more performant than SVG clipPath for text
+					const node = this as SVGTextElement;
+					if (
+						node.getComputedTextLength &&
+						node.getComputedTextLength() > maxLabelWidth
+					) {
+						let truncatedLabel = label;
+						while (
+							truncatedLabel.length > 0 &&
+							node.getComputedTextLength() > maxLabelWidth - 12
+						) {
+							truncatedLabel = truncatedLabel.slice(0, -1);
+							text.text(truncatedLabel + '…');
+						}
+					}
+				});
 
 			// Add interactive events
 			nodeGroups
@@ -654,45 +874,52 @@ export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 				.on('mouseenter', (_, d) => handleNodeHover(d))
 				.on('mouseleave', () => handleNodeHover(null));
 
-			// Add hover effect with depth-based sizing
-			nodeGroups
-				.on('mouseenter.style', function (_, d) {
-					const depthSize = getDepthNodeSize(nodeSize, d.data.depth);
-					d3.select(this)
-						.select('circle')
-						.transition()
-						.duration(150)
-						.attr('r', depthSize * 1.3);
-				})
-				.on('mouseleave.style', function (_, d) {
-					const depthSize = getDepthNodeSize(nodeSize, d.data.depth);
-					d3.select(this)
-						.select('circle')
-						.transition()
-						.duration(150)
-						.attr('r', depthSize);
-				});
+			// Add hover effect using CSS transforms for smoother GPU-accelerated animations
+			// When useGPUAcceleration is true, hover effects are handled by CSS (see injectGPUStyles)
+			// When false, fall back to D3 transitions
+			if (!useGPUAcceleration) {
+				nodeGroups
+					.on('mouseenter.style', function (_, d) {
+						const depthSize = getDepthNodeSize(nodeSize, d.data.depth);
+						d3.select(this)
+							.select('circle')
+							.transition()
+							.duration(150)
+							.attr('r', depthSize * 1.3);
+					})
+					.on('mouseleave.style', function (_, d) {
+						const depthSize = getDepthNodeSize(nodeSize, d.data.depth);
+						d3.select(this)
+							.select('circle')
+							.transition()
+							.duration(150)
+							.attr('r', depthSize);
+					});
+			}
 		}, [
-			nodes,
-			width,
-			height,
+			// Tree structure dependencies
+			hierarchyRoot,
+			dimensions,
+			// Layout dependencies
 			layout,
 			orientation,
-			linkStyle,
-			animationDuration,
-			nodeSize,
-			linkColor,
-			nodeColor,
-			textColor,
 			nodeSpacing,
-			enableZoom,
-			margin,
-			innerWidth,
-			innerHeight,
+			// Visual style dependencies
+			linkColor,
+			textColor,
+			nodeSize,
+			animationDuration,
+			linkPathGenerator,
+			// Callback dependencies (memoized, stable)
 			onNodeClick,
 			handleNodeClick,
 			handleNodeHover,
 			getNodeLabel,
+			// Optimization dependencies
+			currentZoomScale,
+			labelVisibilityThreshold,
+			maxLabelWidth,
+			useGPUAcceleration,
 		]);
 
 		// Render empty state
@@ -746,7 +973,15 @@ export const D3TreeDiagram = forwardRef<SVGSVGElement, D3TreeDiagramProps>(
 );
 
 // Set display name for debugging
-D3TreeDiagram.displayName = 'D3TreeDiagram';
+D3TreeDiagramInner.displayName = 'D3TreeDiagram';
+
+/**
+ * Memoized D3TreeDiagram component.
+ *
+ * Wrapped with React.memo() for performance optimization to prevent unnecessary
+ * re-renders when parent components update but props haven't changed.
+ */
+export const D3TreeDiagram = memo(D3TreeDiagramInner);
 
 // Default export for convenience
 export default D3TreeDiagram;

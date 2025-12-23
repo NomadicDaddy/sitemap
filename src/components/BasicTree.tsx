@@ -3,6 +3,7 @@
  *
  * A React component that renders parsed nodes as a hierarchical layout using
  * nested divs and Tailwind CSS. Displays nodes in a simple indented list format.
+ * Supports virtual scrolling for large datasets (1000+ nodes) via react-window.
  *
  * @example
  * ```tsx
@@ -16,6 +17,13 @@
  * `);
  *
  * <BasicTree nodes={tree} />
+ *
+ * // With virtualization for large trees
+ * <BasicTree
+ *   nodes={largeTree}
+ *   enableVirtualization={true}
+ *   virtualHeight={600}
+ * />
  * ```
  */
 import React, { forwardRef, memo, useCallback, useMemo, useState } from 'react';
@@ -28,6 +36,7 @@ import {
 } from '../theme';
 import { type EditingState, type TreeNode } from '../types/TreeNode';
 import { EditButton, InlineEditInput } from './InlineEditInput';
+import { VirtualizedTree } from './VirtualizedTree';
 
 // ============================================================================
 // Types
@@ -97,6 +106,25 @@ export interface BasicTreeProps {
 
 	/** Callback when a node's expand/collapse state changes */
 	onToggleCollapse?: (node: TreeNode) => void;
+
+	// ============================================================================
+	// Virtual Scrolling Props
+	// ============================================================================
+
+	/** Enable virtual scrolling for large trees (1000+ nodes) */
+	enableVirtualization?: boolean;
+
+	/** Height of the virtualized container in pixels (required when enableVirtualization is true) */
+	virtualHeight?: number;
+
+	/** Width of the virtualized container (default: '100%') */
+	virtualWidth?: number | string;
+
+	/** Height of each row in pixels for virtualization (default: 32) */
+	virtualRowHeight?: number;
+
+	/** Number of items to render above/below the visible area (default: 5) */
+	overscanCount?: number;
 }
 
 /**
@@ -270,10 +298,7 @@ const TreeNodeItem = memo(function TreeNodeItem({
 		[onToggleCollapse, node]
 	);
 
-	const isExpanded = useMemo(
-		() => node.metadata?.expanded !== false,
-		[node.metadata?.expanded]
-	);
+	const isExpanded = useMemo(() => node.metadata?.expanded !== false, [node.metadata?.expanded]);
 
 	// Merge theme with indent override so prop indentSize wins
 	const mergedTheme = useMemo(() => {
@@ -505,6 +530,12 @@ export const BasicTree = forwardRef<HTMLDivElement, BasicTreeProps>(
 			// Collapse/expand props
 			collapsible = false,
 			onToggleCollapse,
+			// Virtual scrolling props
+			enableVirtualization = false,
+			virtualHeight = 600,
+			virtualWidth = '100%',
+			virtualRowHeight = 32,
+			overscanCount = 5,
 		}: BasicTreeProps,
 		ref
 	): React.ReactElement => {
@@ -525,6 +556,39 @@ export const BasicTree = forwardRef<HTMLDivElement, BasicTreeProps>(
 			);
 		}
 
+		// Use virtualized rendering for large datasets
+		if (enableVirtualization) {
+			return (
+				<VirtualizedTree
+					ref={ref}
+					nodes={nodes}
+					height={virtualHeight}
+					width={virtualWidth}
+					rowHeight={virtualRowHeight}
+					className={className}
+					indentSize={indentSize}
+					showDepthIndicators={showDepthIndicators}
+					theme={theme}
+					onNodeClick={onNodeClick}
+					onNodeClickWithEvent={onNodeClickWithEvent}
+					renderLabel={renderLabel}
+					selectedIds={selectedIds}
+					editable={editable}
+					editingState={editingState}
+					onNodeDoubleClick={onNodeDoubleClick}
+					onEditValueChange={onEditValueChange}
+					onEditCommit={onEditCommit}
+					onEditCancel={onEditCancel}
+					showEditButton={showEditButton ?? true}
+					onEditButtonClick={onEditButtonClick}
+					collapsible={collapsible}
+					onToggleCollapse={onToggleCollapse}
+					overscanCount={overscanCount}
+				/>
+			);
+		}
+
+		// Standard recursive rendering
 		return (
 			<div
 				ref={ref}

@@ -229,6 +229,31 @@ const activeButtonStyles: React.CSSProperties = {
 	color: '#ffffff',
 };
 
+const labelContainerStyles: React.CSSProperties = {
+	alignItems: 'center',
+	display: 'flex',
+	gap: '8px',
+	justifyContent: 'space-between',
+	marginBottom: '6px',
+};
+
+const labelTextStyles: React.CSSProperties = {
+	color: '#374151',
+	fontSize: '14px',
+	fontWeight: 500,
+};
+
+const buttonGroupStyles: React.CSSProperties = {
+	display: 'flex',
+	gap: '6px',
+};
+
+const smallButtonStyles: React.CSSProperties = {
+	...buttonStyles,
+	padding: '4px 8px',
+	fontSize: '11px',
+};
+
 // ============================================================================
 // Helper Components
 // ============================================================================
@@ -498,6 +523,34 @@ export function SitemapEditor({
 		setViewTree((prev) => collapseAllNodes(prev));
 	}, []);
 
+	// Copy/Paste handlers
+	const [copyFeedback, setCopyFeedback] = React.useState(false);
+	const [pasteError, setPasteError] = React.useState('');
+
+	const handleCopy = useCallback(async () => {
+		try {
+			await navigator.clipboard.writeText(inputValue);
+			setCopyFeedback(true);
+			setTimeout(() => setCopyFeedback(false), 2000);
+			setPasteError('');
+		} catch (err) {
+			setPasteError('Failed to copy to clipboard');
+			console.error('Copy error:', err);
+		}
+	}, [inputValue]);
+
+	const handlePaste = useCallback(async () => {
+		try {
+			const text = await navigator.clipboard.readText();
+			setInputValue(text);
+			setPasteError('');
+			setCopyFeedback(false);
+		} catch (err) {
+			setPasteError('Failed to paste from clipboard');
+			console.error('Paste error:', err);
+		}
+	}, [setInputValue]);
+
 	const { showBulkActions: propShowBulkActions = true, ...restTreeProps } = treeProps ?? {};
 
 	return (
@@ -517,9 +570,45 @@ export function SitemapEditor({
 			<div className="sitemap-editor-content" style={editorContainerStyles}>
 				{/* Textarea input */}
 				<div className="sitemap-editor-input" style={textareaContainerStyles}>
-					<label htmlFor={textareaId} style={labelStyles}>
-						{textareaLabel}
-					</label>
+					<div style={labelContainerStyles}>
+						<label htmlFor={textareaId} style={labelTextStyles}>
+							{textareaLabel}
+						</label>
+						<div style={buttonGroupStyles}>
+							<button
+								type="button"
+								onClick={handleCopy}
+								style={{
+									...smallButtonStyles,
+									backgroundColor: copyFeedback ? '#10b981' : buttonStyles.backgroundColor,
+									borderColor: copyFeedback ? '#059669' : buttonStyles.borderColor,
+									color: copyFeedback ? '#ffffff' : buttonStyles.color,
+								}}
+								title="Copy to clipboard"
+								disabled={disabled}>
+								{copyFeedback ? 'Copied!' : 'Copy'}
+							</button>
+							<button
+								type="button"
+								onClick={handlePaste}
+								style={smallButtonStyles}
+								title="Paste from clipboard"
+								disabled={disabled}>
+								Paste
+							</button>
+						</div>
+					</div>
+					{pasteError && (
+						<div
+							style={{
+								fontSize: '12px',
+								color: '#dc2626',
+								marginBottom: '6px',
+								marginTop: '-4px',
+							}}>
+							{pasteError}
+						</div>
+					)}
 					<textarea
 						id={textareaId}
 						value={inputValue}

@@ -21,6 +21,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { type ParseError, type ParserOptions, type TreeNode } from '../types/TreeNode';
 import { parseAndBuildTree } from '../utils/treeParser';
+import { useDebounce } from './useDebounce';
 
 /**
  * Options for the useTreeParser hook.
@@ -31,6 +32,14 @@ export interface UseTreeParserOptions {
 
 	/** Parser options to customize parsing behavior */
 	parserOptions?: ParserOptions;
+
+	/**
+	 * Debounce delay in milliseconds for parsing.
+	 * Set to 0 to disable debouncing (parse on every keystroke).
+	 * Recommended: 300-500ms for a good balance between responsiveness and performance.
+	 * @default 0 (no debouncing for backward compatibility)
+	 */
+	debounceDelay?: number;
 }
 
 /**
@@ -144,16 +153,20 @@ function getTreeMaxDepth(nodes: TreeNode[]): number {
  * ```
  */
 export function useTreeParser(options: UseTreeParserOptions = {}): UseTreeParserResult {
-	const { initialValue = '', parserOptions } = options;
+	const { initialValue = '', parserOptions, debounceDelay = 0 } = options;
 
 	// Store the input value in state
 	const [inputValue, setInputValue] = useState<string>(initialValue);
 
-	// Parse the input value whenever it changes using useMemo
-	// This provides instant re-parsing on every keystroke
+	// Debounce the input value for parsing
+	// When debounceDelay is 0, this returns inputValue immediately (no debouncing)
+	const debouncedInputValue = useDebounce(inputValue, debounceDelay);
+
+	// Parse the debounced input value whenever it changes using useMemo
+	// This provides debounced re-parsing while textarea updates remain instant
 	const parseResult = useMemo(() => {
-		return parseAndBuildTree(inputValue, parserOptions);
-	}, [inputValue, parserOptions]);
+		return parseAndBuildTree(debouncedInputValue, parserOptions);
+	}, [debouncedInputValue, parserOptions]);
 
 	// Extract parsed results
 	const { tree, errors, success } = parseResult;

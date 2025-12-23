@@ -61,3 +61,15 @@ export { default as InlineEditInputDefault } from './InlineEditInput';
 
 export { HorizontalNavBar, type HorizontalNavBarProps } from './HorizontalNavBar';
 export { default as HorizontalNavBarDefault } from './HorizontalNavBar';
+
+export { VirtualizedTree, type VirtualizedTreeProps } from './VirtualizedTree';
+export { default as VirtualizedTreeDefault } from './VirtualizedTree';
+
+export { SearchPanel, type SearchPanelProps } from './SearchPanel';
+export { default as SearchPanelDefault } from './SearchPanel';
+
+export { SearchableTree, type SearchableTreeProps } from './SearchableTree';
+export { default as SearchableTreeDefault } from './SearchableTree';
+
+// Re-export tree flattening utilities for convenience
+export { flattenTree, countVisibleNodes, type FlattenedNode } from '../utils/treeFlattening';

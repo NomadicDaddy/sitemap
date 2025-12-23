@@ -185,16 +185,16 @@ describe('svgExport', () => {
 			) as SVGSVGElement;
 			const options = { height: 800, width: 1200 };
 
-			const originalSerializer = XMLSerializer;
-			const serializeSpy = jest.fn();
-			(global as any).XMLSerializer = class {
-				serializeToString = serializeSpy;
-			};
+			const originalSerializer = global.XMLSerializer;
+			const serializeSpy = jest.fn().mockReturnValue('<svg></svg>');
+			global.XMLSerializer = jest.fn().mockImplementation(() => ({
+				serializeToString: serializeSpy,
+			})) as any;
 
 			await exportD3TreeDiagramAsSvg(mockSvg, mockNodes, options);
 
 			expect(serializeSpy).toHaveBeenCalled();
-			(global as any).XMLSerializer = originalSerializer;
+			global.XMLSerializer = originalSerializer;
 		});
 	});
 

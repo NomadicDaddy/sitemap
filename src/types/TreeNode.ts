@@ -464,3 +464,132 @@ export type NodeFactory = (
 	depth: number,
 	options?: Partial<Omit<TreeNode, 'id' | 'label' | 'depth'>>
 ) => TreeNode;
+
+// ============================================================================
+// Comparison & Diff Types
+// ============================================================================
+
+/**
+ * Represents the type of difference found between nodes.
+ */
+export type DiffType = 'added' | 'removed' | 'modified' | 'unchanged' | 'moved';
+
+/**
+ * Represents a change in a specific property of a node.
+ */
+export interface PropertyChange {
+	/** Name of the changed property */
+	property: string;
+	/** Old value (undefined for added properties) */
+	oldValue?: unknown;
+	/** New value (undefined for removed properties) */
+	newValue?: unknown;
+}
+
+/**
+ * Represents the difference between two versions of a node.
+ */
+export interface NodeDifference {
+	/** Unique identifier for this difference */
+	id: string;
+	/** The type of difference */
+	type: DiffType;
+	/** The node from the base/old version (undefined for added nodes) */
+	baseNode?: TreeNode;
+	/** The node from the compare/new version (undefined for removed nodes) */
+	compareNode?: TreeNode;
+	/** Specific property changes (for modified nodes) */
+	changes?: PropertyChange[];
+	/** Child differences (for hierarchical diff display) */
+	childDifferences?: NodeDifference[];
+	/** Path to this node in the tree (array of node IDs from root) */
+	path?: string[];
+}
+
+/**
+ * Represents the result of comparing two tree structures.
+ */
+export interface ComparisonResult {
+	/** All differences found between the trees */
+	differences: NodeDifference[];
+	/** IDs of nodes that exist in both trees and are identical */
+	matchingNodeIds: Set<string>;
+	/** IDs of nodes that were added in the compare tree */
+	addedNodeIds: Set<string>;
+	/** IDs of nodes that were removed from the base tree */
+	removedNodeIds: Set<string>;
+	/** IDs of nodes that were modified */
+	modifiedNodeIds: Set<string>;
+	/** Summary statistics */
+	summary: ComparisonSummary;
+}
+
+/**
+ * Summary statistics for a tree comparison.
+ */
+export interface ComparisonSummary {
+	/** Total nodes in base tree */
+	baseNodeCount: number;
+	/** Total nodes in compare tree */
+	compareNodeCount: number;
+	/** Number of added nodes */
+	addedCount: number;
+	/** Number of removed nodes */
+	removedCount: number;
+	/** Number of modified nodes */
+	modifiedCount: number;
+	/** Number of unchanged nodes */
+	unchangedCount: number;
+	/** Similarity percentage (0-100) */
+	similarityPercentage: number;
+}
+
+/**
+ * Represents a saved version of a sitemap.
+ */
+export interface SitemapVersion {
+	/** Unique identifier for this version */
+	id: string;
+	/** Display name for this version */
+	name: string;
+	/** ISO timestamp when the version was created */
+	createdAt: string;
+	/** The tree nodes at this version */
+	nodes: TreeNode[];
+	/** Original text representation (if available) */
+	sourceText?: string;
+	/** Optional description or notes */
+	description?: string;
+	/** Whether this is an auto-save or manual save */
+	isAutoSave?: boolean;
+}
+
+/**
+ * Options for comparing two trees.
+ */
+export interface ComparisonOptions {
+	/** Whether to compare node metadata (default: true) */
+	compareMetadata?: boolean;
+	/** Whether to consider node position/order (default: false) */
+	comparePosition?: boolean;
+	/** Properties to ignore when comparing nodes */
+	ignoreProperties?: string[];
+	/** Custom node matching function (by default matches by ID) */
+	matchNodes?: (baseNode: TreeNode, compareNode: TreeNode) => boolean;
+}
+
+/**
+ * State for the comparison view.
+ */
+export interface ComparisonState {
+	/** Whether comparison mode is active */
+	isComparing: boolean;
+	/** The base version being compared (left side) */
+	baseVersion?: SitemapVersion;
+	/** The compare version being compared (right side) */
+	compareVersion?: SitemapVersion;
+	/** Result of the comparison */
+	result?: ComparisonResult;
+	/** View mode for the comparison */
+	viewMode: 'side-by-side' | 'unified' | 'changes-only';
+}

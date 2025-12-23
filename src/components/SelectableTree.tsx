@@ -20,7 +20,9 @@
  * ```
  */
 import React from 'react';
+import { List, type RowComponentProps } from 'react-window';
 
+import { useTreeKeyboardNavigation } from '../hooks/useTreeKeyboardNavigation';
 import {
 	type TreeTheme,
 	computeBulletThemeStyles,
@@ -33,8 +35,10 @@ import {
 	type SelectionState,
 	type TreeNode,
 } from '../types/TreeNode';
+import { type FlattenedNode, flattenTree } from '../utils/treeFlattening';
 import { isDescendant, moveNode } from '../utils/treeOperations';
 import { ExportButton } from './ExportButton';
+import { KeyboardShortcutsHelp, KeyboardShortcutsHelpButton } from './KeyboardShortcutsHelp';
 import { useTreeNodeSelection } from './TreeNodeUtils';
 
 // ============================================================================
@@ -139,6 +143,41 @@ export interface SelectableTreeProps {
 
 	/** Callback when export fails */
 	onExportError?: (error: Error) => void;
+
+	// ============================================================================
+	// Virtual Scrolling Props
+	// ============================================================================
+
+	/** Enable virtual scrolling for large trees (1000+ nodes) */
+	enableVirtualization?: boolean;
+
+	/** Height of the virtualized container in pixels (required when enableVirtualization is true) */
+	virtualHeight?: number;
+
+	/** Width of the virtualized container (default: '100%') */
+	virtualWidth?: number | string;
+
+	/** Height of each row in pixels for virtualization (default: 32) */
+	virtualRowHeight?: number;
+
+	/** Number of items to render above/below the visible area (default: 5) */
+	overscanCount?: number;
+
+	// ============================================================================
+	// Keyboard Navigation Props
+	// ============================================================================
+
+	/** Enable keyboard navigation (default: true) */
+	enableKeyboardNavigation?: boolean;
+
+	/** Whether to show the keyboard shortcuts help button (default: true when keyboard navigation is enabled) */
+	showKeyboardShortcutsButton?: boolean;
+
+	/** Callback when nodes are deleted via keyboard */
+	onDeleteNodes?: (nodeIds: string[]) => void;
+
+	/** Callback when the focused node changes */
+	onFocusChange?: (nodeId: string | undefined) => void;
 }
 
 // ============================================================================
@@ -192,13 +231,6 @@ const clearButtonHoverStyles: React.CSSProperties = {
 };
 
 const isBrowser = typeof window !== 'undefined';
-
-const bulkToolbarStyles: React.CSSProperties = {
-	alignItems: 'center',
-	display: 'flex',
-	flexWrap: 'wrap',
-	gap: '8px',
-};
 
 const bulkButtonStyles: React.CSSProperties = {
 	backgroundColor: '#1d4ed8',
@@ -287,6 +319,26 @@ const bulkToolbarNoteStyles: React.CSSProperties = {
 	color: '#475569',
 	fontSize: '12px',
 	fontWeight: 500,
+};
+
+const focusedNodeStyles: React.CSSProperties = {
+	outline: '2px solid #60a5fa',
+	outlineOffset: '1px',
+};
+
+const toolbarContainerStyles: React.CSSProperties = {
+	alignItems: 'center',
+	display: 'flex',
+	flexWrap: 'wrap',
+	gap: '8px',
+	justifyContent: 'space-between',
+};
+
+const toolbarLeftStyles: React.CSSProperties = {
+	alignItems: 'center',
+	display: 'flex',
+	flexWrap: 'wrap',
+	gap: '8px',
 };
 
 function resolveDropPositionFromEvent(event: React.DragEvent<HTMLDivElement>): DropPosition {
@@ -378,6 +430,7 @@ interface SelectableTreeNodeItemProps {
 	node: TreeNode;
 	showDepthIndicators: boolean;
 	isSelected: boolean;
+	isFocused?: boolean;
 	onNodeClick: (node: TreeNode, event: React.MouseEvent) => void;
 	renderLabel?: (node: TreeNode, isSelected: boolean) => React.ReactNode;
 	depthStyles: React.CSSProperties;
@@ -395,6 +448,7 @@ function SelectableTreeNodeItem({
 	node,
 	showDepthIndicators,
 	isSelected,
+	isFocused = false,
 	onNodeClick,
 	renderLabel,
 	depthStyles,
@@ -406,6 +460,14 @@ function SelectableTreeNodeItem({
 }: SelectableTreeNodeItemProps): React.ReactElement {
 	const hasChildren = node.children && node.children.length > 0;
 	const isExpanded = node.metadata?.expanded !== false;
+	const nodeRef = React.useRef<HTMLDivElement>(null);
+
+	// Scroll focused node into view
+	React.useEffect(() => {
+		if (isFocused && nodeRef.current) {
+			nodeRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+		}
+	}, [isFocused]);
 
 	const handleClick = (event: React.MouseEvent) => {
 		event.stopPropagation();
@@ -447,15 +509,18 @@ function SelectableTreeNodeItem({
 
 	return (
 		<div
-			className={`tree-node ${isSelected ? 'tree-node--selected' : ''}`}
+			ref={nodeRef}
+			className={`tree-node ${isSelected ? 'tree-node--selected' : ''} ${isFocused ? 'tree-node--focused' : ''}`}
 			data-node-id={node.id}
 			data-depth={node.depth}
-			data-selected={isSelected ? 'true' : undefined}>
+			data-selected={isSelected ? 'true' : undefined}
+			data-focused={isFocused ? 'true' : undefined}>
 			{/* Node Label */}
 			<div
-				className={`tree-node-label ${isSelected ? 'tree-node-label--selected' : ''}`}
+				className={`tree-node-label ${isSelected ? 'tree-node-label--selected' : ''} ${isFocused ? 'tree-node-label--focused' : ''}`}
 				style={{
 					...depthStyles,
+					...(isFocused ? focusedNodeStyles : {}),
 					alignItems: 'center',
 					cursor: 'pointer',
 					display: 'flex',
@@ -466,7 +531,9 @@ function SelectableTreeNodeItem({
 				{...dragProps}
 				draggable={Boolean(dragProps?.onDragStart)}
 				aria-selected={isSelected}
-				role="button">
+				role="treeitem"
+				tabIndex={isFocused ? 0 : -1}
+				id={`tree-node-${node.id}`}>
 				{/* Collapse/expand button */}
 				{collapsible && hasChildren && (
 					<button
@@ -602,13 +669,30 @@ export function SelectableTree({
 	onTreeReorder,
 	collapsible = false,
 	onToggleCollapse,
+	// Virtual scrolling props
+	enableVirtualization = false,
+	virtualHeight = 600,
+	// virtualWidth is accepted for API compatibility but not used in react-window v2
+	virtualWidth: _virtualWidth = '100%',
+	virtualRowHeight = 32,
+	overscanCount = 5,
+	// Keyboard navigation props
+	enableKeyboardNavigation = true,
+	showKeyboardShortcutsButton,
+	onDeleteNodes,
+	onFocusChange,
 }: SelectableTreeProps): React.ReactElement {
+	// Suppress unused variable warning - virtualWidth kept for API compatibility
+	void _virtualWidth;
 	// Refs for export functionality
 	const basicTreeRef = React.useRef<HTMLDivElement>(null);
 
 	// Use the selection hook for state management
 	const { selectedIds, isSelected, toggleSelection, selectOnly, clearSelection } =
 		useTreeNodeSelection(initialSelectedIds);
+
+	// Determine if we should show the keyboard shortcuts button
+	const shouldShowShortcutsButton = showKeyboardShortcutsButton ?? enableKeyboardNavigation;
 
 	const resolvedTheme = React.useMemo(() => {
 		const base = createTheme(theme);
@@ -709,6 +793,35 @@ export function SelectableTree({
 
 	// Track the last selected ID for potential shift-click range selection (future enhancement)
 	const [lastSelectedId, setLastSelectedId] = React.useState<string | undefined>();
+
+	// Handle keyboard-triggered selection changes
+	const handleKeyboardSelectionChange = React.useCallback(
+		(nodeId: string, event: { ctrlKey: boolean; shiftKey: boolean }) => {
+			if (event.ctrlKey) {
+				toggleSelection(nodeId);
+			} else {
+				selectOnly(nodeId);
+			}
+			setLastSelectedId(nodeId);
+		},
+		[toggleSelection, selectOnly]
+	);
+
+	// Keyboard navigation hook
+	const {
+		state: keyboardState,
+		actions: keyboardActions,
+		containerProps: keyboardContainerProps,
+	} = useTreeKeyboardNavigation({
+		containerRef: basicTreeRef,
+		enabled: enableKeyboardNavigation,
+		nodes: internalNodes,
+		onDeleteNodes,
+		onFocusChange,
+		onSelectionChange: handleKeyboardSelectionChange,
+		onToggleExpand: onToggleCollapse,
+		selectedIds,
+	});
 
 	// Build a map of all nodes for quick lookup
 	const nodeMap = React.useMemo(() => {
@@ -890,12 +1003,133 @@ export function SelectableTree({
 		[clearOnClickOutside, clearSelection]
 	);
 
+	// Flatten the tree for virtualized rendering
+	const flattenedNodes = React.useMemo(
+		() => (enableVirtualization ? flattenTree(internalNodes) : []),
+		[enableVirtualization, internalNodes]
+	);
+
+	// Row data for virtualized list
+	interface VirtualizedRowData {
+		flattenedNodes: FlattenedNode[];
+		isSelected: (id: string) => boolean;
+		showDepthIndicators: boolean;
+		resolvedTheme: TreeTheme;
+		handleNodeClick: (node: TreeNode, event: React.MouseEvent) => void;
+		renderLabel?: (node: TreeNode, isSelected: boolean) => React.ReactNode;
+		dragState: DragState | null;
+		handleDragEnd: () => void;
+		handleDragOver: (targetId: string) => (event: React.DragEvent<HTMLDivElement>) => void;
+		handleDragStart: (nodeId: string) => (event: React.DragEvent<HTMLDivElement>) => void;
+		handleDrop: (targetId: string) => (event: React.DragEvent<HTMLDivElement>) => void;
+		collapsible: boolean;
+		onToggleCollapse?: (node: TreeNode) => void;
+	}
+
+	// Virtualized row component
+	const VirtualizedSelectableRow = React.useCallback(
+		({ index, style, ...rowData }: RowComponentProps<VirtualizedRowData>) => {
+			const {
+				flattenedNodes: nodes,
+				isSelected: checkSelected,
+				showDepthIndicators: showIndicators,
+				resolvedTheme: theme,
+				handleNodeClick: onNodeClick,
+				renderLabel: labelRenderer,
+				dragState: drag,
+				handleDragEnd: onDragEnd,
+				handleDragOver: onDragOver,
+				handleDragStart: onDragStart,
+				handleDrop: onDrop,
+				collapsible: isCollapsible,
+				onToggleCollapse: toggleCollapse,
+			} = rowData;
+
+			const flatNode = nodes[index];
+			if (!flatNode) return <div style={style} />;
+
+			const { node, depth, hasChildren } = flatNode;
+			const nodeIsSelected = checkSelected(node.id);
+			const depthStyles = computeNodeThemeStyles(depth, {
+				isSelected: nodeIsSelected,
+				showDepthIndicators: showIndicators,
+				theme,
+			});
+
+			return (
+				<div style={style}>
+					<SelectableTreeNodeItem
+						node={{
+							...node,
+							children: hasChildren ? node.children : undefined,
+						}}
+						showDepthIndicators={showIndicators}
+						isSelected={nodeIsSelected}
+						onNodeClick={onNodeClick}
+						renderLabel={labelRenderer}
+						depthStyles={depthStyles}
+						bulletStyles={computeBulletThemeStyles(depth, { theme })}
+						dragProps={{
+							'data-drop-invalid':
+								drag && drag.targetId === node.id && !drag.isValidDrop
+									? 'true'
+									: undefined,
+							onDragEnd,
+							onDragOver: onDragOver(node.id),
+							onDragStart: onDragStart(node.id),
+							onDrop: onDrop(node.id),
+						}}
+						theme={theme}
+						collapsible={isCollapsible}
+						onToggleCollapse={toggleCollapse}
+					/>
+				</div>
+			);
+		},
+		[]
+	);
+
+	// Row props for the list
+	const virtualizedRowProps = React.useMemo(
+		() => ({
+			collapsible,
+			dragState,
+			flattenedNodes,
+			handleDragEnd,
+			handleDragOver,
+			handleDragStart,
+			handleDrop,
+			handleNodeClick,
+			isSelected,
+			onToggleCollapse,
+			renderLabel,
+			resolvedTheme,
+			showDepthIndicators,
+		}),
+		[
+			flattenedNodes,
+			isSelected,
+			showDepthIndicators,
+			resolvedTheme,
+			handleNodeClick,
+			renderLabel,
+			dragState,
+			handleDragEnd,
+			handleDragOver,
+			handleDragStart,
+			handleDrop,
+			collapsible,
+			onToggleCollapse,
+		]
+	);
+
 	// Flatten the tree for rendering while maintaining hierarchy visually
 	const renderTree = (nodeList: TreeNode[]): React.ReactElement[] => {
 		const result: React.ReactElement[] = [];
 
 		const traverse = (node: TreeNode) => {
 			const nodeIsSelected = isSelected(node.id);
+			const nodeIsFocused = keyboardState.focusedId === node.id;
 			const depthStyles = computeNodeThemeStyles(node.depth, {
 				isSelected: nodeIsSelected,
 				showDepthIndicators,
@@ -912,6 +1146,7 @@ export function SelectableTree({
 					}}
 					showDepthIndicators={showDepthIndicators}
 					isSelected={nodeIsSelected}
+					isFocused={nodeIsFocused}
 					onNodeClick={handleNodeClick}
 					renderLabel={renderLabel}
 					depthStyles={depthStyles}
@@ -976,60 +1211,112 @@ export function SelectableTree({
 
 			{/* Bulk action toolbar */}
 			{showBulkActions && (
-				<div style={bulkToolbarStyles} className="selectable-tree-bulk-actions">
-					<span style={bulkToolbarNoteStyles}>Bulk actions:</span>
-					<button
-						type="button"
-						onClick={handleBulkDelete}
-						disabled={bulkActionsDisabled || !onBulkDelete}
-						style={getBulkButtonStyles(bulkActionsDisabled || !onBulkDelete)}>
-						Delete
-					</button>
-					<button
-						type="button"
-						onClick={handleBulkChangeColor}
-						disabled={bulkActionsDisabled || !onBulkChangeColor}
-						style={getBulkButtonStyles(bulkActionsDisabled || !onBulkChangeColor)}>
-						Change Color
-					</button>
-					<button
-						type="button"
-						onClick={handleBulkAddTag}
-						disabled={bulkActionsDisabled || !onBulkAddTag}
-						style={getBulkButtonStyles(bulkActionsDisabled || !onBulkAddTag)}>
-						Add Tag
-					</button>
-					<button
-						type="button"
-						onClick={handleBulkModifyProperties}
-						disabled={bulkActionsDisabled || !onBulkModifyProperties}
-						style={getBulkButtonStyles(bulkActionsDisabled || !onBulkModifyProperties)}>
-						Modify Properties
-					</button>
-					{showExportButtons && (
-						<ExportButton
-							visualizationType="basic-tree"
-							elementRef={basicTreeRef}
-							nodes={nodes}
-							onExportComplete={onExportComplete}
-							onExportError={onExportError}
+				<div style={toolbarContainerStyles} className="selectable-tree-bulk-actions">
+					<div style={toolbarLeftStyles}>
+						<span style={bulkToolbarNoteStyles}>Bulk actions:</span>
+						<button
+							type="button"
+							onClick={handleBulkDelete}
+							disabled={bulkActionsDisabled || !onBulkDelete}
+							style={getBulkButtonStyles(bulkActionsDisabled || !onBulkDelete)}>
+							Delete
+						</button>
+						<button
+							type="button"
+							onClick={handleBulkChangeColor}
+							disabled={bulkActionsDisabled || !onBulkChangeColor}
+							style={getBulkButtonStyles(bulkActionsDisabled || !onBulkChangeColor)}>
+							Change Color
+						</button>
+						<button
+							type="button"
+							onClick={handleBulkAddTag}
+							disabled={bulkActionsDisabled || !onBulkAddTag}
+							style={getBulkButtonStyles(bulkActionsDisabled || !onBulkAddTag)}>
+							Add Tag
+						</button>
+						<button
+							type="button"
+							onClick={handleBulkModifyProperties}
+							disabled={bulkActionsDisabled || !onBulkModifyProperties}
+							style={getBulkButtonStyles(
+								bulkActionsDisabled || !onBulkModifyProperties
+							)}>
+							Modify Properties
+						</button>
+						{showExportButtons && (
+							<ExportButton
+								visualizationType="basic-tree"
+								elementRef={basicTreeRef}
+								nodes={nodes}
+								onExportComplete={onExportComplete}
+								onExportError={onExportError}
+								size="small"
+								variant="outline"
+							/>
+						)}
+					</div>
+					{shouldShowShortcutsButton && (
+						<KeyboardShortcutsHelpButton
+							onClick={keyboardActions.toggleHelp}
 							size="small"
-							variant="outline"
+							variant="icon-text"
+							label="Keyboard Shortcuts"
 						/>
 					)}
 				</div>
 			)}
 
 			{/* Tree container */}
-			<div
-				ref={basicTreeRef}
-				className="selectable-tree-content"
-				style={treeContainerStyles}
-				role="tree"
-				aria-label={ariaLabel}
-				aria-multiselectable="true">
-				{renderTree(internalNodes)}
-			</div>
+			{enableVirtualization ? (
+				<div
+					ref={basicTreeRef}
+					className="selectable-tree-content"
+					style={treeContainerStyles}
+					role="tree"
+					aria-label={ariaLabel}
+					aria-multiselectable="true"
+					aria-activedescendant={
+						keyboardState.focusedId ? `tree-node-${keyboardState.focusedId}` : undefined
+					}
+					tabIndex={enableKeyboardNavigation ? 0 : undefined}
+					onKeyDown={
+						enableKeyboardNavigation ? keyboardContainerProps.onKeyDown : undefined
+					}
+					data-testid="selectable-virtualized-tree">
+					<List
+						defaultHeight={virtualHeight}
+						rowCount={flattenedNodes.length}
+						rowHeight={virtualRowHeight}
+						rowComponent={VirtualizedSelectableRow}
+						rowProps={virtualizedRowProps}
+						overscanCount={overscanCount}
+					/>
+				</div>
+			) : (
+				<div
+					ref={basicTreeRef}
+					className="selectable-tree-content"
+					style={treeContainerStyles}
+					role="tree"
+					aria-label={ariaLabel}
+					aria-multiselectable="true"
+					aria-activedescendant={
+						keyboardState.focusedId ? `tree-node-${keyboardState.focusedId}` : undefined
+					}
+					tabIndex={enableKeyboardNavigation ? 0 : undefined}
+					onKeyDown={
+						enableKeyboardNavigation ? keyboardContainerProps.onKeyDown : undefined
+					}>
+					{renderTree(internalNodes)}
+				</div>
+			)}
+
+			{/* Keyboard shortcuts help dialog */}
+			<KeyboardShortcutsHelp
+				isOpen={keyboardState.isHelpOpen}
+				onClose={keyboardActions.closeHelp}
+			/>
 		</div>
 	);
 }

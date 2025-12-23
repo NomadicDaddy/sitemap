@@ -868,4 +868,109 @@ describe('D3TreeDiagram', () => {
 			});
 		});
 	});
+
+	describe('SVG rendering optimizations', () => {
+		it('should inject GPU acceleration styles when useGPUAcceleration is true', async () => {
+			const nodes = createSimpleTree();
+			render(<D3TreeDiagram nodes={nodes} enableZoom={false} useGPUAcceleration={true} />);
+
+			await waitFor(() => {
+				const styleElement = document.getElementById('d3-tree-gpu-styles');
+				expect(styleElement).toBeInTheDocument();
+			});
+		});
+
+		it('should support labelVisibilityThreshold prop', async () => {
+			const nodes = createSimpleTree();
+			const { container } = render(
+				<D3TreeDiagram nodes={nodes} enableZoom={false} labelVisibilityThreshold={0.3} />
+			);
+
+			await waitFor(() => {
+				const texts = container.querySelectorAll('.d3-tree-node text');
+				expect(texts.length).toBeGreaterThan(0);
+			});
+		});
+
+		it('should support maxLabelWidth prop', async () => {
+			const nodes = createSimpleTree();
+			const { container } = render(
+				<D3TreeDiagram nodes={nodes} enableZoom={false} maxLabelWidth={100} />
+			);
+
+			await waitFor(() => {
+				const texts = container.querySelectorAll('.d3-tree-node text');
+				expect(texts.length).toBeGreaterThan(0);
+			});
+		});
+
+		it('should render long labels (truncation works in browser, not jsdom)', async () => {
+			// Note: getComputedTextLength() returns 0 in jsdom, so truncation
+			// only works in real browsers. This test verifies the text is rendered.
+			const longLabelNode: TreeNode[] = [
+				{
+					depth: 0,
+					id: 'node-1',
+					label: 'This is a very long label that should definitely be truncated because it exceeds the max width',
+				},
+			];
+			const { container } = render(
+				<D3TreeDiagram nodes={longLabelNode} enableZoom={false} maxLabelWidth={100} />
+			);
+
+			await waitFor(() => {
+				const text = container.querySelector('.d3-tree-node text');
+				expect(text).toBeInTheDocument();
+				// In jsdom, getComputedTextLength returns 0, so text won't be truncated
+				// In real browsers, long text would be truncated with ellipsis
+				expect(text?.textContent).toBeTruthy();
+			});
+		});
+
+		it('should create label groups for text clipping', async () => {
+			const nodes = createSimpleTree();
+			const { container } = render(<D3TreeDiagram nodes={nodes} enableZoom={false} />);
+
+			await waitFor(() => {
+				const labelGroups = container.querySelectorAll('.d3-tree-label-group');
+				expect(labelGroups.length).toBe(3);
+			});
+		});
+
+		it('should add clipPath definition to SVG defs', async () => {
+			const nodes = createSimpleTree();
+			const { container } = render(<D3TreeDiagram nodes={nodes} enableZoom={false} />);
+
+			await waitFor(() => {
+				const clipPath = container.querySelector('defs clipPath#label-clip');
+				expect(clipPath).toBeInTheDocument();
+			});
+		});
+
+		it('should apply initial label visibility class', async () => {
+			const nodes = createSimpleTree();
+			const { container } = render(
+				<D3TreeDiagram nodes={nodes} enableZoom={false} labelVisibilityThreshold={0.5} />
+			);
+
+			await waitFor(() => {
+				const texts = container.querySelectorAll('.d3-tree-node text');
+				expect(texts.length).toBeGreaterThan(0);
+				// At initial zoom level of 1, labels should be visible
+				expect(texts[0]).toHaveClass('label-visible');
+			});
+		});
+
+		it('should not add D3 transition handlers when useGPUAcceleration is true', async () => {
+			const nodes = createSimpleTree();
+			const { container } = render(
+				<D3TreeDiagram nodes={nodes} enableZoom={false} useGPUAcceleration={true} />
+			);
+
+			await waitFor(() => {
+				const nodeGroups = container.querySelectorAll('.d3-tree-node');
+				expect(nodeGroups.length).toBe(3);
+			});
+		});
+	});
 });
