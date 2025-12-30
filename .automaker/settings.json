@@ -1,9 +1,14 @@
 {
+	"currentWorktree": {
+		"branch": "master",
+		"path": null
+	},
+	"theme": "synthwave",
 	"version": 1,
 	"worktrees": [
 		{
 			"branch": "master",
-			"changedFilesCount": 1,
+			"changedFilesCount": 5,
 			"hasChanges": true,
 			"hasWorktree": true,
 			"isCurrent": true,

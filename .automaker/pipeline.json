@@ -1,0 +1,36 @@
+{
+	"enabled": true,
+	"onFailure": "stop",
+	"steps": [
+		{
+			"autoTrigger": true,
+			"config": {
+				"excludePatterns": ["*.test.ts", "*.spec.ts"],
+				"focus": ["quality", "standards"],
+				"includeTests": false,
+				"maxIssues": 5
+			},
+			"id": "review",
+			"model": "same",
+			"name": "Code Review",
+			"required": true,
+			"type": "review"
+		},
+		{
+			"autoTrigger": true,
+			"config": {
+				"prompt": "Ensure `bun run smoke:qc` runs cleanly. Fix blocking issues until it does."
+			},
+			"description": "Ensure `bun run smoke:qc` runs cleanly. Fix blocking issues until it does.",
+			"id": "step-1766539194327",
+			"loopUntilSuccess": true,
+			"maxLoops": 2,
+			"memoryEnabled": true,
+			"model": "opus",
+			"name": "Smoke:QC",
+			"required": true,
+			"type": "custom"
+		}
+	],
+	"version": "1.0"
+}

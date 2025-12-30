@@ -4,7 +4,7 @@
  * Renders tree nodes as a horizontal navigation bar similar to website navigation.
  * Top-level nodes appear as primary nav items, with children shown as dropdown menus.
  */
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import { type TreeNode } from '../types/TreeNode';
 
@@ -16,12 +16,15 @@ export interface HorizontalNavBarProps {
 
 const navBarStyles: React.CSSProperties = {
 	backgroundColor: '#ffffff',
-	borderBottom: '2px solid #e5e7eb',
+	borderBottom: '1px solid #e5e7eb',
+	boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
 	display: 'flex',
 	fontFamily:
 		'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-	gap: '4px',
+	gap: '0',
 	padding: '0',
+	position: 'relative',
+	zIndex: 1000,
 };
 
 const navItemStyles: React.CSSProperties = {
@@ -30,38 +33,64 @@ const navItemStyles: React.CSSProperties = {
 
 const navLinkStyles: React.CSSProperties = {
 	alignItems: 'center',
+	backgroundColor: 'transparent',
+	borderBottomColor: 'transparent',
+	borderBottomStyle: 'solid',
+	borderBottomWidth: '0px',
+	borderLeftColor: 'transparent',
+	borderLeftStyle: 'solid',
+	borderLeftWidth: '3px',
+	borderRightColor: 'transparent',
+	borderRightStyle: 'solid',
+	borderRightWidth: '0px',
+	borderTopColor: 'transparent',
+	borderTopStyle: 'solid',
+	borderTopWidth: '0px',
 	color: '#374151',
 	cursor: 'pointer',
 	display: 'flex',
 	fontSize: '14px',
 	fontWeight: 500,
-	gap: '4px',
-	padding: '12px 16px',
+	gap: '6px',
+	padding: '16px 20px',
+	position: 'relative',
 	textDecoration: 'none',
 	transition: 'all 0.2s ease',
 	userSelect: 'none',
 };
 
 const navLinkHoverStyles: React.CSSProperties = {
-	backgroundColor: '#f3f4f6',
-	color: '#1f2937',
+	backgroundColor: '#f9fafb',
+	borderLeftColor: '#3b82f6',
+	color: '#111827',
 };
 
 const dropdownStyles: React.CSSProperties = {
 	backgroundColor: '#ffffff',
-	border: '1px solid #e5e7eb',
-	borderRadius: '6px',
-	boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+	borderBottomColor: '#e5e7eb',
+	borderBottomStyle: 'solid',
+	borderBottomWidth: '1px',
+	borderLeftColor: '#e5e7eb',
+	borderLeftStyle: 'solid',
+	borderLeftWidth: '1px',
+	borderRadius: '8px',
+	borderRightColor: '#e5e7eb',
+	borderRightStyle: 'solid',
+	borderRightWidth: '1px',
+	borderTopColor: '#e5e7eb',
+	borderTopStyle: 'solid',
+	borderTopWidth: '1px',
+	boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
 	left: '0',
-	marginTop: '4px',
-	minWidth: '200px',
+	marginTop: '0',
+	minWidth: '220px',
 	opacity: 0,
 	padding: '8px 0',
 	pointerEvents: 'none',
 	position: 'absolute',
 	top: '100%',
-	transform: 'translateY(-8px)',
-	transition: 'all 0.2s ease',
+	transform: 'translateY(-10px)',
+	transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
 	zIndex: 1000,
 };
 
@@ -72,39 +101,66 @@ const dropdownVisibleStyles: React.CSSProperties = {
 };
 
 const dropdownItemStyles: React.CSSProperties = {
-	color: '#4b5563',
+	backgroundColor: 'transparent',
+	borderBottomColor: 'transparent',
+	borderBottomStyle: 'solid',
+	borderBottomWidth: '0px',
+	borderLeftColor: 'transparent',
+	borderLeftStyle: 'solid',
+	borderLeftWidth: '3px',
+	borderRightColor: 'transparent',
+	borderRightStyle: 'solid',
+	borderRightWidth: '0px',
+	borderTopColor: 'transparent',
+	borderTopStyle: 'solid',
+	borderTopWidth: '0px',
+	color: '#374151',
 	cursor: 'pointer',
 	display: 'block',
-	fontSize: '13px',
-	padding: '8px 16px',
+	fontSize: '14px',
+	lineHeight: '1.5',
+	padding: '10px 20px',
 	transition: 'all 0.15s ease',
 	whiteSpace: 'nowrap',
 };
 
 const dropdownItemHoverStyles: React.CSSProperties = {
 	backgroundColor: '#f3f4f6',
-	color: '#1f2937',
+	borderLeftColor: '#3b82f6',
+	color: '#111827',
 };
 
 const subDropdownStyles: React.CSSProperties = {
 	backgroundColor: '#ffffff',
-	border: '1px solid #e5e7eb',
-	borderRadius: '6px',
-	boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+	borderBottomColor: '#e5e7eb',
+	borderBottomStyle: 'solid',
+	borderBottomWidth: '1px',
+	borderLeftColor: '#e5e7eb',
+	borderLeftStyle: 'solid',
+	borderLeftWidth: '1px',
+	borderRadius: '8px',
+	borderRightColor: '#e5e7eb',
+	borderRightStyle: 'solid',
+	borderRightWidth: '1px',
+	borderTopColor: '#e5e7eb',
+	borderTopStyle: 'solid',
+	borderTopWidth: '1px',
+	boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
 	display: 'none',
 	left: '100%',
-	marginLeft: '4px',
-	minWidth: '180px',
+	marginLeft: '8px',
+	minWidth: '200px',
 	padding: '8px 0',
 	position: 'absolute',
-	top: '0',
+	top: '-8px',
 	zIndex: 1001,
 };
 
 const chevronStyles: React.CSSProperties = {
+	color: '#9ca3af',
 	fontSize: '10px',
 	marginLeft: '4px',
-	transition: 'transform 0.2s ease',
+	transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
 };
 
 interface NavItemProps {
@@ -116,19 +172,37 @@ function NavItem({ node, onNodeClick }: NavItemProps): React.ReactElement {
 	const [isOpen, setIsOpen] = useState(false);
 	const [hoveredLink, setHoveredLink] = useState(false);
 	const hasChildren = node.children && node.children.length > 0;
+	const navItemRef = useRef<HTMLDivElement>(null);
+
+	// Close dropdown when clicking outside
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (navItemRef.current && !navItemRef.current.contains(event.target as Node)) {
+				setIsOpen(false);
+			}
+		};
+
+		if (isOpen) {
+			document.addEventListener('mousedown', handleClickOutside);
+		}
+
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, [isOpen]);
 
 	const handleClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		if (onNodeClick) {
 			onNodeClick(node);
 		}
+		if (hasChildren) {
+			setIsOpen(!isOpen);
+		}
 	};
 
 	return (
-		<div
-			style={navItemStyles}
-			onMouseEnter={() => setIsOpen(true)}
-			onMouseLeave={() => setIsOpen(false)}>
+		<div ref={navItemRef} style={navItemStyles}>
 			<div
 				style={{
 					...navLinkStyles,
@@ -173,25 +247,49 @@ function DropdownItem({ node, onNodeClick }: DropdownItemProps): React.ReactElem
 	const [isHovered, setIsHovered] = useState(false);
 	const [showSubMenu, setShowSubMenu] = useState(false);
 	const hasChildren = node.children && node.children.length > 0;
+	const dropdownRef = useRef<HTMLDivElement>(null);
+
+	// Close submenu when clicking outside
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+				setShowSubMenu(false);
+			}
+		};
+
+		if (showSubMenu) {
+			document.addEventListener('mousedown', handleClickOutside);
+		}
+
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, [showSubMenu]);
+
+	const handleMouseEnter = () => {
+		setIsHovered(true);
+	};
+
+	const handleMouseLeave = () => {
+		setIsHovered(false);
+	};
 
 	const handleClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		if (onNodeClick) {
 			onNodeClick(node);
 		}
+		if (hasChildren) {
+			setShowSubMenu(!showSubMenu);
+		}
 	};
 
 	return (
 		<div
+			ref={dropdownRef}
 			style={{ position: 'relative' }}
-			onMouseEnter={() => {
-				setIsHovered(true);
-				if (hasChildren) setShowSubMenu(true);
-			}}
-			onMouseLeave={() => {
-				setIsHovered(false);
-				setShowSubMenu(false);
-			}}>
+			onMouseEnter={handleMouseEnter}
+			onMouseLeave={handleMouseLeave}>
 			<div
 				style={{
 					...dropdownItemStyles,
@@ -202,7 +300,7 @@ function DropdownItem({ node, onNodeClick }: DropdownItemProps): React.ReactElem
 				}}
 				onClick={handleClick}>
 				<span>{node.label}</span>
-				{hasChildren && <span style={{ fontSize: '10px' }}>▶</span>}
+				{hasChildren && <span style={{ color: '#9ca3af', fontSize: '10px' }}>▶</span>}
 			</div>
 
 			{hasChildren && (
@@ -210,7 +308,9 @@ function DropdownItem({ node, onNodeClick }: DropdownItemProps): React.ReactElem
 					style={{
 						...subDropdownStyles,
 						display: showSubMenu ? 'block' : 'none',
-					}}>
+					}}
+					onMouseEnter={handleMouseEnter}
+					onMouseLeave={handleMouseLeave}>
 					{node.children!.map((child) => (
 						<DropdownItem key={child.id} node={child} onNodeClick={onNodeClick} />
 					))}

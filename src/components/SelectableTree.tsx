@@ -200,13 +200,14 @@ const treeContainerStyles: React.CSSProperties = {
 const selectionInfoStyles: React.CSSProperties = {
 	alignItems: 'center',
 	backgroundColor: '#f0f9ff',
-	border: '1px solid #bae6fd',
-	borderRadius: '6px',
+	border: '2px solid #bae6fd',
+	borderRadius: '8px',
+	boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
 	color: '#0369a1',
 	display: 'flex',
 	fontSize: '13px',
 	gap: '12px',
-	padding: '8px 12px',
+	padding: '10px 16px',
 };
 
 const selectionCountStyles: React.CSSProperties = {
@@ -216,32 +217,37 @@ const selectionCountStyles: React.CSSProperties = {
 const clearButtonStyles: React.CSSProperties = {
 	backgroundColor: '#0ea5e9',
 	border: 'none',
-	borderRadius: '4px',
+	borderRadius: '6px',
+	boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
 	color: '#ffffff',
 	cursor: 'pointer',
 	fontSize: '12px',
+	fontWeight: '600',
 	marginLeft: 'auto',
-	padding: '4px 8px',
-	transition: 'background-color 0.15s ease',
+	padding: '6px 12px',
+	transition: 'all 0.2s ease',
 };
 
 const clearButtonHoverStyles: React.CSSProperties = {
 	...clearButtonStyles,
 	backgroundColor: '#0284c7',
+	boxShadow: '0 4px 6px -1px rgba(14, 165, 233, 0.3), 0 2px 4px -1px rgba(14, 165, 233, 0.2)',
+	transform: 'translateY(-1px)',
 };
 
 const isBrowser = typeof window !== 'undefined';
 
 const bulkButtonStyles: React.CSSProperties = {
-	backgroundColor: '#1d4ed8',
+	backgroundColor: '#6366f1',
 	border: 'none',
-	borderRadius: '4px',
+	borderRadius: '6px',
+	boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
 	color: '#ffffff',
 	cursor: 'pointer',
 	fontSize: '12px',
-	fontWeight: 600,
-	padding: '6px 10px',
-	transition: 'background-color 0.15s ease',
+	fontWeight: '600',
+	padding: '6px 12px',
+	transition: 'all 0.2s ease',
 };
 
 const bulkButtonDisabledStyles: React.CSSProperties = {

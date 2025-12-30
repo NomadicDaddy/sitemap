@@ -34,6 +34,7 @@ import {
 	toggleNodeExpanded,
 } from '../utils/treeOperations';
 import { D3TreeDiagram } from './D3TreeDiagram';
+import { FlowchartDiagram } from './FlowchartDiagram';
 import { HorizontalNavBar } from './HorizontalNavBar';
 import { SelectableTree, type SelectableTreeProps } from './SelectableTree';
 
@@ -66,8 +67,8 @@ export interface SitemapEditorProps {
 	/** Whether to show the tree preview (default: true) */
 	showPreview?: boolean;
 
-	/** Preview type to show: 'list' (default), 'd3-horizontal', 'd3-vertical', or 'navbar' */
-	previewType?: 'list' | 'd3-horizontal' | 'd3-vertical' | 'navbar';
+	/** Preview type to show: 'list' (default), 'd3-horizontal', 'd3-vertical', 'navbar', or 'flowchart' */
+	previewType?: 'list' | 'd3-horizontal' | 'd3-vertical' | 'navbar' | 'flowchart';
 
 	/** Whether to show preview type selector (default: true) */
 	showPreviewSelector?: boolean;
@@ -108,51 +109,59 @@ export interface SitemapEditorProps {
 // ============================================================================
 
 const containerStyles: React.CSSProperties = {
+	backgroundColor: '#f8fafc',
 	display: 'flex',
 	flexDirection: 'column',
 	fontFamily:
 		'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-	gap: '16px',
+	gap: '24px',
 };
 
 const editorContainerStyles: React.CSSProperties = {
+	alignItems: 'flex-start',
 	display: 'flex',
 	flexWrap: 'wrap',
-	gap: '16px',
+	gap: '24px',
 };
 
 const textareaContainerStyles: React.CSSProperties = {
-	flex: '1 1 300px',
-	minWidth: '300px',
+	flex: '1 1 400px',
+	minWidth: '400px',
 };
 
 const textareaStyles: React.CSSProperties = {
-	border: '1px solid #d1d5db',
-	borderRadius: '6px',
+	backgroundColor: '#ffffff',
+	border: '2px solid #e2e8f0',
+	borderRadius: '12px',
+	boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
 	boxSizing: 'border-box',
 	fontFamily: 'Monaco, Consolas, "Courier New", monospace',
 	fontSize: '14px',
-	lineHeight: '1.5',
-	padding: '12px',
+	lineHeight: '1.6',
+	padding: '16px',
 	resize: 'vertical',
+	transition: 'all 0.2s ease',
 	width: '100%',
 };
 
 const textareaFocusStyles: React.CSSProperties = {
-	borderColor: '#3b82f6',
-	boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.1)',
+	borderColor: '#6366f1',
+	boxShadow:
+		'0 0 0 3px rgba(99, 102, 241, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
 	outline: 'none',
+	transform: 'translateY(-1px)',
 };
 
 const previewContainerStyles: React.CSSProperties = {
-	backgroundColor: '#fafafa',
-	border: '1px solid #e5e7eb',
-	borderRadius: '6px',
+	backgroundColor: '#ffffff',
+	border: '2px solid #e2e8f0',
+	borderRadius: '12px',
+	boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
 	flex: '1 1 600px',
 	minHeight: '500px',
 	minWidth: '600px',
 	overflow: 'auto',
-	padding: '12px',
+	padding: '20px',
 	resize: 'both',
 };
 
@@ -163,43 +172,46 @@ const errorListStyles: React.CSSProperties = {
 };
 
 const errorItemStyles: React.CSSProperties = {
-	borderRadius: '4px',
+	backgroundColor: '#fef2f2',
+	border: '1px solid #fecaca',
+	borderRadius: '8px',
 	fontSize: '13px',
-	lineHeight: '1.4',
-	marginBottom: '4px',
-	padding: '8px 12px',
+	marginBottom: '8px',
+	padding: '12px 16px',
 };
 
 const errorStyles: React.CSSProperties = {
 	...errorItemStyles,
 	backgroundColor: '#fef2f2',
-	borderLeft: '3px solid #ef4444',
+	borderColor: '#fca5a5',
 	color: '#991b1b',
 };
 
 const warningStyles: React.CSSProperties = {
 	...errorItemStyles,
 	backgroundColor: '#fffbeb',
-	borderLeft: '3px solid #f59e0b',
+	borderColor: '#fcd34d',
 	color: '#92400e',
 };
 
 const statsStyles: React.CSSProperties = {
-	backgroundColor: '#f3f4f6',
-	borderRadius: '4px',
-	color: '#4b5563',
+	backgroundColor: '#f1f5f9',
+	border: '1px solid #e2e8f0',
+	borderRadius: '8px',
+	color: '#475569',
 	display: 'flex',
+	flexWrap: 'wrap',
 	fontSize: '13px',
 	gap: '16px',
-	padding: '8px 12px',
+	padding: '12px 16px',
 };
 
 const labelStyles: React.CSSProperties = {
-	color: '#374151',
+	color: '#1e293b',
 	display: 'block',
-	fontSize: '14px',
-	fontWeight: 500,
-	marginBottom: '6px',
+	fontSize: '16px',
+	fontWeight: '600',
+	marginBottom: '8px',
 };
 
 const previewControlsStyles: React.CSSProperties = {
@@ -211,22 +223,39 @@ const previewControlsStyles: React.CSSProperties = {
 };
 
 const buttonStyles: React.CSSProperties = {
-	backgroundColor: '#f3f4f6',
-	border: '1px solid #d1d5db',
-	borderRadius: '4px',
-	color: '#374151',
+	backgroundColor: '#ffffff',
+	borderBottomColor: '#e2e8f0',
+	borderBottomStyle: 'solid',
+	borderBottomWidth: '2px',
+	borderLeftColor: '#e2e8f0',
+	borderLeftStyle: 'solid',
+	borderLeftWidth: '2px',
+	borderRadius: '8px',
+	borderRightColor: '#e2e8f0',
+	borderRightStyle: 'solid',
+	borderRightWidth: '2px',
+	borderTopColor: '#e2e8f0',
+	borderTopStyle: 'solid',
+	borderTopWidth: '2px',
+	boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+	color: '#475569',
 	cursor: 'pointer',
-	fontSize: '12px',
-	fontWeight: 500,
-	padding: '4px 10px',
-	transition: 'all 0.15s ease',
+	fontSize: '13px',
+	fontWeight: '600',
+	padding: '6px 14px',
+	transition: 'all 0.2s ease',
 };
 
 const activeButtonStyles: React.CSSProperties = {
 	...buttonStyles,
-	backgroundColor: '#3b82f6',
-	borderColor: '#2563eb',
+	backgroundColor: '#6366f1',
+	borderBottomColor: '#6366f1',
+	borderLeftColor: '#6366f1',
+	borderRightColor: '#6366f1',
+	borderTopColor: '#6366f1',
+	boxShadow: '0 4px 6px -1px rgba(99, 102, 241, 0.3), 0 2px 4px -1px rgba(99, 102, 241, 0.2)',
 	color: '#ffffff',
+	transform: 'translateY(-1px)',
 };
 
 const labelContainerStyles: React.CSSProperties = {
@@ -238,9 +267,9 @@ const labelContainerStyles: React.CSSProperties = {
 };
 
 const labelTextStyles: React.CSSProperties = {
-	color: '#374151',
+	color: '#1e293b',
 	fontSize: '14px',
-	fontWeight: 500,
+	fontWeight: '600',
 };
 
 const buttonGroupStyles: React.CSSProperties = {
@@ -250,8 +279,9 @@ const buttonGroupStyles: React.CSSProperties = {
 
 const smallButtonStyles: React.CSSProperties = {
 	...buttonStyles,
-	fontSize: '11px',
-	padding: '4px 8px',
+	borderRadius: '6px',
+	fontSize: '12px',
+	padding: '4px 10px',
 };
 
 // ============================================================================
@@ -390,7 +420,7 @@ export function SitemapEditor({
 
 	// Preview type state
 	const [previewType, setPreviewType] = useState<
-		'list' | 'd3-horizontal' | 'd3-vertical' | 'navbar'
+		'list' | 'd3-horizontal' | 'd3-vertical' | 'navbar' | 'flowchart'
 	>(initialPreviewType);
 
 	// Sync parsed tree into local view when parser output changes
@@ -523,6 +553,12 @@ export function SitemapEditor({
 		setViewTree((prev) => collapseAllNodes(prev));
 	}, []);
 
+	// Node click handler for navbar
+	const handleNodeClick = useCallback((node: TreeNode) => {
+		console.log('Clicked node:', node);
+		// You can expand this to do more with the clicked node
+	}, []);
+
 	// Copy/Paste handlers
 	const [copyFeedback, setCopyFeedback] = React.useState(false);
 	const [pasteError, setPasteError] = React.useState('');
@@ -626,7 +662,12 @@ export function SitemapEditor({
 							...textareaStyles,
 							...(isFocused ? textareaFocusStyles : {}),
 							...(disabled
-								? { backgroundColor: '#f3f4f6', cursor: 'not-allowed' }
+								? {
+										backgroundColor: '#f8fafc',
+										borderColor: '#e2e8f0',
+										cursor: 'not-allowed',
+										opacity: 0.7,
+									}
 								: {}),
 						}}
 						aria-describedby={
@@ -689,6 +730,16 @@ export function SitemapEditor({
 									}>
 									Tree (V)
 								</button>
+								<button
+									type="button"
+									onClick={() => setPreviewType('flowchart')}
+									style={
+										previewType === 'flowchart'
+											? activeButtonStyles
+											: buttonStyles
+									}>
+									Flowchart
+								</button>
 								<div style={{ display: 'flex', gap: '8px', marginLeft: 'auto' }}>
 									<button
 										type="button"
@@ -722,8 +773,20 @@ export function SitemapEditor({
 								{...restTreeProps}
 							/>
 						) : previewType === 'navbar' ? (
-							<div style={{ marginTop: '12px' }}>
-								<HorizontalNavBar nodes={viewTree} />
+							<div
+								style={{
+									backgroundColor: '#ffffff',
+									border: '1px solid #e5e7eb',
+									borderRadius: '8px',
+									marginTop: '12px',
+									overflow: 'visible',
+								}}>
+								<HorizontalNavBar nodes={viewTree} onNodeClick={handleNodeClick} />
+							</div>
+						) : previewType === 'flowchart' ? (
+							<div
+								style={{ marginTop: '12px', minHeight: '450px', overflow: 'auto' }}>
+								<FlowchartDiagram nodes={viewTree} width={900} height={600} />
 							</div>
 						) : (
 							<div
