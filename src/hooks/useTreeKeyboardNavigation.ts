@@ -36,6 +36,12 @@ export interface KeyboardNavigationOptions {
 	/** Callback when selection should change */
 	onSelectionChange?: (nodeId: string, event: { ctrlKey: boolean; shiftKey: boolean }) => void;
 
+	/** Callback when copy operation is triggered (Ctrl+C) */
+	onCopy?: (event: KeyboardEvent | React.KeyboardEvent) => void;
+
+	/** Callback when paste operation is triggered (Ctrl+V) */
+	onPaste?: (event: KeyboardEvent | React.KeyboardEvent) => void;
+
 	/** Whether to prevent default behavior for handled keys (default: true) */
 	preventDefault?: boolean;
 
@@ -55,16 +61,16 @@ export interface KeyboardNavigationActions {
 	/** Set the focused node ID */
 	setFocusedId: (id: string | undefined) => void;
 
-	/** Navigate to the previous visible node */
+	/** Navigate to previous visible node */
 	navigatePrevious: () => void;
 
-	/** Navigate to the next visible node */
+	/** Navigate to next visible node */
 	navigateNext: () => void;
 
-	/** Navigate to the parent node */
+	/** Navigate to parent node */
 	navigateToParent: () => void;
 
-	/** Navigate to the first child node */
+	/** Navigate to first child node */
 	navigateToFirstChild: () => void;
 
 	/** Toggle expand/collapse on focused node */
@@ -73,13 +79,13 @@ export interface KeyboardNavigationActions {
 	/** Delete focused/selected nodes */
 	deleteNodes: () => void;
 
-	/** Select the focused node */
+	/** Select focused node */
 	selectFocused: (options?: { ctrlKey?: boolean; shiftKey?: boolean }) => void;
 
-	/** Focus the first node */
+	/** Focus first node */
 	focusFirst: () => void;
 
-	/** Focus the last node */
+	/** Focus last node */
 	focusLast: () => void;
 
 	/** Toggle keyboard shortcuts help dialog */
@@ -88,7 +94,13 @@ export interface KeyboardNavigationActions {
 	/** Close keyboard shortcuts help dialog */
 	closeHelp: () => void;
 
-	/** Get the keyboard event handler */
+	/** Copy focused/selected nodes (Ctrl+C) */
+	copyNodes: (event: KeyboardEvent) => void;
+
+	/** Paste nodes from clipboard (Ctrl+V) */
+	pasteNodes: (event: KeyboardEvent) => void;
+
+	/** Get keyboard event handler */
 	handleKeyDown: (event: React.KeyboardEvent | KeyboardEvent) => void;
 }
 
@@ -156,6 +168,8 @@ export function useTreeKeyboardNavigation(
 		onToggleExpand,
 		onDeleteNodes,
 		onSelectionChange,
+		onCopy,
+		onPaste,
 		preventDefault = true,
 		containerRef,
 	} = options;
@@ -355,6 +369,22 @@ export function useTreeKeyboardNavigation(
 		setIsHelpOpen(false);
 	}, []);
 
+	const copyNodes = useCallback(
+		(event: KeyboardEvent) => {
+			if (!onCopy) return;
+			onCopy(event);
+		},
+		[onCopy]
+	);
+
+	const pasteNodes = useCallback(
+		(event: KeyboardEvent) => {
+			if (!onPaste) return;
+			onPaste(event);
+		},
+		[onPaste]
+	);
+
 	// Main keyboard event handler
 	const handleKeyDown = useCallback(
 		(event: React.KeyboardEvent | KeyboardEvent) => {
@@ -367,6 +397,25 @@ export function useTreeKeyboardNavigation(
 			}
 
 			let handled = false;
+
+			// Handle Ctrl+C (copy) and Ctrl+V (paste)
+			if ((event.ctrlKey || event.metaKey) && !event.shiftKey && !event.altKey) {
+				if (event.key === 'c') {
+					// Cast event to satisfy TypeScript - both React and DOM events are acceptable
+					copyNodes(event as unknown as KeyboardEvent);
+					handled = true;
+				} else if (event.key === 'v') {
+					// Cast event to satisfy TypeScript - both React and DOM events are acceptable
+					pasteNodes(event as unknown as KeyboardEvent);
+					handled = true;
+				}
+			}
+
+			if (handled && preventDefault) {
+				event.preventDefault();
+				event.stopPropagation();
+				return;
+			}
 
 			switch (event.key) {
 				case 'ArrowUp':
@@ -478,6 +527,8 @@ export function useTreeKeyboardNavigation(
 			toggleExpand,
 			selectFocused,
 			deleteNodes,
+			copyNodes,
+			pasteNodes,
 			focusFirst,
 			focusLast,
 			toggleHelp,
@@ -516,6 +567,7 @@ export function useTreeKeyboardNavigation(
 	return {
 		actions: {
 			closeHelp,
+			copyNodes,
 			deleteNodes,
 			focusFirst,
 			focusLast,
@@ -524,6 +576,7 @@ export function useTreeKeyboardNavigation(
 			navigatePrevious,
 			navigateToFirstChild,
 			navigateToParent,
+			pasteNodes,
 			selectFocused,
 			setFocusedId,
 			toggleExpand,

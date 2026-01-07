@@ -60,6 +60,15 @@ export {
 	isDescendant,
 } from './treeOperations';
 
+// Clipboard utilities for copy/paste operations
+export {
+	copyNodes,
+	getClipboardNodes,
+	clearClipboard,
+	hasClipboardNodes,
+	pasteNodes,
+} from './clipboard';
+
 // Tree flattening utilities for virtualization
 export { flattenTree, countVisibleNodes, type FlattenedNode } from './treeFlattening';
 

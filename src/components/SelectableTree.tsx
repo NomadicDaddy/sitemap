@@ -178,6 +178,12 @@ export interface SelectableTreeProps {
 
 	/** Callback when the focused node changes */
 	onFocusChange?: (nodeId: string | undefined) => void;
+
+	/** Callback when copy operation is triggered (Ctrl+C) */
+	onCopy?: (nodes: TreeNode[]) => void;
+
+	/** Callback when paste operation is triggered (Ctrl+V) */
+	onPaste?: () => void;
 }
 
 // ============================================================================
@@ -687,6 +693,8 @@ export function SelectableTree({
 	showKeyboardShortcutsButton,
 	onDeleteNodes,
 	onFocusChange,
+	onCopy,
+	onPaste,
 }: SelectableTreeProps): React.ReactElement {
 	// Suppress unused variable warning - virtualWidth kept for API compatibility
 	void _virtualWidth;
@@ -813,23 +821,7 @@ export function SelectableTree({
 		[toggleSelection, selectOnly]
 	);
 
-	// Keyboard navigation hook
-	const {
-		state: keyboardState,
-		actions: keyboardActions,
-		containerProps: keyboardContainerProps,
-	} = useTreeKeyboardNavigation({
-		containerRef: basicTreeRef,
-		enabled: enableKeyboardNavigation,
-		nodes: internalNodes,
-		onDeleteNodes,
-		onFocusChange,
-		onSelectionChange: handleKeyboardSelectionChange,
-		onToggleExpand: onToggleCollapse,
-		selectedIds,
-	});
-
-	// Build a map of all nodes for quick lookup
+	// Build a map of all nodes for quick lookup (needed before keyboard navigation)
 	const nodeMap = React.useMemo(() => {
 		const map = new Map<string, TreeNode>();
 
@@ -844,7 +836,7 @@ export function SelectableTree({
 		return map;
 	}, [internalNodes]);
 
-	// Get selected nodes for display
+	// Get selected nodes for display (needed before keyboard navigation)
 	const selectedNodes = React.useMemo(() => {
 		const result: TreeNode[] = [];
 		selectedIds.forEach((id) => {
@@ -855,6 +847,39 @@ export function SelectableTree({
 		});
 		return result;
 	}, [selectedIds, nodeMap]);
+
+	// Handle copy and paste operations for keyboard shortcuts
+	const handleCopy = React.useCallback(() => {
+		if (!onCopy || selectedNodes.length === 0) {
+			return;
+		}
+		onCopy(selectedNodes);
+	}, [onCopy, selectedNodes]);
+
+	const handlePaste = React.useCallback(() => {
+		if (!onPaste) {
+			return;
+		}
+		onPaste();
+	}, [onPaste]);
+
+	// Keyboard navigation hook
+	const {
+		state: keyboardState,
+		actions: keyboardActions,
+		containerProps: keyboardContainerProps,
+	} = useTreeKeyboardNavigation({
+		containerRef: basicTreeRef,
+		enabled: enableKeyboardNavigation,
+		nodes: internalNodes,
+		onCopy: handleCopy,
+		onDeleteNodes,
+		onFocusChange,
+		onPaste: handlePaste,
+		onSelectionChange: handleKeyboardSelectionChange,
+		onToggleExpand: onToggleCollapse,
+		selectedIds,
+	});
 
 	// Create selection state object for callback
 	const selectionState = React.useMemo<SelectionState>(

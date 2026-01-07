@@ -75,6 +75,8 @@ export const DEFAULT_TREE_SHORTCUTS: KeyboardShortcut[] = [
 	{ category: 'actions', description: 'Toggle expand/collapse', keys: ['Enter'] },
 	{ category: 'actions', description: 'Delete selected node(s)', keys: ['Delete'] },
 	{ category: 'actions', description: 'Delete selected node(s)', keys: ['Backspace'] },
+	{ category: 'actions', description: 'Copy selected node(s)', keys: ['Ctrl/Cmd', 'C'] },
+	{ category: 'actions', description: 'Paste node(s)', keys: ['Ctrl/Cmd', 'V'] },
 
 	// General
 	{ category: 'general', description: 'Show/hide keyboard shortcuts', keys: ['?'] },
