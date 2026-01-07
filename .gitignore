@@ -11,3 +11,6 @@ bun.lockb
 
 # Auto Claude data directory
 .auto-claude/
+
+# AI development logs (auto-generated)
+.aidd/iterations/*.log
