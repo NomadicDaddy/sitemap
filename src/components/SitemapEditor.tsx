@@ -23,6 +23,7 @@ import React, { useCallback, useEffect, useId, useMemo, useState } from 'react';
 
 import { useTreeParser } from '../hooks/useTreeParser';
 import { type ParseError, type ParserOptions, type TreeNode } from '../types/TreeNode';
+import { copyNodes, getClipboardNodes, pasteNodes } from '../utils/clipboard';
 import { treeNodesToText } from '../utils/sitemapGenerator';
 import {
 	addTagToNodes,
@@ -563,7 +564,8 @@ export function SitemapEditor({
 	const [copyFeedback, setCopyFeedback] = React.useState(false);
 	const [pasteError, setPasteError] = React.useState('');
 
-	const handleCopy = useCallback(async () => {
+	// Copy text to system clipboard (for textarea buttons)
+	const handleCopyText = useCallback(async () => {
 		try {
 			await navigator.clipboard.writeText(inputValue);
 			setCopyFeedback(true);
@@ -575,7 +577,8 @@ export function SitemapEditor({
 		}
 	}, [inputValue]);
 
-	const handlePaste = useCallback(async () => {
+	// Paste text from system clipboard (for textarea buttons)
+	const handlePasteText = useCallback(async () => {
 		try {
 			const text = await navigator.clipboard.readText();
 			setInputValue(text);
@@ -586,6 +589,33 @@ export function SitemapEditor({
 			console.error('Paste error:', err);
 		}
 	}, [setInputValue]);
+
+	// Copy selected tree nodes to internal clipboard
+	const handleCopyNodes = useCallback((selectedNodes: TreeNode[]) => {
+		if (!selectedNodes || selectedNodes.length === 0) {
+			return;
+		}
+		copyNodes(selectedNodes);
+		setCopyFeedback(true);
+		setTimeout(() => setCopyFeedback(false), 2000);
+		setPasteError('');
+	}, []);
+
+	// Paste tree nodes from internal clipboard
+	const handlePasteNodes = useCallback(() => {
+		const clipboardNodes = getClipboardNodes();
+		if (!clipboardNodes || clipboardNodes.length === 0) {
+			setPasteError('Clipboard is empty. Copy nodes first (Ctrl+C).');
+			return;
+		}
+
+		// Paste as root nodes by default
+		const updated = pasteNodes(viewTree, clipboardNodes);
+		setViewTree(updated);
+		setInputValue(treeNodesToText(updated));
+		setPasteError('');
+		setCopyFeedback(false);
+	}, [viewTree, setInputValue]);
 
 	const { showBulkActions: propShowBulkActions = true, ...restTreeProps } = treeProps ?? {};
 
@@ -613,7 +643,7 @@ export function SitemapEditor({
 						<div style={buttonGroupStyles}>
 							<button
 								type="button"
-								onClick={handleCopy}
+								onClick={handleCopyText}
 								style={{
 									...smallButtonStyles,
 									backgroundColor: copyFeedback
@@ -630,7 +660,7 @@ export function SitemapEditor({
 							</button>
 							<button
 								type="button"
-								onClick={handlePaste}
+								onClick={handlePasteText}
 								style={smallButtonStyles}
 								title="Paste from clipboard"
 								disabled={disabled}>
@@ -770,6 +800,8 @@ export function SitemapEditor({
 								onBulkModifyProperties={handleBulkModifyProperties}
 								collapsible={true}
 								onToggleCollapse={handleToggleCollapse}
+								onCopy={handleCopyNodes}
+								onPaste={handlePasteNodes}
 								{...restTreeProps}
 							/>
 						) : previewType === 'navbar' ? (
