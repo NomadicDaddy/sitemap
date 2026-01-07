@@ -890,3 +890,199 @@ Changes not staged for commit:
 
 
 
+[91m[1m| [0m[90m Bash     [0mStage all changes and check status
+
+warning: in the working copy of '.aidd/iterations/001.log', CRLF will be replaced by LF the next time Git touches it
+On branch master
+Your branch is ahead of 'origin/master' by 6 commits.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   .aidd/feature_list.json
+	modified:   .aidd/iterations/001.log
+	modified:   .aidd/progress.md
+	modified:   .aidd/project_structure.md
+	deleted:    .aidd/spec.txt
+	deleted:    .aidd/validations/1001819/validation.json
+	deleted:    .automaker/iterations/001.log
+	deleted:    .automaker/progress.md
+	deleted:    .automaker/project_structure.md
+	deleted:    .automaker/validations/1001819/validation.json
+
+
+[91m[1m| [0m[90m Bash     [0mCommit onboarding changes
+
+[master 377a939] onboard: Initialize AI project tracking with comprehensive feature documentation
+ 10 files changed, 1369 insertions(+), 1334 deletions(-)
+ delete mode 100644 .aidd/spec.txt
+ delete mode 100644 .aidd/validations/1001819/validation.json
+ delete mode 100644 .automaker/iterations/001.log
+ delete mode 100644 .automaker/progress.md
+ delete mode 100644 .automaker/project_structure.md
+ delete mode 100644 .automaker/validations/1001819/validation.json
+
+[91m[1m| [0m[90m Bash     [0mShow recent commits
+377a939 onboard: Initialize AI project tracking with comprehensive feature documentation
+6cd4c71 onboard: re-verify project state and update tracking
+0029cd6 onboard: stop tracking iteration logs
+90cf6e1 onboard: ignore AI iteration log files
+3f34260 onboard: update iteration log with session details
+
+
+[91m[1m| [0m[90m Bash     [0mVerify clean working directory
+
+On branch master
+Your branch is ahead of 'origin/master' by 7 commits.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+
+[91m[1m| [0m[90m Bash     [0mVerify JSON structure
+
+[
+	{
+		"area": "frontend",
+		"category": "functional",
+		"closed_at": null,
+		"created_at": "2025-01
+...
+erify all tests still pass",
+			"Step 5: Confirm build process completes without warnings"
+		]
+	}
+]
+
+[91m[1m| [0m[90m Bash     [0mCount number of features
+
+30
+
+[91m[1m| [0m[90m Bash     [0mCount features using jq
+
+30
+
+[91m[1m| [0m[90m Bash     [0mCount passing vs failing features
+
+20
+10
+
+[91m[1m| [0m[90m Bash     [0mVerify progress.md content
+
+# ---------------------------------------------------------------------------------------------------------------------
+
+# SESSION {iteration_number: 001} SUMMARY: 2025-01-07 Onboarding Session - Setup and Initialization
+
+# ---------------------------------------------------------------------------------------------------------------------
+
+## Session Metadata
+
+- **Session Goal**: Initialize AI project tracking and create comprehensive feature documentation for UX Sitemap Visualizer
+- **Participants**: AI Assistant (Claude) - Onboarding Agent
+
+## Work Completed
+
+### 1) Project Analysis and Documentation
+
+- [x] Analyzed existing codebase structure and components
+- [x] Reviewed package.json, tech stack, and dependencies
+- [x] Identified 19 existing feature directories from .automaker migration
+- [x] Ran smoke:qc quality check - all tests passing
+- [x] Documented project structure in .aidd/project_structure.md
+
+[91m[1m| [0m[90m Bash     [0mVerify project_structure.md
+
+# Project Structure
+
+## Overview
+
+The UX Sitemap Visualizer is a React/TypeScript web application that transforms text-based tree structures into beautiful, interactive visualizations for UX/product design documentation. The application serves designers, product managers, and developers who need to quickly visualize and document sitemaps, wireframes, and hierarchical information architecture. The primary constraints include maintaining high code quality (zero TypeScript errors, zero ESLint warnings), comprehensive test coverage, and responsive design for desktop and tablet viewing.
+
+## Repository Layout
+
+### Root Level
+
+```
+sitemap/
+├── src/                      # Source code
+│   ├── components/           # React components
+│   ├── hooks/               # Custom React hooks
+│   ├── utils/               # Utility functions and helpers
+│   ├── types/               # TypeScript type definitions
+│   ├── theme/               # Theme system configuration
+│   ├── styles/              # Global styles
+│   └── __tests__/           # Test files
+├── public/                  # Static assets
+├── dist/                    # Build output
+├── node_modules/            # Dependencies
+├── .aidd/                   # AI project management files
+├── .automaker/              # Legacy project management (migrated to .aidd/)
+├── .git/                    # Git repository
+├── index.html               # HTML entry point
+├── package.json             # Project dependencies and scripts
+├── tsconfig.json            # TypeScript configuration
+├── vite.config.ts           # Vite build configuration
+├── tailwind.config.js      # Tailwind CSS configuration
+├── jest.config.cjs          # Jest test configuration
+├── eslint.config.js        # ESLint linting configuration
+├── .prettierrc              # Prettier formatting configuration
+└── README.md                # Project documentation
+```
+
+## Key Concepts / Modules
+
+### Core Parser System
+
+- **Responsibility**: Parse text-based tree structures with various indentation formats (├──, └──, │, spaces) into structured TreeNode objects
+- **Key files**:
+    - `src/utils/treeParser.ts` - Main parsing logic
+    - `src/utils/parserErrors.ts` - Error detection and reporting
+    - `src/utils/sitemapGenerator.ts` - Generate sample sitemaps
+    - `src/types/TreeNode.ts` - Type definitions
+- **Primary entry points**:
+    - `parseTreeText()` - Parse text to flat node array
+    - `buildTreeHierarchy()` - Build nested tree structure
+
+## Onboarding Complete
+
+Successfully initialized AI project tracking for **UX Sitemap Visualizer**:
+
+**Project Analysis:**
+- React/TypeScript web app for visualizing text-based tree structures
+- Tech stack: React 19+, TypeScript 5+, Vite 7+, Tailwind CSS 4+, D3.js, React Flow
+- All quality checks passing (lint, typecheck, format, build, test)
+
+**Documentation Created:**
+- `.aidd/feature_list.json`: 30 detailed test cases
+  - 20 passing features (verified implemented)
+  - 10 incomplete features (future implementation)
+  - Mix of functional, style, performance, testing, devex, docs, process categories
+- `.aidd/project_structure.md`: Comprehensive architecture documentation
+  - Core modules: Parser System, Visualization Components, Interactive Features, Version Management, Export Functionality, Theme System
+  - Data models, API exports, development workflow, notes/gotchas
+- `.aidd/progress.md`: Session summary and current state
+
+**Key Implemented Features:**
+- Tree parsing (multiple indentation formats)
+- Real-time preview
+- Multiple visualizations (Basic tree, D3, Flowchart, Virtualized)
+- Node selection, expansion, inline editing
+- Keyboard navigation
+- Search & filter
+- Version management with comparison
+- PNG/SVG export
+- Error detection with suggestions
+- Responsive layout
+- Performance optimization (1000+ nodes)
+
+**Git Commit:**
+- Committed with message: "onboard: Initialize AI project tracking with comprehensive feature documentation"
+- Clean working directory
+
+**Next Session:** Review features and implement missing capabilities starting with priority items (drag-and-drop node rearrangement, bulk operations).
+aidd-o.sh: idle timeout (180s) waiting for opencode output; aborting.
+aidd-o.sh: opencode failed (exit=71); this is failure #1.
+aidd-o.sh: continuing to next iteration (threshold: 3).
+
+--- End of iteration 1 ---
+Finished: 2026-01-07T11:58:45-06:00
+
