@@ -497,9 +497,9 @@
 		"closed_at": null,
 		"created_at": "2025-01-07",
 		"description": "Fix Jest configuration warnings for ts-jest",
-		"passes": false,
+		"passes": true,
 		"priority": "low",
-		"status": "open",
+		"status": "resolved",
 		"steps": [
 			"Step 1: Update jest.config.cjs to use non-deprecated ts-jest configuration",
 			"Step 2: Move ts-jest config from globals to transform array",

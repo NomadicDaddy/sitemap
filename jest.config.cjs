@@ -51,13 +51,9 @@ module.exports = {
 					target: 'ES2020',
 					types: ['jest', '@testing-library/jest-dom', 'node'],
 				},
+				useESM: false,
 			},
 		],
 		'^.+\\.(js|jsx)$': 'babel-jest',
-	},
-	globals: {
-		'ts-jest': {
-			useESM: false,
-		},
 	},
 };
