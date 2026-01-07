@@ -4,7 +4,7 @@
  * Renders tree nodes as a horizontal navigation bar similar to website navigation.
  * Top-level nodes appear as primary nav items, with children shown as dropdown menus.
  */
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { type TreeNode } from '../types/TreeNode';
 
