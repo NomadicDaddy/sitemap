@@ -6,6 +6,8 @@ coverage
 dist
 node_modules
 .env
+bun.lock
+bun.lockb
 
 # Auto Claude data directory
 .auto-claude/

@@ -187,3 +187,424 @@ exists
 [96m[1m| [0m[90m Read     [0m.aidd\feature_list.json
 Good! A feature_list.json already exists. Let me now create the project_structure.md document and update progress.md:
 [96m[1m| [0m[90m Read     [0m.aidd\project_structure.md
+[96m[1m| [0m[90m Read     [0m.aidd\progress.md
+[91m[1m| [0m[90m Bash     [0mRun smoke quality checks
+
+$ bun run lint:fix && bun run typecheck && bun run format && bun run build && bun run test
+$ eslint src --report-unused-disable-directives --max-warnings 0 --fix
+node:internal/modules/cjs/loader:1423
+  throw err;
+  ^
+
+Error: Cannot find module 'D:\packages\npm\node_modules\eslint\bin\eslint.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1420:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1058:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1063:22)
+    at Module._load (node:internal/modules/cjs/loader:1226:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v25.2.1
+error: script "lint:fix" exited with code 1
+error: script "smoke:qc" exited with code 1
+
+[91m[1m| [0m[90m Bash     [0mCheck node location
+
+
+/c/Program Files/nodejs/node
+[91m[1m| [0m[90m Bash     [0mCheck ESLint version
+
+node:internal/modules/cjs/loader:1423
+  throw err;
+  ^
+
+Error: Cannot find module 'D:\packages\npm\node_modules\eslint\bin\eslint.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1420:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1058:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1063:22)
+    at Module._load (node:internal/modules/cjs/loader:1226:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v25.2.1
+
+[91m[1m| [0m[90m Bash     [0mCheck NODE_PATH env
+[91m[1m| [0m[90m Bash     [0mCheck bun version
+
+1.3.5
+
+[91m[1m| [0m[90m Bash     [0mCheck bun binary path
+
+D:\applications\sitemap\node_modules\.bin
+
+[91m[1m| [0m[90m Bash     [0mRun lint directly
+
+$ eslint src --report-unused-disable-directives --max-warnings 0
+node:internal/modules/cjs/loader:1423
+  throw err;
+  ^
+
+Error: Cannot find module 'D:\packages\npm\node_modules\eslint\bin\eslint.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1420:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1058:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1063:22)
+    at Module._load (node:internal/modules/cjs/loader:1226:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v25.2.1
+error: script "lint" exited with code 1
+
+[96m[1m| [0m[90m Read     [0meslint.config.js
+[91m[1m| [0m[90m Bash     [0mCheck if eslint is installed
+
+ls: cannot access 'D:\applications\sitemap\node_modules\eslint': No such file or directory
+
+[91m[1m| [0m[90m Bash     [0mCheck node_modules
+
+ls: cannot access 'D:\applications\sitemap\node_modules': No such file or directory
+
+[91m[1m| [0m[90m Bash     [0mInstall dependencies
+
+bun install v1.3.5 (1e86cebd)
+Resolving dependencies
+Resolved, downloaded and extracted [587]
+Saved lockfile
+
++ @babel/core@7.28.5
++ @babel/preset-env@7.28.5
++ @playwright/test@1.57.0
++ @tailwindcss/postcss@4.1.18
++ @testing-library/jest-dom@6.9.1
++ @testing-library/react@16.3.1
++ @trivago/prettier-plugin-sort-imports@6.0.2
++ @types/jest@30.0.0
++ @types/node@25.0.3
++ @types/react@19.2.7
++ @types/react-dom@19.2.3
++ @typescript-eslint/eslint-plugin@8.52.0
++ @typescript-eslint/parser@8.52.0
++ @vitejs/plugin-react@5.1.2
++ autoprefixer@10.4.23
++ babel-jest@30.2.0
++ eslint@9.39.2
++ eslint-config-prettier@10.1.8
++ eslint-formatter-compact@9.0.1
++ eslint-plugin-prettier@5.5.4
++ eslint-plugin-react-hooks@7.0.1
++ eslint-plugin-react-refresh@0.4.26
++ eslint-plugin-sort-keys-fix@1.1.2
++ identity-obj-proxy@3.0.0
++ jest@30.2.0
++ jest-environment-jsdom@30.2.0
++ postcss@8.5.6
++ prettier@3.7.4
++ prettier-plugin-organize-attributes@1.0.0
++ prettier-plugin-sort-json@4.1.1
++ prettier-plugin-tailwindcss@0.7.2
++ tailwindcss@4.1.18
++ ts-jest@29.4.6
++ typescript@5.9.3
++ typescript-eslint@8.52.0
++ vite@7.3.1
++ @types/d3@7.4.3
++ @types/react-window@2.0.0
++ @xyflow/react@12.10.0
++ d3@7.9.0
++ react@19.2.3
++ react-dom@19.2.3
++ react-window@2.2.4
+
+655 packages installed [15.24s]
+
+[91m[1m| [0m[90m Bash     [0mRun smoke quality checks
+
+      √ should have aria-label on SVG (1 ms)
+      √ should have title and desc elements for SVG (2 ms)
+      √ should have aria-label for empty tree (2 ms)
+    zoom functionality
+      √ should enable zoom by default (15 ms)
+      √ should disable zoom when enableZoom is false (15 ms)
+    integration with parser
+      √ should render tree from parseAndBuildTree output (4 ms)
+      √ should handle complex sitemap structures (5 ms)
+    depth-based styling
+      √ should apply blue color for depth 0 (page level) (6 ms)
+      √ should apply gray color for depth 1 (section level) (9 ms)
+      √ should apply darker gray for depth 2 (component level) (2 ms)
+      √ should apply progressively lighter gray for deeper levels (18 ms)
+      √ should apply larger node size for depth 0 (2 ms)
+      √ should apply progressively smaller node sizes for deeper levels (13 ms)
+      √ should apply thicker stroke width for depth 0 (9 ms)
+      √ should apply progressively thinner stroke widths for deeper levels (16 ms)
+      √ should apply depth-based font sizes to text labels (5 ms)
+      √ should apply depth-based font weights to text labels (2 ms)
+      √ should still respect metadata style overrides (4 ms)
+    edge cases
+      √ should handle nodes with special characters in labels (13 ms)
+      √ should handle nodes with empty string labels (2 ms)
+      √ should handle nodes with long labels (13 ms)
+      √ should handle single node tree (4 ms)
+      √ should handle wide tree with many siblings (12 ms)
+    animation settings
+      √ should accept custom animation duration (16 ms)
+      √ should handle zero animation duration (16 ms)
+    margin customization
+      √ should apply custom margins (7 ms)
+    SVG rendering optimizations
+      √ should inject GPU acceleration styles when useGPUAcceleration is true (8 ms)
+      √ should support labelVisibilityThreshold prop (15 ms)
+      √ should support maxLabelWidth prop (3 ms)
+      √ should render long labels (truncation works in browser, not jsdom) (12 ms)
+      √ should create label groups for text clipping (17 ms)
+      √ should add clipPath definition to SVG defs (14 ms)
+      √ should apply initial label visibility class (4 ms)
+      √ should not add D3 transition handlers when useGPUAcceleration is true (12 ms)
+
+PASS src/__tests__/SitemapEditor.test.tsx (5.29 s)
+  SitemapEditor
+    rendering
+      √ should render textarea and preview sections (88 ms)
+      √ should render with initial value (22 ms)
+      √ should display placeholder text when empty (7 ms)
+      √ should apply custom className (5 ms)
+      √ should set correct number of rows on textarea (5 ms)
+    real-time preview
+      √ should update preview instantly when typing (14 ms)
+      √ should parse tree structure and display in preview (15 ms)
+      √ should update preview on every keystroke (18 ms)
+      √ should display empty state message when no nodes (5 ms)
+    error display
+      √ should display parsing errors when showErrors is true (13 ms)
+      √ should hide errors when showErrors is false (9 ms)
+      √ should clear errors when input becomes valid (38 ms)
+    statistics display
+      √ should show stats when showStats is true (10 ms)
+      √ should hide stats when showStats is false (5 ms)
+      √ should update stats in real-time (17 ms)
+    preview visibility
+      √ should show preview by default (4 ms)
+      √ should hide preview when showPreview is false (1 ms)
+    disabled state
+      √ should disable textarea when disabled prop is true (4 ms)
+      √ should not be disabled by default (3 ms)
+    callbacks
+      √ should call onTreeChange when tree changes (20 ms)
+      √ should call onErrorsChange when errors change (16 ms)
+      √ should call onInputChange when input changes (8 ms)
+    tree props
+      √ should pass treeProps to BasicTree (7 ms)
+      √ should apply custom indentSize from treeProps (8 ms)
+    parser options
+      √ should pass parser options to the hook (9 ms)
+    custom renderers
+      √ should use custom renderErrors function (9 ms)
+      √ should use custom renderStats function (10 ms)
+    accessibility
+      √ should have proper aria-label on textarea (4 ms)
+      √ should have proper aria-label on preview (4 ms)
+      √ should set aria-invalid when there are errors (8 ms)
+      √ should set aria-invalid to false when valid (5 ms)
+      √ should disable spellcheck on textarea (4 ms)
+    complex interactions
+      √ should handle rapid typing (36 ms)
+      √ should handle clearing and re-entering text (26 ms)
+      √ should handle complex sitemap structures (9 ms)
+    labels
+      √ should display custom textarea label (2 ms)
+      √ should display custom preview label (2 ms)
+
+Test Suites: 19 passed, 19 total
+Tests:       689 passed, 689 total
+Snapshots:   0 total
+Time:        7.543 s, estimated 12 s
+Ran all test suites.
+
+[91m[1m| [0m[90m Bash     [0mCheck TypeScript types
+
+
+$ tsc --noEmit
+[91m[1m| [0m[90m Bash     [0mCheck ESLint
+
+$ eslint src --report-unused-disable-directives --max-warnings 0
+
+[91m[1m| [0m[90m Bash     [0mCheck build outputtotal 44
+drwxr-xr-x 1 phill 197609     0 Jan  7 11:33 .
+drwxr-xr-x 1 phill 197609     0 Jan  7 11:33 ..
+drwxr-xr-x 1 phill 197609     0 Jan  7 11:33 components
+-rw-r--r-- 1 phill 197609    45 Jan  7 11:33 demo.d.ts
+-rw-r--r-- 1 phill 197609   103 Jan  7 11:33 demo.d.ts.map
+-rw-r--r-- 1 phill 197609   555 Jan  7 11:33 demo.js
+-rw-r--r-- 1 phill 197609   304 Jan  7 11:33 demo.js.map
+-rw-r--r-- 1 phill 197609   143 Jan  7 11:33 DemoApp.d.ts
+-rw-r--r-- 1 phill 197609   203 Jan  7 11:33 DemoApp.d.ts.map
+-rw-r--r-- 1 phill 197609  2188 Jan  7 11:33 DemoApp.js
+-rw-r--r-- 1 phill 197609  1132 Jan  7 11:33 DemoApp.js.map
+drwxr-xr-x 1 phill 197609     0 Jan  7 11:33 hooks
+-rw-r--r-- 1 phill 197609  3919 Jan  7 11:33 index.d.ts
+-rw-r--r-- 1 phill 197609  2561 Jan  7 11:33 index.d.ts.map
+-rw-r--r-- 1 phill 197609 16334 Jan  7 11:33 index.js
+-rw-r--r-- 1 phill 197609  2527 Jan  7 11:33 index.js.map
+-rw-r--r-- 1 phill 197609   258 Jan  7 11:33 setupTests.d.ts
+-rw-r--r-- 1 phill 197609   149 Jan  7 11:33 setupTests.d.ts.map
+-rw-r--r-- 1 phill 197609   641 Jan  7 11:33 setupTests.js
+
+
+
+[91m[1m| [0m[90m Bash     [0mBuild project
+
+$ tsc
+
+[91m[1m| [0m[90m Bash     [0mShow changes summary
+
+warning: in the working copy of '.aidd/iterations/002.log', CRLF will be replaced by LF the next time Git touches it
+ .aidd/iterations/002.log | 283 +++++++++++++++++++++++++++++++++++++++++++++++
+ index.html               |   2 +-
+ 2 files changed, 284 insertions(+), 1 deletion(-)
+
+[91m[1m| [0m[90m Bash     [0mCheck git status
+
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   .aidd/iterations/002.log
+	modified:   index.html
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	bun.lock
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+[91m[1m| [0m[90m Bash     [0mShow recent commits
+
+01b6570 onboard: Initialize AI development tracking foundation
+eddd186 .
+b3894a0 onboard: verify quality gates and update feature tracking
+34eabe4 feat: add AI development infrastructure and documentation
+6b0f29d .
+
+[91m[1m| [0m[90m Bash     [0mShow index.html changes
+
+diff --git a/index.html b/index.html
+index 045f54a..15347aa 100644
+--- a/index.html
++++ b/index.html
+@@ -4,7 +4,7 @@
+ 		<meta charset="UTF-8" />
+ 		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+ 		<title>UX Sitemap Visualizer - Development</title>
+-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
++		<link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+ 		<style>
+ 			body {
+ 				margin: 0;
+
+[96m[1m| [0m[90m Read     [0m.gitignore
+[92m[1m| [0m[90m Edit     [0m.gitignore
+[91m[1m| [0m[90m Bash     [0mCheck git status after gitignore update
+
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   .aidd/iterations/002.log
+	modified:   .gitignore
+	modified:   index.html
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+[91m[1m| [0m[90m Bash     [0mCommit changes
+
+fatal: Unable to create 'D:/applications/sitemap/.git/index.lock': File exists.
+
+Another git process seems to be running in this repository, e.g.
+an editor opened by 'git commit'. Please make sure all processes
+are terminated then try again. If it still fails, a git process
+may have crashed in this repository earlier:
+remove the file manually to continue.
+
+[91m[1m| [0m[90m Bash     [0mCheck staged changes
+
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   .aidd/iterations/002.log
+	modified:   .gitignore
+	modified:   index.html
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+[91m[1m| [0m[90m Bash     [0mStage changes for commit
+
+warning: in the working copy of '.aidd/iterations/002.log', CRLF will be replaced by LF the next time Git touches it
+
+[91m[1m| [0m[90m Bash     [0mStage changes
+[91m[1m| [0m[90m Bash     [0mRemove git lock file
+[91m[1m| [0m[90m Bash     [0mCheck status
+
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   .aidd/iterations/002.log
+	modified:   .gitignore
+	modified:   index.html
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   .aidd/iterations/002.log
+
+
+[91m[1m| [0m[90m Bash     [0mVerify commit
+
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   .aidd/iterations/002.log
+	modified:   .gitignore
+	modified:   index.html
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   .aidd/iterations/002.log
+
+
+[91m[1m| [0m[90m Bash     [0mCommit changes
+
+[master 4b44a57] onboard: verify project state and update gitignore
+ 3 files changed, 352 insertions(+), 1 deletion(-)
+
