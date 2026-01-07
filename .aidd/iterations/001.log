@@ -1,47 +1,121 @@
 Iteration 1 of 10
-Transcript: ../sitemap/.automaker/iterations/001.log
-Started: 2026-01-07T11:07:17-06:00
+Transcript: /d/applications/sitemap/.aidd/iterations/001.log
+Started: 2026-01-07T11:51:15-06:00
+
 Detected incomplete onboarding, resuming onboarding prompt...
-Copying artifacts to '../sitemap/.automaker'...
-I'll help you set up the foundation for this codebase. Let me start by exploring the project structure and checking for existing configuration files.
-|  Glob     {"pattern":"**/.aidd/*"}
-|  Glob     {"pattern":"**/.autoo/*"}
-|  Bash     Get current working directory
-/d/applications/sitemap
-|  Bash     List all files including hidden ones
-total 219
-drwxr-xr-x 1 phill 197609      0 Jan  7 10:57 .
+Copying artifacts to '/d/applications/sitemap/.aidd'...
+I'll help you set up the foundation for integrating with the existing codebase. Let me start by checking for project-specific instructions and understanding the project structure.
+[91m[1m| [0m[90m Bash     [0mList files in current directory
+
+total 234
+drwxr-xr-x 1 phill 197609      0 Jan  7 11:51 .
 drwxr-xr-x 1 phill 197609      0 Jan  7 10:54 ..
-drwxr-xr-x 1 phill 197609      0 Jan  7 08:28 .auto-claude
-drwxr-xr-x 1 phill 197609      0 Jan  7 11:07 .automaker
--rw-r--r-- 1 phill 197609    167 Nov  3 20:58 .editorconfig
-drwxr-xr-x 1 phill 197609      0 Jan  7 10:56 .git
+drwxr-xr-x 1 phill 197609      0 Jan  7 11:51 .aidd
+drwxr-xr-x 1 phill 197609      0 Jan  7 11:44 .automaker
+drwxr-xr-x 1 phill 197609      0 Jan  7 11:37 .git
 -rw-r--r-- 1 phill 197609    673 Dec 19 02:15 .gitattributes
--rw-r--r-- 1 phill 197609    115 Jan  7 08:28 .gitignore
+-rw-r--r-- 1 phill 197609    197 Jan  7 11:35 .gitignore
 -rw-r--r-- 1 phill 197609    100 Dec 20 23:45 .prettierignore
 -rw-r--r-- 1 phill 197609    592 Nov 24 17:08 .prettierrc
-drwxr-xr-x 1 phill 197609      0 Dec 20 19:41 .windsurf
 -rw-r--r-- 1 phill 197609    145 Dec 20 15:15 babel.config.cjs
--rw-r--r-- 1 phill 197609 200310 Dec 23 19:33 bun.lock
+-rw-r--r-- 1 phill 197609 201101 Jan  7 11:33 bun.lock
 -rw-r--r-- 1 phill 197609   1475 Dec 20 14:25 CLAUDE.md
-drwxr-xr-x 1 phill 197609      0 Dec 27 23:12 dist
+drwxr-xr-x 1 phill 197609      0 Jan  7 11:33 dist
 -rw-r--r-- 1 phill 197609   2571 Dec 12 15:09 eslint.config.js
--rw-r--r-- 1 phill 197609    940 Dec 27 23:16 index.html
+-rw-r--r-- 1 phill 197609    940 Jan  7 11:33 index.html
 -rw-r--r-- 1 phill 197609   1579 Dec 23 01:04 jest.config.cjs
-drwxr-xr-x 1 phill 197609      0 Dec 23 19:33 node_modules
+drwxr-xr-x 1 phill 197609      0 Jan  7 11:33 node_modules
 -rw-r--r-- 1 phill 197609   2441 Dec 23 19:33 package.json
 -rw-r--r-- 1 phill 197609     86 Dec 20 15:20 postcss.config.js
 drwxr-xr-x 1 phill 197609      0 Dec 27 23:15 public
+-rw-r--r-- 1 phill 197609  10222 Jan  7 11:12 README.md
 drwxr-xr-x 1 phill 197609      0 Dec 22 23:55 src
 -rw-r--r-- 1 phill 197609    962 Dec 20 14:28 tailwind.config.js
-drwxr-xr-x 1 phill 197609      0 Dec 22 19:19 test-results
 -rw-r--r-- 1 phill 197609    639 Dec 20 14:28 tsconfig.json
 -rw-r--r-- 1 phill 197609    518 Dec 20 14:28 vite.config.ts
-|  Read     package.json
-|  Bash     List contents of src directory
+
+[91m[1m| [0m[90m Bash     [0mList files in .aidd directory
+
+total 19
+drwxr-xr-x 1 phill 197609    0 Jan  7 11:51 .
+drwxr-xr-x 1 phill 197609    0 Jan  7 11:51 ..
+-rw-r--r-- 1 phill 197609 9551 Jan  7 11:51 app_spec.txt
+-rw-r--r-- 1 phill 197609   24 Jan  7 11:51 categories.json
+drwxr-xr-x 1 phill 197609    0 Jan  7 11:51 features
+drwxr-xr-x 1 phill 197609    0 Jan  7 11:51 iterations
+-rw-r--r-- 1 phill 197609  802 Jan  7 11:51 pipeline.json
+-rw-r--r-- 1 phill 197609 1242 Jan  7 11:51 progress.md
+-rw-r--r-- 1 phill 197609 2009 Jan  7 11:51 project_structure.md
+-rw-r--r-- 1 phill 197609  307 Jan  7 11:51 settings.json
+
+[91m[1m| [0m[90m Bash     [0mList files in .automaker directory
+
+total 15
+drwxr-xr-x 1 phill 197609    0 Jan  7 11:44 .
+drwxr-xr-x 1 phill 197609    0 Jan  7 11:51 ..
+-rw-r--r-- 1 phill 197609 9551 Jan  7 11:20 app_spec.txt
+-rw-r--r-- 1 phill 197609   24 Jan  7 11:20 categories.json
+drwxr-xr-x 1 phill 197609    0 Jan  7 11:20 features
+-rw-r--r-- 1 phill 197609  802 Jan  7 11:20 pipeline.json
+-rw-r--r-- 1 phill 197609  307 Jan  7 11:20 settings.json
+
+[96m[1m| [0m[90m Read     [0m.aidd\app_spec.txt
+[96m[1m| [0m[90m Read     [0m.aidd\progress.md
+
+[96m[1m| [0m[90m Read     [0m.aidd\project_structure.md[91m[1m| [0m[90m Bash     [0mList files in .automaker features
+
+total 0
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 .
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:44 ..
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 basic-tree-component
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 bulk-node-operations
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 d3-tree-diagram
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 depth-based-styling
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 feature-1766473599401-xze92snp0
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 flowchart-mode
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 node-data-structure
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 node-editing-inline
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 node-selection
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 parser-error-handling
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 performance-memoization
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 real-time-preview
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 responsive-flexbox-layout
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 sample-sitemap-generator
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 text-input-parser
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 theme-system
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 tree-node-component
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:20 virtual-scrolling
+
+[91m[1m| [0m[90m Bash     [0mList files in .aidd features
+
+total 0
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 .
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 ..
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 basic-tree-component
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 bulk-node-operations
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 d3-tree-diagram
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 depth-based-styling
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 feature-1766473599401-xze92snp0
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 flowchart-mode
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 node-data-structure
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 node-editing-inline
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 node-selection
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 parser-error-handling
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 performance-memoization
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 real-time-preview
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 responsive-flexbox-layout
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 sample-sitemap-generator
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 text-input-parser
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 theme-system
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 tree-node-component
+drwxr-xr-x 1 phill 197609 0 Jan  7 11:51 virtual-scrolling
+
+[96m[1m| [0m[90m Read     [0mpackage.json
+[91m[1m| [0m[90m Bash     [0mList src directory structure
+
 total 14
 drwxr-xr-x 1 phill 197609    0 Dec 22 23:55 .
-drwxr-xr-x 1 phill 197609    0 Jan  7 10:57 ..
+drwxr-xr-x 1 phill 197609    0 Jan  7 11:51 ..
 drwxr-xr-x 1 phill 197609    0 Dec 23 00:00 __tests__
 drwxr-xr-x 1 phill 197609    0 Dec 23 01:09 components
 -rw-r--r-- 1 phill 197609  227 Dec 20 15:09 demo.tsx
@@ -53,14 +127,8 @@ drwxr-xr-x 1 phill 197609    0 Dec 20 12:51 styles
 drwxr-xr-x 1 phill 197609    0 Dec 20 14:44 theme
 drwxr-xr-x 1 phill 197609    0 Dec 22 23:47 types
 drwxr-xr-x 1 phill 197609    0 Dec 22 23:58 utils
-|  Bash     Check windsurf configuration directory
-total 0
-drwxr-xr-x 1 phill 197609 0 Dec 20 19:41 .
-drwxr-xr-x 1 phill 197609 0 Jan  7 10:57 ..
-drwxr-xr-x 1 phill 197609 0 Dec 20 14:23 rules
-drwxr-xr-x 1 phill 197609 0 Dec 20 14:23 workflows
-|  Read     src\index.ts
-|  Bash     List component files
+
+[91m[1m| [0m[90m Bash     [0mList components directory
 total 320
 drwxr-xr-x 1 phill 197609     0 Dec 23 01:09 .
 drwxr-xr-x 1 phill 197609     0 Dec 22 23:55 ..
@@ -69,7 +137,7 @@ drwxr-xr-x 1 phill 197609     0 Dec 22 23:55 ..
 -rw-r--r-- 1 phill 197609 14243 Dec 23 01:03 DiffViewer.tsx
 -rw-r--r-- 1 phill 197609 17489 Dec 20 22:53 ExportButton.tsx
 -rw-r--r-- 1 phill 197609 17614 Dec 22 18:42 FlowchartDiagram.tsx
--rw-r--r-- 1 phill 197609  8564 Dec 27 23:21 HorizontalNavBar.tsx
+-rw-r--r-- 1 phill 197609  8564 Jan  7 11:15 HorizontalNavBar.tsx
 -rw-r--r-- 1 phill 197609  2302 Dec 22 23:22 index.ts
 -rw-r--r-- 1 phill 197609  7351 Dec 20 14:35 InlineEditInput.tsx
 -rw-r--r-- 1 phill 197609 15526 Dec 23 01:03 KeyboardShortcutsHelp.tsx
@@ -83,39 +151,51 @@ drwxr-xr-x 1 phill 197609     0 Dec 22 23:55 ..
 -rw-r--r-- 1 phill 197609  7022 Dec 21 00:52 TreeNodeUtils.ts
 -rw-r--r-- 1 phill 197609 14080 Dec 23 01:03 VersionManager.tsx
 -rw-r--r-- 1 phill 197609 15946 Dec 22 22:55 VirtualizedTree.tsx
-|  Bash     Find all TypeScript and JSON files in src
-src/components/BasicTree.tsx
-src/components/D3TreeDiagram.tsx
-src/components/DiffViewer.tsx
-src/components/ExportButton.tsx
-src/components/FlowchartDiagram.tsx
-src/components/HorizontalNavBar.tsx
-src/components/index.ts
-src/components/InlineEditInput.tsx
-src/components/KeyboardShortcutsHelp.tsx
-src/components/ResponsiveCardGrid.tsx
-src/components/SearchableTree.tsx
-src/components/SearchPanel.tsx
-src/components/SelectableTree.tsx
-src/components/SitemapEditor.tsx
-src/components/SitemapEditorWithComparison.tsx
-src/components/TreeNodeComponent.tsx
-src/components/TreeNodeUtils.ts
-src/components/VersionManager.tsx
-src/components/VirtualizedTree.tsx
-src/demo.tsx
-src/DemoApp.tsx
-src/hooks/index.ts
-src/hooks/useDebounce.ts
-src/hooks/useTreeComparison.ts
-src/hooks/useTreeKeyboardNavigation.ts
-src/hooks/useTreeNodeEditing.ts
-src/hooks/useTreeParser.ts
-src/hooks/useTreeSearch.ts
-src/index.ts
-src/setupTests.ts
-|  Read     CLAUDE.md
-|  Bash     List test files
+
+
+[91m[1m| [0m[90m Bash     [0mList utils directory
+
+total 126
+drwxr-xr-x 1 phill 197609     0 Dec 22 23:58 .
+drwxr-xr-x 1 phill 197609     0 Dec 22 23:55 ..
+-rw-r--r-- 1 phill 197609  1729 Dec 22 23:23 index.ts
+-rw-r--r-- 1 phill 197609 18161 Dec 20 14:35 parserErrors.ts
+-rw-r--r-- 1 phill 197609  7407 Dec 20 22:53 pngExport.ts
+-rw-r--r-- 1 phill 197609 11495 Dec 20 14:38 sitemapGenerator.ts
+-rw-r--r-- 1 phill 197609  9588 Dec 22 23:34 svgExport.ts
+-rw-r--r-- 1 phill 197609 12860 Dec 23 01:03 treeComparison.ts
+-rw-r--r-- 1 phill 197609  2375 Dec 22 22:55 treeFlattening.ts
+-rw-r--r-- 1 phill 197609  7249 Dec 22 18:32 treeOperations.ts
+-rw-r--r-- 1 phill 197609 14702 Dec 20 14:38 treeParser.ts
+-rw-r--r-- 1 phill 197609 15745 Dec 22 22:55 treeSearch.ts
+-rw-r--r-- 1 phill 197609 11070 Dec 23 01:03 versionStorage.ts
+
+[91m[1m| [0m[90m Bash     [0mList hooks directory
+
+total 60
+drwxr-xr-x 1 phill 197609     0 Dec 22 23:51 .
+drwxr-xr-x 1 phill 197609     0 Dec 22 23:55 ..
+-rw-r--r-- 1 phill 197609  1056 Dec 22 23:21 index.ts
+-rw-r--r-- 1 phill 197609  1832 Dec 22 21:41 useDebounce.ts
+-rw-r--r-- 1 phill 197609  7861 Dec 23 01:03 useTreeComparison.ts
+-rw-r--r-- 1 phill 197609 13598 Dec 22 23:12 useTreeKeyboardNavigation.ts
+-rw-r--r-- 1 phill 197609  7645 Dec 20 14:35 useTreeNodeEditing.ts
+-rw-r--r-- 1 phill 197609  5441 Dec 22 21:42 useTreeParser.ts
+-rw-r--r-- 1 phill 197609 12464 Dec 22 21:44 useTreeSearch.ts
+
+[91m[1m| [0m[90m Bash     [0mList types directory
+
+total 18
+drwxr-xr-x 1 phill 197609     0 Dec 22 23:47 .
+drwxr-xr-x 1 phill 197609     0 Dec 22 23:55 ..
+-rw-r--r-- 1 phill 197609  1213 Dec 20 13:47 index.ts
+-rw-r--r-- 1 phill 197609 15802 Dec 22 23:47 TreeNode.ts
+
+[96m[1m| [0m[90m Read     [0msrc\index.ts
+[96m[1m| [0m[90m Read     [0msrc\DemoApp.tsx
+[96m[1m| [0m[90m Read     [0mREADME.md
+[91m[1m| [0m[90m Bash     [0mList test files
+
 total 325
 drwxr-xr-x 1 phill 197609     0 Dec 23 00:00 .
 drwxr-xr-x 1 phill 197609     0 Dec 22 23:55 ..
@@ -139,102 +219,674 @@ drwxr-xr-x 1 phill 197609     0 Dec 22 23:55 ..
 -rw-r--r-- 1 phill 197609 13709 Dec 20 14:35 useTreeNodeEditing.test.ts
 -rw-r--r-- 1 phill 197609  9975 Dec 20 14:35 useTreeParser.test.ts
 -rw-r--r-- 1 phill 197609  8461 Dec 23 01:05 versionStorage.test.ts
-|  Bash     List utility files
-total 126
-drwxr-xr-x 1 phill 197609     0 Dec 22 23:58 .
-drwxr-xr-x 1 phill 197609     0 Dec 22 23:55 ..
--rw-r--r-- 1 phill 197609  1729 Dec 22 23:23 index.ts
--rw-r--r-- 1 phill 197609 18161 Dec 20 14:35 parserErrors.ts
--rw-r--r-- 1 phill 197609  7407 Dec 20 22:53 pngExport.ts
--rw-r--r-- 1 phill 197609 11495 Dec 20 14:38 sitemapGenerator.ts
--rw-r--r-- 1 phill 197609  9588 Dec 22 23:34 svgExport.ts
--rw-r--r-- 1 phill 197609 12860 Dec 23 01:03 treeComparison.ts
--rw-r--r-- 1 phill 197609  2375 Dec 22 22:55 treeFlattening.ts
--rw-r--r-- 1 phill 197609  7249 Dec 22 18:32 treeOperations.ts
--rw-r--r-- 1 phill 197609 14702 Dec 20 14:38 treeParser.ts
--rw-r--r-- 1 phill 197609 15745 Dec 22 22:55 treeSearch.ts
--rw-r--r-- 1 phill 197609 11070 Dec 23 01:03 versionStorage.ts
-|  Bash     Check for README file
-|  Read     src\DemoApp.tsx
-|  Read     .windsurf\rules\best-practices.md
-|  Bash     Read HTML entry point
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-<title>UX Sitemap Visualizer - Development</title>
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<style>
-body {
-margin: 0;
-padding: 2rem;
-font-family:
--apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
--webkit-font-smoothing: antialiased;
--moz-osx-font-smoothing: grayscale;
-}
-#root {
-max-width: 1200px;
-margin: 0 auto;
-}
-</style>
-</head>
-<body>
-<div id="root">
-<h1>UX Sitemap Visualizer</h1>
-<p>This is the development server for the UX Sitemap Visualizer library.</p>
-<p>Check the console for available components and utilities.</p>
-</div>
-<script src="/src/demo.tsx" type="module"></script>
-</body>
-</html>
-|  Read     src\demo.tsx
-|  Bash     Check if .aidd directory exists
-not found
-|  Bash     Check recent git commits
-6b0f29d .
-ad14906 test fixes
-f455d3a copypaste
-b8963b0 Add copy/paste buttons next to Sitemap Input on right side
-2b272df Updated SitemapEditor.tsx
-71b9f4a Updated DemoApp.tsx
-65c4b01 Updated DemoApp.tsx
-e785c00 Updated .gitignore
-34410d5 fix: specify individual border widths instead of shorthand border-width property
-dccaf34 feat: add comprehensive drag-and-drop tests and fix null reference error
-Now I'll create the onboarding infrastructure. Let me start by creating the `.aidd` directory and initial files.
-|  Write    .aidd\spec.txt
-|  Bash     Create .aidd directory
-|  Write    .aidd\feature_list.json
-|  Read     .aidd\feature_list.json
-|  Write    .aidd\project_structure.md
-|  Write    .aidd\progress.md
-Now let me create a comprehensive README.md file:
-|  Write    README.md
-Now let me commit all the changes to git:
-|  Bash     Commit onboarding infrastructure
-fatal: Unable to create 'D:/applications/sitemap/.git/index.lock': File exists.
-Another git process seems to be running in this repository, e.g.
-an editor opened by 'git commit'. Please make sure all processes
-are terminated then try again. If it still fails, a git process
-may have crashed in this repository earlier:
-remove the file manually to continue.
-|  Bash     Check git status
+
+[91m[1m| [0m[90m Bash     [0mRun all quality checks
+
+$ bun run lint:fix && bun run typecheck && bun run format && bun run build && bun run test
+$ eslint src --report-unused-disable-directives --max-warnings 0 --fix
+$ tsc --noEmit
+$ prettier --write .
+[90m.aidd/categories.json[39m 7ms (unchanged)
+[90m.aidd/features/basic-tree-component/feature.json[39m 3ms (unchanged)
+[90m.aidd/features/bulk-node-operations/feature.json[39m 1ms (unchanged)
+[90m.aidd/features/d3-tree-diagram/feature.json[39m 1ms (unchanged)
+[90m.aidd/features/depth-based-styling/feature.json[39m 1ms (unchanged)
+[90m.aidd/features/feature-1766473599401-xze92snp0/feature.json[39m 4ms (unchanged)
+[90m.aidd/features/flowchart-mode/feature.json[39m 1ms (unchanged)
+[90m.aidd/features/node-data-structure/feature.json[39m 1ms (unchanged)
+[90m.aidd/features/node-editing-inline/feature.json[39m 1ms (unchanged)
+[90m.aidd/features/node-selection/feature.json[39m 1ms (unchanged)
+[90m.aidd/features/parser-error-handling/feature.json[39m 1ms (unchanged)
+[90m.aidd/features/performance-memoization/feature.json[39m 1ms (unchanged)
+[90m.aidd/features/real-time-preview/feature.json[39m 1ms (unchanged)
+[90m.aidd/features/responsive-flexbox-layout/feature.json[39m 1ms (unchanged)
+[90m.aidd/features/sample-sitemap-generator/feature.json[39m 1ms (unchanged)
+[90m.aidd/features/text-input-parser/feature.json[39m 1ms (unchanged)
+[90m.aidd/features/theme-system/feature.json[39m 1ms (unchanged)
+[90m.aidd/features/tree-node-component/feature.json[39m 1ms (unchanged)
+[90m.aidd/features/virtual-scrolling/feature.json[39m 1ms (unchanged)
+[90m.aidd/pipeline.json[39m 1ms (unchanged)
+[90m.aidd/progress.md[39m 14ms (unchanged)
+[90m.aidd/project_structure.md[39m 4ms (unchanged)
+[90m.aidd/settings.json[39m 1ms (unchanged)
+[90m.automaker/categories.json[39m 0ms (unchanged)
+[90m.automaker/features/basic-tree-component/feature.json[39m 1ms (unchanged)
+[90m.automaker/features/bulk-node-operations/feature.json[39m 1ms (unchanged)
+[90m.automaker/features/d3-tree-diagram/feature.json[39m 1ms (unchanged)
+[90m.automaker/features/depth-based-styling/feature.json[39m 1ms (unchanged)
+[90m.automaker/features/feature-1766473599401-xze92snp0/feature.json[39m 2ms (unchanged)
+[90m.automaker/features/flowchart-mode/feature.json[39m 1ms (unchanged)
+[90m.automaker/features/node-data-structure/feature.json[39m 1ms (unchanged)
+[90m.automaker/features/node-editing-inline/feature.json[39m 1ms (unchanged)
+[90m.automaker/features/node-selection/feature.json[39m 1ms (unchanged)
+[90m.automaker/features/parser-error-handling/feature.json[39m 1ms (unchanged)
+[90m.automaker/features/performance-memoization/feature.json[39m 1ms (unchanged)
+[90m.automaker/features/real-time-preview/feature.json[39m 1ms (unchanged)
+[90m.automaker/features/responsive-flexbox-layout/feature.json[39m 1ms (unchanged)
+[90m.automaker/features/sample-sitemap-generator/feature.json[39m 1ms (unchanged)
+[90m.automaker/features/text-input-parser/feature.json[39m 1ms (unchanged)
+[90m.automaker/features/theme-system/feature.json[39m 1ms (unchanged)
+[90m.automaker/features/tree-node-component/feature.json[39m 1ms (unchanged)
+[90m.automaker/features/virtual-scrolling/feature.json[39m 1ms (unchanged)
+[90m.automaker/pipeline.json[39m 1ms (unchanged)
+[90m.automaker/settings.json[39m 1ms (unchanged)
+[90m.prettierrc[39m 4ms (unchanged)
+[90mbabel.config.cjs[39m 26ms (unchanged)
+[90meslint.config.js[39m 14ms (unchanged)
+[90mindex.html[39m 17ms (unchanged)
+[90mjest.config.cjs[39m 5ms (unchanged)
+[90mpackage.json[39m 2ms (unchanged)
+[90mpostcss.config.js[39m 1ms (unchanged)
+[90mREADME.md[39m 100ms (unchanged)
+[90msrc/__tests__/BasicTree.test.tsx[39m 65ms (unchanged)
+[90msrc/__tests__/D3TreeDiagram.test.tsx[39m 66ms (unchanged)
+[90msrc/__tests__/global.d.ts[39m 4ms (unchanged)
+[90msrc/__tests__/InlineEditInput.test.tsx[39m 29ms (unchanged)
+[90msrc/__tests__/parserErrors.test.ts[39m 26ms (unchanged)
+[90msrc/__tests__/pngExport.test.ts[39m 18ms (unchanged)
+[90msrc/__tests__/ResponsiveCardGrid.test.tsx[39m 29ms (unchanged)
+[90msrc/__tests__/SelectableTree.test.tsx[39m 52ms (unchanged)
+[90msrc/__tests__/SitemapEditor.test.tsx[39m 25ms (unchanged)
+[90msrc/__tests__/sitemapGenerator.test.ts[39m 33ms (unchanged)
+[90msrc/__tests__/svgExport.test.ts[39m 12ms (unchanged)
+[90msrc/__tests__/treeComparison.test.ts[39m 16ms (unchanged)
+[90msrc/__tests__/TreeNode.test.ts[39m 19ms (unchanged)
+[90msrc/__tests__/TreeNodeComponent.test.tsx[39m 58ms (unchanged)
+[90msrc/__tests__/treeOperations.test.ts[39m 7ms (unchanged)
+[90msrc/__tests__/treeParser.test.ts[39m 19ms (unchanged)
+[90msrc/__tests__/treeSearch.test.ts[39m 19ms (unchanged)
+[90msrc/__tests__/useTreeNodeEditing.test.ts[39m 24ms (unchanged)
+[90msrc/__tests__/useTreeParser.test.ts[39m 20ms (unchanged)
+[90msrc/__tests__/versionStorage.test.ts[39m 16ms (unchanged)
+[90msrc/components/BasicTree.tsx[39m 23ms (unchanged)
+[90msrc/components/D3TreeDiagram.tsx[39m 45ms (unchanged)
+[90msrc/components/DiffViewer.tsx[39m 22ms (unchanged)
+[90msrc/components/ExportButton.tsx[39m 27ms (unchanged)
+[90msrc/components/FlowchartDiagram.tsx[39m 23ms (unchanged)
+[90msrc/components/HorizontalNavBar.tsx[39m 13ms (unchanged)
+[90msrc/components/index.ts[39m 8ms (unchanged)
+[90msrc/components/InlineEditInput.tsx[39m 10ms (unchanged)
+[90msrc/components/KeyboardShortcutsHelp.tsx[39m 23ms (unchanged)
+[90msrc/components/ResponsiveCardGrid.tsx[39m 16ms (unchanged)
+[90msrc/components/SearchableTree.tsx[39m 15ms (unchanged)
+[90msrc/components/SearchPanel.tsx[39m 18ms (unchanged)
+[90msrc/components/SelectableTree.tsx[39m 38ms (unchanged)
+[90msrc/components/SitemapEditor.tsx[39m 27ms (unchanged)
+[90msrc/components/SitemapEditorWithComparison.tsx[39m 13ms (unchanged)
+[90msrc/components/TreeNodeComponent.tsx[39m 16ms (unchanged)
+[90msrc/components/TreeNodeUtils.ts[39m 13ms (unchanged)
+[90msrc/components/VersionManager.tsx[39m 20ms (unchanged)
+[90msrc/components/VirtualizedTree.tsx[39m 19ms (unchanged)
+[90msrc/demo.tsx[39m 4ms (unchanged)
+[90msrc/DemoApp.tsx[39m 4ms (unchanged)
+[90msrc/hooks/index.ts[39m 5ms (unchanged)
+[90msrc/hooks/useDebounce.ts[39m 7ms (unchanged)
+[90msrc/hooks/useTreeComparison.ts[39m 11ms (unchanged)
+[90msrc/hooks/useTreeKeyboardNavigation.ts[39m 16ms (unchanged)
+[90msrc/hooks/useTreeNodeEditing.ts[39m 12ms (unchanged)
+[90msrc/hooks/useTreeParser.ts[39m 8ms (unchanged)
+[90msrc/hooks/useTreeSearch.ts[39m 14ms (unchanged)
+[90msrc/index.ts[39m 5ms (unchanged)
+[90msrc/setupTests.ts[39m 4ms (unchanged)
+[90msrc/styles/index.css[39m 6ms (unchanged)
+[90msrc/theme/index.ts[39m 3ms (unchanged)
+[90msrc/theme/theme.ts[39m 10ms (unchanged)
+[90msrc/types/index.ts[39m 6ms (unchanged)
+[90msrc/types/TreeNode.ts[39m 18ms (unchanged)
+[90msrc/utils/index.ts[39m 4ms (unchanged)
+[90msrc/utils/parserErrors.ts[39m 20ms (unchanged)
+[90msrc/utils/pngExport.ts[39m 13ms (unchanged)
+[90msrc/utils/sitemapGenerator.ts[39m 13ms (unchanged)
+[90msrc/utils/svgExport.ts[39m 11ms (unchanged)
+[90msrc/utils/treeComparison.ts[39m 18ms (unchanged)
+[90msrc/utils/treeFlattening.ts[39m 5ms (unchanged)
+[90msrc/utils/treeOperations.ts[39m 12ms (unchanged)
+[90msrc/utils/treeParser.ts[39m 12ms (unchanged)
+[90msrc/utils/treeSearch.ts[39m 18ms (unchanged)
+[90msrc/utils/versionStorage.ts[39m 16ms (unchanged)
+[90mtailwind.config.js[39m 3ms (unchanged)
+[90mtsconfig.json[39m 1ms (unchanged)
+[90mvite.config.ts[39m 2ms (unchanged)
+$ tsc
+$ bunx jest
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+PASS src/__tests__/versionStorage.test.ts
+  versionStorage
+    saveVersion
+      √ should save a version to localStorage (13 ms)
+      √ should save with description (1 ms)
+      √ should mark auto-saves correctly (1 ms)
+      √ should create unique IDs for each version (1 ms)
+    getVersions
+      √ should return empty array when no versions saved (3 ms)
+      √ should return all saved versions (1 ms)
+      √ should return versions sorted by date (newest first) (1 ms)
+    getVersion
+      √ should return version by ID
+      √ should return undefined for non-existent ID
+    updateVersion
+      √ should update version name (2 ms)
+      √ should update version description (1 ms)
+      √ should return undefined for non-existent ID (1 ms)
+    deleteVersion
+      √ should delete a version (1 ms)
+      √ should return false for non-existent ID (1 ms)
+      √ should only delete the specified version (1 ms)
+    clearAllVersions
+      √ should remove all versions (1 ms)
+    getLatestVersion
+      √ should return the most recent version (1 ms)
+      √ should return undefined when no versions exist (1 ms)
+    getLatestManualSave
+      √ should return the most recent manual save (1 ms)
+      √ should skip auto-saves (1 ms)
+    createCurrentVersion
+      √ should create a temporary version object (2 ms)
+      √ should not persist to storage (1 ms)
+    getStorageInfo
+      √ should return storage statistics (2 ms)
+      √ should return zeros when no versions exist (2 ms)
+    version limits
+      √ should limit auto-saves to maxAutoSaves (3 ms)
+    node cloning
+      √ should deep clone nodes on save (2 ms)
+
+PASS src/__tests__/treeOperations.test.ts
+  moveNode
+    √ should move a node before another node at same level (7 ms)
+    √ should append inside when dropping inside a node (1 ms)
+    √ should remove node if draggedId equals targetId or invalid (1 ms)
+    √ should normalize depths for moved subtree
+
+PASS src/__tests__/treeSearch.test.ts
+  searchTree
+    basic label search
+      √ should find nodes by partial label match (5 ms)
+      √ should find multiple matching nodes
+      √ should be case-insensitive by default
+      √ should return empty result for non-matching query (1 ms)
+      √ should return empty result for empty query
+      √ should return empty result for whitespace-only query (1 ms)
+    case sensitivity
+      √ should respect caseSensitive option when true
+      √ should find match with correct case when caseSensitive is true (1 ms)
+    exact match
+      √ should not match partial when exactMatch is true
+      √ should match exact label when exactMatch is true (1 ms)
+    search fields
+      √ should search in tags when specified
+      √ should search in category when specified (1 ms)
+      √ should search in properties when specified
+      √ should search in multiple fields
+    ancestor tracking
+      √ should track ancestors of matching nodes
+      √ should not include matching nodes in ancestors (1 ms)
+    match details
+      √ should include match details with start and end indices (1 ms)
+      √ should find multiple occurrences in a single label
+  filterTreeByMatches
+    √ should return only matching nodes and their ancestors (1 ms)
+    √ should return empty array when no matches
+    √ should expand filtered nodes to show matches (1 ms)
+  markMatchingNodes
+    √ should add search metadata to matching nodes
+    √ should mark ancestors as ancestors (1 ms)
+  getHighlightSegments
+    √ should split label into matching and non-matching segments
+    √ should handle match in middle of label (1 ms)
+    √ should handle multiple matches
+    √ should return single non-matching segment when no matches (1 ms)
+    √ should ignore non-label match details
+  expandAncestors
+    √ should expand ancestor nodes (1 ms)
+    √ should not change non-ancestor nodes
+  match navigation
+    √ should return matches in tree order (1 ms)
+    √ should get next match
+    √ should wrap around to first match (1 ms)
+    √ should get previous match
+    √ should wrap around to last match
+    √ should return first match when no current match
+    √ should return undefined when no matches (1 ms)
+
+PASS src/__tests__/pngExport.test.ts
+  pngExport
+    √ exports D3 tree as PNG (10 ms)
+    √ exports Basic tree as PNG (16 ms)
+    √ downloads PNG (13 ms)
+    √ copies PNG using ClipboardItem when available (1 ms)
+    √ falls back to writing data URL text when ClipboardItem is missing (1 ms)
+
+PASS src/__tests__/treeComparison.test.ts
+  treeComparison
+    compareTrees
+      √ should detect identical trees (9 ms)
+      √ should detect added nodes (1 ms)
+      √ should detect removed nodes (1 ms)
+      √ should detect modified nodes (label change) (1 ms)
+      √ should handle complex tree changes (1 ms)
+      √ should handle empty trees (1 ms)
+      √ should handle comparison of empty vs non-empty tree
+    flattenDifferences
+      √ should flatten nested differences (2 ms)
+    getChangedNodes
+      √ should return only changed nodes (1 ms)
+    describeDifference
+      √ should describe added nodes
+      √ should describe removed nodes (1 ms)
+      √ should describe modified nodes with rename
+    areTreesIdentical
+      √ should return true for identical trees (1 ms)
+      √ should return false for different trees
+    hashNode
+      √ should create a hash for a node
+      √ should include children in hash by default (1 ms)
+      √ should exclude children when requested
+    hashTree
+      √ should create a hash for the entire tree (1 ms)
+    metadata comparison
+      √ should detect metadata changes when compareMetadata is true (1 ms)
+      √ should ignore specified properties
+
+PASS src/__tests__/TreeNode.test.ts
+  TreeNode Type Definitions
+    TreeNode interface
+      √ should allow creating a valid TreeNode with required properties (6 ms)
+      √ should allow creating a TreeNode with children
+      √ should allow creating a TreeNode with metadata (1 ms)
+      √ should allow deeply nested tree structures (1 ms)
+    ParsedNode interface
+      √ should allow creating a valid ParsedNode
+    ParseResult interface
+      √ should allow creating a successful ParseResult
+      √ should allow creating a ParseResult with errors (1 ms)
+    TreeBuildResult interface
+      √ should allow creating a TreeBuildResult
+    SelectionState interface
+      √ should allow creating a SelectionState (1 ms)
+    DragState interface
+      √ should allow creating a DragState (1 ms)
+  Type Guards
+    isTreeNode
+      √ should return true for valid TreeNode
+      √ should return true for TreeNode with optional properties (1 ms)
+      √ should return false for null
+      √ should return false for undefined
+      √ should return false for primitive types (1 ms)
+      √ should return false for objects missing required properties
+      √ should return false for objects with wrong property types (1 ms)
+      √ should return false for objects with invalid children
+      √ should return false for objects with invalid metadata
+    isParsedNode
+      √ should return true for valid ParsedNode
+      √ should return false for null
+      √ should return false for objects missing lineNumber
+      √ should return false for objects with wrong types
+    isNodeCategory
+      √ should return true for valid categories (1 ms)
+      √ should return false for invalid categories
+    isParseResult
+      √ should return true for valid ParseResult (1 ms)
+      √ should return true for ParseResult with nodes and errors
+      √ should return false for null
+      √ should return false for objects missing required properties (1 ms)
+      √ should return false for objects with wrong types
+  Helper Functions
+    createNodeId
+      √ should create a branded NodeId from a string (1 ms)
+  Constants
+    NODE_CATEGORIES
+      √ should contain all valid categories (1 ms)
+      √ should be readonly
+    DEFAULT_PARSER_OPTIONS
+      √ should have correct default values
+  Type Safety
+    NodeCategory type
+      √ should only allow valid categories (1 ms)
+    TreeNode recursive children
+      √ should support arbitrary nesting depth
+    NodeMetadata extensibility
+      √ should allow custom properties via index signature
+
+PASS src/__tests__/svgExport.test.ts
+  svgExport
+    exportD3TreeDiagramAsSvg
+      √ should export D3 tree diagram as SVG (19 ms)
+      √ should throw error when SVG element is null (15 ms)
+      √ should throw error when nodes array is empty (2 ms)
+      √ should use custom filename when provided (2 ms)
+      √ should use custom dimensions when provided (1 ms)
+    exportBasicTreeAsSvg
+      √ should export basic tree as SVG (2 ms)
+      √ should throw error when container element is null (1 ms)
+      √ should throw error when nodes array is empty (24 ms)
+      √ should use custom background color when provided
+    downloadSvg
+      √ should download SVG as file (2 ms)
+    copySvgToClipboard
+      √ should copy SVG to clipboard (1 ms)
+      √ should fallback to execCommand when clipboard API fails (1 ms)
+
+PASS src/__tests__/sitemapGenerator.test.ts
+  generateSitemapNodes
+    default behavior
+      √ should generate a tree with default options (9 ms)
+      √ should generate tree with depth 3 and breadth 3 by default (1 ms)
+      √ should generate unique IDs for each node (1 ms)
+    depth configuration
+      √ should generate tree with depth 0 (root only) (1 ms)
+      √ should generate tree with depth 1 (1 ms)
+      √ should generate tree with depth 2
+      √ should generate tree with depth 4 (1 ms)
+    breadth configuration
+      √ should respect fixed breadth value
+      √ should support breadth as function of depth (1 ms)
+      √ should handle breadth of 1 (1 ms)
+    label configuration
+      √ should use custom rootLabel (1 ms)
+      √ should use custom labelGenerator
+      √ should provide path in labelGenerator
+      √ should generate default hierarchical labels
+    random breadth
+      √ should vary breadth when randomBreadth is true
+      √ should respect minBreadth (1 ms)
+      √ should produce reproducible results with seed
+    metadata
+      √ should include lineNumber in metadata (1 ms)
+  generateSitemapText
+    √ should generate text with tree characters (1 ms)
+    √ should generate parseable text (2 ms)
+    √ should preserve tree structure through round-trip (1 ms)
+    √ should handle deeply nested structures (1 ms)
+  treeNodesToText
+    √ should convert TreeNode array to text
+    √ should handle deeply nested nodes
+    √ should handle multiple root nodes (1 ms)
+    √ should handle empty array
+  calculateNodeCount
+    √ should calculate correct count for uniform tree
+    √ should calculate correct count for depth 0
+    √ should calculate correct count for breadth 1
+    √ should calculate correct count with varying breadth
+    √ should match actual generated node count (1 ms)
+    √ should calculate large tree counts efficiently (1 ms)
+  sampleSitemaps
+    small
+      √ should generate small sitemap with expected size
+    medium
+      √ should generate medium sitemap with expected size
+    large
+      √ should generate large sitemap with expected size (1 ms)
+    extraLarge
+      √ should generate extra large sitemap with expected size (20 ms)
+    website
+      √ should generate realistic website structure (1 ms)
+      √ should use meaningful labels (1 ms)
+    mobileApp
+      √ should generate mobile app structure
+      √ should have app-like labels (1 ms)
+  DEFAULT_GENERATOR_OPTIONS
+    √ should have expected default values (1 ms)
+  integration with parser
+    √ should generate text that parses back to equivalent structure (1 ms)
+    √ should generate consistent output across multiple calls with same options
+  performance
+    √ should generate large trees efficiently (2 ms)
+    √ should handle extreme depth without stack overflow
+
+PASS src/__tests__/treeParser.test.ts
+  parseTreeText
+    basic parsing
+      √ should parse a single root node (11 ms)
+      √ should parse multiple root nodes (3 ms)
+      √ should handle empty input (1 ms)
+      √ should handle whitespace-only input (1 ms)
+    tree character parsing
+      √ should parse tree with ├── markers (1 ms)
+      √ should parse tree with └── markers
+      √ should parse tree with mixed ├── and └── markers
+      √ should parse nested tree with │ continuation (1 ms)
+      √ should parse deeply nested tree
+    space-based indentation
+      √ should parse pure space-based indentation
+      √ should respect custom indentSize option (1 ms)
+    edge cases
+      √ should handle labels with special characters (1 ms)
+      √ should handle labels with numbers
+      √ should handle Windows line endings (CRLF) (1 ms)
+      √ should handle Unix line endings (LF)
+      √ should skip empty lines by default
+      √ should trim labels by default (1 ms)
+    ID generation
+      √ should generate unique IDs for each node
+      √ should generate sequential IDs (1 ms)
+    line numbers
+      √ should track correct line numbers
+      √ should track line numbers with empty lines skipped (1 ms)
+    validation errors
+      √ should detect invalid depth jumps (1 ms)
+      √ should still return nodes even with validation errors
+  buildTreeHierarchy
+    √ should build hierarchy from flat nodes (1 ms)
+    √ should handle multiple root nodes
+    √ should handle deeply nested structures
+    √ should handle empty input (1 ms)
+    √ should include metadata with lineNumber
+  parseAndBuildTree
+    √ should combine parsing and hierarchy building (1 ms)
+  countNodes
+    √ should count all nodes including children
+    √ should return 0 for empty tree (1 ms)
+  getMaxDepth
+    √ should return maximum depth in tree
+    √ should return 0 for single root node
+    √ should return 0 for empty tree
+  parser options
+    √ should use default options when none provided
+    √ should allow disabling label trimming (1 ms)
+  real-world examples
+    √ should parse a typical website sitemap
+    √ should parse a mobile app structure (1 ms)
+
+PASS src/__tests__/parserErrors.test.ts
+  ParseError Types
+    ParseErrorCode
+      √ should have all expected error codes (6 ms)
+    isParseErrorCode
+      √ should return true for valid error codes (2 ms)
+      √ should return false for invalid error codes
+    isParseError
+      √ should return true for valid ParseError objects (1 ms)
+      √ should return true for ParseError with optional fields
+      √ should return false for invalid objects
+  Error Creation Helpers
+    createParseError
+      √ should create a basic error with default values (1 ms)
+      √ should allow custom message override
+      √ should allow custom suggestion (1 ms)
+      √ should allow expected/actual values
+    createDepthJumpError
+      √ should create detailed depth jump error (1 ms)
+    createEmptyLabelError
+      √ should create error for completely empty line
+      √ should create error for line with only tree characters (1 ms)
+    createMixedIndentationError
+      √ should create warning for mixed tabs and spaces
+    createDuplicateSiblingWarning
+      √ should create warning for duplicate siblings (1 ms)
+  Error Detection
+    detectMixedIndentation
+      √ should detect mixed tabs and spaces in same line
+      √ should detect mixed indentation across document
+      √ should not flag consistent space indentation
+      √ should not flag consistent tab indentation (1 ms)
+    detectMalformedTreeChars
+      √ should detect incomplete branch markers
+      √ should detect missing space after branch marker
+      √ should detect branch marker without label
+      √ should not flag valid tree structure (1 ms)
+    detectOrphanedBranches
+      √ should detect branch marker at start of file
+      √ should not flag branch after root node
+  parseTreeText Error Handling
+    depth jump errors
+      √ should detect and report depth jumps with suggestions (1 ms)
+      √ should still return parsed nodes with depth errors
+    empty label errors
+      √ should report empty label errors when skipEmptyLines is false (1 ms)
+    duplicate sibling warnings
+      √ should warn about duplicate sibling names
+      √ should allow same name at different levels (1 ms)
+  validateTreeInput
+    √ should return valid for correct input (1 ms)
+    √ should detect orphaned branches
+    √ should separate errors and warnings (1 ms)
+  parseTreeTextWithValidation
+    √ should combine pre-validation and parsing errors (2 ms)
+    √ should avoid duplicate errors (1 ms)
+    √ should provide warnings separately
+    √ should include suggestions for all errors
+  Error Formatting
+    formatError
+      √ should format error with all fields
+      √ should format warning differently
+      √ should respect includeLineContent option
+    formatErrorReport
+      √ should format multiple errors into a report (1 ms)
+      √ should handle empty errors
+      √ should support ungrouped mode
+    getErrorStats
+      √ should calculate error statistics (1 ms)
+      √ should handle empty errors (1 ms)
+  Real-world Error Scenarios
+    √ should handle complex invalid tree with multiple issues (1 ms)
+    √ should provide
+
+<bash_metadata>
+bash tool truncated output as it exceeded 30000 char limit
+</bash_metadata>
+Now let me create the comprehensive feature_list.json based on my analysis of the spec and codebase:
+[92m[1m| [0m[90m Write    [0m.aidd\feature_list.json
+[96m[1m| [0m[90m Read     [0m.aidd\feature_list.json
+[92m[1m| [0m[90m Write    [0m.aidd\project_structure.md
+[92m[1m| [0m[90m Write    [0m.aidd\progress.md
+[91m[1m| [0m[90m Bash     [0mCheck git status
 On branch master
-Your branch is up to date with 'origin/master'.
+Your branch is ahead of 'origin/master' by 6 commits.
+  (use "git push" to publish your local commits)
+
 Changes to be committed:
-(use "git restore --staged <file>..." to unstage)
-new file:   .aidd/spec.txt
-new file:   .automaker/progress.md
-new file:   .automaker/project_structure.md
-modified:   .gitignore
-Untracked files:
-(use "git add <file>..." to include in what will be committed)
-.aidd/feature_list.json
-.aidd/progress.md
-.aidd/project_structure.md
-.automaker/iterations/
-README.md
-|  Bash     Stage new files
+  (use "git restore --staged <file>..." to unstage)
+	modified:   .aidd/feature_list.json
+	modified:   .aidd/iterations/001.log
+	modified:   .aidd/progress.md
+	modified:   .aidd/project_structure.md
+	deleted:    .aidd/spec.txt
+	deleted:    .aidd/validations/1001819/validation.json
+	deleted:    .automaker/iterations/001.log
+	deleted:    .automaker/progress.md
+	deleted:    .automaker/project_structure.md
+	deleted:    .automaker/validations/1001819/validation.json
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   .aidd/iterations/001.log
+	modified:   .aidd/progress.md
+
+
+

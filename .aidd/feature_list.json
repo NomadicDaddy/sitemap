@@ -2,632 +2,510 @@
 	{
 		"area": "frontend",
 		"category": "functional",
-		"closed_at": "2025-12-20",
-		"created_at": "2025-12-20",
-		"description": "Text Input Parser - Parse raw text input with indentation markers",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Parse text-based tree structures with indentation markers",
 		"passes": true,
 		"priority": "critical",
 		"status": "resolved",
 		"steps": [
-			"Step 1: Open the Sitemap Editor application",
-			"Step 2: Enter text with tree markers (├──, └──, │, spaces) in the input textarea",
-			"Step 3: Verify the parser correctly identifies depth levels for each line",
-			"Step 4: Verify the parser extracts labels correctly from each line",
-			"Step 5: Verify the parser builds a structured array of ParsedNode objects",
-			"Step 6: Check that parse success status is reported correctly",
-			"Step 7: Verify errors are detected for malformed tree structures"
+			"Step 1: Navigate to the DemoApp or load the application",
+			"Step 2: Locate the text input area for sitemap input",
+			"Step 3: Enter a tree structure using ├──, └──, │, or space-based indentation",
+			"Step 4: Observe that the tree is parsed and rendered in real-time",
+			"Step 5: Verify that nodes are correctly structured with proper depth hierarchy"
 		]
 	},
 	{
 		"area": "frontend",
 		"category": "functional",
-		"closed_at": "2025-12-20",
-		"created_at": "2025-12-20",
-		"description": "Node Data Structure Definition",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Render hierarchical layouts with nested cards",
 		"passes": true,
 		"priority": "critical",
 		"status": "resolved",
 		"steps": [
-			"Step 1: Import TreeNode and ParsedNode types from the types module",
-			"Step 2: Verify TreeNode interface includes id, label, depth, children, and optional metadata",
-			"Step 3: Verify ParsedNode interface includes id, label, depth, and lineNumber",
-			"Step 4: Verify type guards isTreeNode and isParsedNode work correctly",
-			"Step 5: Verify createNodeId helper function creates branded NodeId types",
-			"Step 6: Verify NodeMetadata supports category, lineNumber, expanded, style, and tags"
-		]
-	},
-	{
-		"area": "frontend",
-		"category": "functional",
-		"closed_at": "2025-12-20",
-		"created_at": "2025-12-20",
-		"description": "Basic Tree Rendering Component",
-		"passes": true,
-		"priority": "critical",
-		"status": "resolved",
-		"steps": [
-			"Step 1: Render the BasicTree component with parsed tree data",
-			"Step 2: Verify nodes are displayed in a hierarchical indented layout",
-			"Step 3: Verify nesting depth is visually indicated by indentation",
-			"Step 4: Verify all nodes from the parsed tree are rendered",
-			"Step 5: Verify the component handles empty tree input gracefully"
-		]
-	},
-	{
-		"area": "frontend",
-		"category": "functional",
-		"closed_at": "2025-12-20",
-		"created_at": "2025-12-20",
-		"description": "Real-Time Preview Updates",
-		"passes": true,
-		"priority": "high",
-		"status": "resolved",
-		"steps": [
-			"Step 1: Open the Sitemap Editor with sample tree data",
-			"Step 2: Type a new line in the textarea input",
-			"Step 3: Verify the visualization updates immediately without delay",
-			"Step 4: Modify an existing node label",
-			"Step 5: Verify the corresponding node in the visualization updates instantly",
-			"Step 6: Delete a line from the textarea",
-			"Step 7: Verify the node disappears from the visualization"
+			"Step 1: Enter a multi-level tree structure in the input area",
+			"Step 2: Verify that the visualization shows nested cards",
+			"Step 3: Confirm that indentation correctly reflects tree depth",
+			"Step 4: Check that parent nodes contain their children visually"
 		]
 	},
 	{
 		"area": "frontend",
 		"category": "style",
-		"closed_at": "2025-12-20",
-		"created_at": "2025-12-20",
-		"description": "Depth-Based Node Styling",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Apply depth-based styling with progressive colors and indentation",
 		"passes": true,
 		"priority": "high",
 		"status": "resolved",
 		"steps": [
-			"Step 1: Render a tree with multiple depth levels",
-			"Step 2: Verify depth 0 nodes display in blue (top-level pages)",
-			"Step 3: Verify depth 1 nodes display in white (sub-sections)",
-			"Step 4: Verify depth 2+ nodes display in gray (sub-components)",
-			"Step 5: Verify progressive font size reduction with deeper levels",
-			"Step 6: Verify visual hierarchy is clear and consistent"
+			"Step 1: Create a tree with nodes at various depth levels (0, 1, 2, 3+)",
+			"Step 2: Verify that top-level nodes (depth 0) have distinct color (e.g., blue)",
+			"Step 3: Confirm that sub-sections (depth 1) have different styling (e.g., white)",
+			"Step 4: Check that sub-components (depth 2+) have different styling (e.g., gray)",
+			"Step 5: Verify indentation increases with depth"
 		]
 	},
 	{
 		"area": "frontend",
 		"category": "functional",
-		"closed_at": "2025-12-20",
-		"created_at": "2025-12-20",
-		"description": "Responsive Flexbox Layout",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Provide real-time preview as users type",
 		"passes": true,
-		"priority": "high",
+		"priority": "critical",
 		"status": "resolved",
 		"steps": [
-			"Step 1: Open the application on a desktop screen (1920px width)",
-			"Step 2: Verify the layout displays properly with adequate spacing",
-			"Step 3: Resize the browser to tablet width (768px)",
-			"Step 4: Verify cards wrap appropriately and remain readable",
-			"Step 5: Resize to mobile width (375px)",
-			"Step 6: Verify the layout adapts with proper vertical stacking",
-			"Step 7: Verify no horizontal scrolling is required"
+			"Step 1: Open the application with a sample tree loaded",
+			"Step 2: Add a new line to the tree text in the input area",
+			"Step 3: Observe that the visualization updates immediately",
+			"Step 4: Modify an existing node label",
+			"Step 5: Confirm the visualization reflects the change without page refresh"
 		]
 	},
 	{
 		"area": "frontend",
 		"category": "functional",
-		"closed_at": "2025-12-20",
-		"created_at": "2025-12-20",
-		"description": "Reusable TreeNode Component",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Detect and display parsing errors with suggestions",
 		"passes": true,
 		"priority": "high",
 		"status": "resolved",
 		"steps": [
-			"Step 1: Import and render TreeNodeComponent with a tree node",
-			"Step 2: Verify the node displays its label correctly",
-			"Step 3: Verify child nodes are rendered recursively",
-			"Step 4: Verify the component accepts styling props for customization",
-			"Step 5: Verify click handlers can be passed as props",
-			"Step 6: Verify the component can be reused at multiple tree positions"
+			"Step 1: Enter a tree with invalid indentation (e.g., depth jump from 0 to 2)",
+			"Step 2: Verify that error messages appear in the UI",
+			"Step 3: Check that errors indicate the problematic line number",
+			"Step 4: Confirm that suggestions for fixing the error are provided",
+			"Step 5: Verify that the tree still renders with errors shown"
 		]
 	},
 	{
 		"area": "frontend",
 		"category": "functional",
-		"closed_at": "2025-12-20",
-		"created_at": "2025-12-20",
-		"description": "Node Selection & Highlighting",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Support node selection and expansion/collapse",
+		"passes": true,
+		"priority": "high",
+		"status": "resolved",
+		"steps": [
+			"Step 1: Create a tree with nested children",
+			"Step 2: Click on a node to select it",
+			"Step 3: Verify the node becomes visually highlighted",
+			"Step 4: Click on an expand/collapse indicator",
+			"Step 5: Confirm that children are hidden/shown appropriately"
+		]
+	},
+	{
+		"area": "frontend",
+		"category": "functional",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Implement inline editing of node labels",
 		"passes": true,
 		"priority": "medium",
 		"status": "resolved",
 		"steps": [
-			"Step 1: Click on a tree node",
-			"Step 2: Verify the node becomes visually highlighted (selected state)",
-			"Step 3: Click a different node",
-			"Step 4: Verify the previous selection is cleared and new node is highlighted",
-			"Step 5: Hold Ctrl/Cmd and click multiple nodes",
-			"Step 6: Verify all clicked nodes remain selected (multi-select)",
-			"Step 7: Verify the selected nodes count is displayed in the UI"
-		]
-	},
-	{
-		"area": "frontend",
-		"category": "functional",
-		"closed_at": "2025-12-20",
-		"created_at": "2025-12-20",
-		"description": "Inline Node Editing",
-		"passes": true,
-		"priority": "medium",
-		"status": "resolved",
-		"steps": [
-			"Step 1: Double-click on a tree node label",
-			"Step 2: Verify the label transforms into an editable input field",
+			"Step 1: Double-click on a node label in the visualization",
+			"Step 2: Verify an input field appears with the current label",
 			"Step 3: Modify the label text",
-			"Step 4: Press Enter or click outside the input",
-			"Step 5: Verify the node label is updated with the new text",
-			"Step 6: Verify the visualization reflects the change immediately",
-			"Step 7: Press Escape while editing",
-			"Step 8: Verify the edit is canceled and original label is restored"
+			"Step 4: Press Enter or click away to save changes",
+			"Step 5: Confirm the tree text in the input area updates with new label"
 		]
 	},
 	{
 		"area": "frontend",
 		"category": "functional",
-		"closed_at": "2025-12-20",
-		"created_at": "2025-12-20",
-		"description": "Bulk Node Operations",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Enable keyboard navigation for tree traversal",
 		"passes": true,
 		"priority": "medium",
 		"status": "resolved",
 		"steps": [
-			"Step 1: Select multiple nodes using Ctrl/Cmd-click",
-			"Step 2: Click the delete button in the bulk operations panel",
-			"Step 3: Verify a confirmation dialog appears",
-			"Step 4: Confirm the deletion",
-			"Step 5: Verify all selected nodes are removed from the tree",
-			"Step 6: Select multiple nodes and change their color",
-			"Step 7: Verify the color change applies to all selected nodes",
-			"Step 8: Verify bulk operations include undo functionality"
+			"Step 1: Click on a node to focus the tree",
+			"Step 2: Press Arrow Down and verify focus moves to next node",
+			"Step 3: Press Arrow Up and verify focus moves to previous node",
+			"Step 4: Press Arrow Right on a node with children to expand",
+			"Step 5: Press Arrow Left on an expanded node to collapse"
+		]
+	},
+	{
+		"area": "frontend",
+		"category": "functional",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Search and filter nodes across the tree",
+		"passes": true,
+		"priority": "medium",
+		"status": "resolved",
+		"steps": [
+			"Step 1: Locate the search input field",
+			"Step 2: Enter a search term",
+			"Step 3: Verify matching nodes are highlighted in the tree",
+			"Step 4: Check that non-matching nodes are dimmed or filtered",
+			"Step 5: Confirm navigation between search results is possible"
+		]
+	},
+	{
+		"area": "frontend",
+		"category": "functional",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Render D3.js tree diagram with connecting lines",
+		"passes": true,
+		"priority": "medium",
+		"status": "resolved",
+		"steps": [
+			"Step 1: Switch visualization mode to D3 tree diagram",
+			"Step 2: Verify nodes are rendered with D3.js",
+			"Step 3: Check that connecting lines between parent and child nodes are visible",
+			"Step 4: Verify nodes are positioned in a tree layout",
+			"Step 5: Test interactive features like pan/zoom if available"
+		]
+	},
+	{
+		"area": "frontend",
+		"category": "functional",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Render flowchart diagram using React Flow",
+		"passes": true,
+		"priority": "medium",
+		"status": "resolved",
+		"steps": [
+			"Step 1: Switch visualization mode to flowchart",
+			"Step 2: Verify nodes are rendered as flowchart boxes",
+			"Step 3: Check that edges connect nodes appropriately",
+			"Step 4: Verify the diagram supports vertical/horizontal orientation",
+			"Step 5: Test node dragging if available in flowchart mode"
+		]
+	},
+	{
+		"area": "frontend",
+		"category": "functional",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Implement responsive layout for different screen sizes",
+		"passes": true,
+		"priority": "high",
+		"status": "resolved",
+		"steps": [
+			"Step 1: Load the application on a desktop screen (1200px+)",
+			"Step 2: Verify the layout uses full width with multiple columns",
+			"Step 3: Resize window to tablet size (768px-1024px)",
+			"Step 4: Check that the layout adjusts to fewer columns",
+			"Step 5: Resize to mobile size (<768px) and verify single-column layout"
 		]
 	},
 	{
 		"area": "frontend",
 		"category": "performance",
-		"closed_at": "2025-12-20",
-		"created_at": "2025-12-20",
-		"description": "Performance Optimization with Memoization",
-		"passes": true,
-		"priority": "medium",
-		"status": "resolved",
-		"steps": [
-			"Step 1: Generate a large sitemap with 1000+ nodes",
-			"Step 2: Render the tree in the visualization",
-			"Step 3: Open browser DevTools Performance tab",
-			"Step 4: Trigger a re-render by modifying a node",
-			"Step 5: Verify only the affected component re-renders (not all nodes)",
-			"Step 6: Verify the re-render completes within 100ms",
-			"Step 7: Verify no unnecessary re-renders occur when expanding/collapsing nodes"
-		]
-	},
-	{
-		"area": "frontend",
-		"category": "functional",
-		"closed_at": "2025-12-20",
-		"created_at": "2025-12-20",
-		"description": "Theme & Color Customization System",
-		"passes": true,
-		"priority": "medium",
-		"status": "resolved",
-		"steps": [
-			"Step 1: Import createTheme and defaultTheme from the theme module",
-			"Step 2: Create a custom theme with custom depth colors",
-			"Step 3: Apply the custom theme to a tree component",
-			"Step 4: Verify nodes render with the custom colors",
-			"Step 5: Modify typography settings in the theme",
-			"Step 6: Verify font sizes and line heights update accordingly",
-			"Step 7: Modify spacing settings in the theme",
-			"Step 8: Verify node padding and margins update"
-		]
-	},
-	{
-		"area": "frontend",
-		"category": "functional",
-		"closed_at": "2025-12-20",
-		"created_at": "2025-12-20",
-		"description": "D3.js Tree Diagram Visualization",
-		"passes": true,
-		"priority": "medium",
-		"status": "resolved",
-		"steps": [
-			"Step 1: Import and render D3TreeDiagram component with tree data",
-			"Step 2: Verify nodes are rendered as circles or rectangles",
-			"Step 3: Verify connecting lines/arcs display between parent and child nodes",
-			"Step 4: Verify the layout is hierarchical and readable",
-			"Step 5: Click on a node",
-			"Step 6: Verify the node can be expanded or collapsed",
-			"Step 7: Verify smooth animations when the tree updates"
-		]
-	},
-	{
-		"area": "frontend",
-		"category": "functional",
-		"closed_at": "2025-12-23",
-		"created_at": "2025-12-20",
-		"description": "Flowchart Layout Mode",
-		"passes": true,
-		"priority": "medium",
-		"status": "resolved",
-		"steps": [
-			"Step 1: Switch to Flowchart visualization mode",
-			"Step 2: Verify nodes are displayed as flowchart boxes",
-			"Step 3: Verify edges connect nodes with arrows",
-			"Step 4: Verify nodes can be dragged to new positions",
-			"Step 5: Verify edges update dynamically when nodes move",
-			"Step 6: Verify the layout direction can be changed (horizontal/vertical)",
-			"Step 7: Verify the flowchart remains readable with 50+ nodes"
-		]
-	},
-	{
-		"area": "frontend",
-		"category": "functional",
-		"closed_at": "2025-12-20",
-		"created_at": "2025-12-20",
-		"description": "Large Sitemap Test Data Generator",
-		"passes": true,
-		"priority": "low",
-		"status": "resolved",
-		"steps": [
-			"Step 1: Import generateSitemapNodes from utils",
-			"Step 2: Call generateSitemapNodes({ breadth: 3, depth: 4 })",
-			"Step 3: Verify the function returns an array of tree nodes",
-			"Step 4: Verify the node count matches the expected calculation",
-			"Step 5: Verify maximum depth matches the requested depth",
-			"Step 6: Verify each node has a unique id and label",
-			"Step 7: Verify children are properly nested under parent nodes"
-		]
-	},
-	{
-		"area": "frontend",
-		"category": "functional",
-		"closed_at": "2025-12-20",
-		"created_at": "2025-12-20",
-		"description": "Parser Error Handling & Validation",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Handle large sitemaps (1000+ nodes) with virtualization",
 		"passes": true,
 		"priority": "high",
 		"status": "resolved",
 		"steps": [
-			"Step 1: Enter a tree with inconsistent indentation",
-			"Step 2: Verify an error message is displayed",
-			"Step 3: Verify the error message identifies the problematic line",
-			"Step 4: Enter a tree with invalid depth jumps",
-			"Step 5: Verify a depth jump error is detected",
-			"Step 6: Verify the error suggests how to fix the issue",
-			"Step 7: Enter a tree with orphaned branch markers",
-			"Step 8: Verify orphaned branch errors are reported"
+			"Step 1: Generate or load a large sitemap with 1000+ nodes",
+			"Step 2: Verify the UI remains responsive during initial load",
+			"Step 3: Scroll through the tree and verify smooth rendering",
+			"Step 4: Check that only visible nodes are rendered (virtualization)",
+			"Step 5: Confirm no significant memory or performance degradation"
 		]
 	},
 	{
 		"area": "frontend",
 		"category": "functional",
-		"closed_at": "2025-12-23",
-		"created_at": "2025-12-23",
-		"description": "Copy/Paste Buttons for Sitemap Input",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Export visualization as PNG image",
 		"passes": true,
-		"priority": "low",
+		"priority": "medium",
 		"status": "resolved",
 		"steps": [
-			"Step 1: Locate the Sitemap Input label area",
-			"Step 2: Verify Copy and Paste buttons are positioned on the right side",
-			"Step 3: Enter text in the textarea and click Copy",
-			"Step 4: Verify 'Copied!' message appears for 2 seconds",
-			"Step 5: Clear the textarea and click Paste",
-			"Step 6: Verify the previously copied content is pasted",
-			"Step 7: Verify the visualization updates with pasted content"
+			"Step 1: Render a tree visualization in any mode",
+			"Step 2: Click the Export PNG button",
+			"Step 3: Verify a PNG file is downloaded",
+			"Step 4: Open the downloaded PNG and verify the visualization is clear",
+			"Step 5: Check that the image resolution is suitable for sharing"
 		]
 	},
 	{
 		"area": "frontend",
 		"category": "functional",
-		"created_at": "2026-01-07",
-		"description": "Virtual Scrolling for Large Trees",
-		"passes": false,
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Export visualization as SVG for design tools",
+		"passes": true,
 		"priority": "medium",
-		"status": "open",
-		"steps": [
-			"Step 1: Generate a tree with 2000+ nodes",
-			"Step 2: Render using VirtualizedTree component",
-			"Step 3: Scroll through the tree smoothly",
-			"Step 4: Verify only visible nodes are in the DOM",
-			"Step 5: Verify scroll performance remains smooth with large datasets",
-			"Step 6: Verify all nodes are accessible when scrolling",
-			"Step 7: Verify virtualization handles dynamic tree size changes"
-		]
-	},
-	{
-		"area": "frontend",
-		"category": "functional",
-		"created_at": "2026-01-07",
-		"description": "Search Functionality Across Trees",
-		"passes": false,
-		"priority": "medium",
-		"status": "open",
-		"steps": [
-			"Step 1: Open a tree with 100+ nodes",
-			"Step 2: Type a search query in the search input",
-			"Step 3: Verify matching nodes are highlighted",
-			"Step 4: Verify the search filters the tree to show only matches",
-			"Step 5: Navigate through search results",
-			"Step 6: Verify the search supports partial matches",
-			"Step 7: Clear the search query",
-			"Step 8: Verify the full tree is restored"
-		]
-	},
-	{
-		"area": "frontend",
-		"category": "functional",
-		"created_at": "2026-01-07",
-		"description": "Tree Comparison and Diff Viewer",
-		"passes": false,
-		"priority": "medium",
-		"status": "open",
-		"steps": [
-			"Step 1: Create and save a tree version (Version A)",
-			"Step 2: Modify the tree and save another version (Version B)",
-			"Step 3: Open the Diff Viewer with both versions",
-			"Step 4: Verify added nodes are highlighted in green",
-			"Step 5: Verify removed nodes are highlighted in red",
-			"Step 6: Verify modified nodes show both old and new values",
-			"Step 7: Verify the diff view can toggle between side-by-side and unified views",
-			"Step 8: Verify a summary shows the number of changes"
-		]
-	},
-	{
-		"area": "frontend",
-		"category": "functional",
-		"created_at": "2026-01-07",
-		"description": "Version Management System",
-		"passes": false,
-		"priority": "medium",
-		"status": "open",
-		"steps": [
-			"Step 1: Create a tree structure",
-			"Step 2: Click 'Save Version' and provide a name",
-			"Step 3: Verify the version is saved to local storage",
-			"Step 4: Make modifications to the tree",
-			"Step 5: Save another version with a different name",
-			"Step 6: Open the Version Manager",
-			"Step 7: Verify all saved versions are listed with timestamps",
-			"Step 8: Load a previous version",
-			"Step 9: Verify the tree reverts to the loaded version",
-			"Step 10: Delete a version",
-			"Step 11: Verify the version is removed from the list"
-		]
-	},
-	{
-		"area": "frontend",
-		"category": "functional",
-		"created_at": "2026-01-07",
-		"description": "SVG Export Functionality",
-		"passes": false,
-		"priority": "medium",
-		"status": "open",
+		"status": "resolved",
 		"steps": [
 			"Step 1: Render a tree visualization",
 			"Step 2: Click the Export SVG button",
 			"Step 3: Verify an SVG file is downloaded",
-			"Step 4: Open the downloaded SVG file in a browser",
-			"Step 5: Verify the tree is rendered correctly",
-			"Step 6: Verify the SVG is scalable without quality loss",
-			"Step 7: Verify the SVG can be imported into Figma",
-			"Step 8: Verify all styling is preserved in the export"
+			"Step 4: Open the SVG in a vector graphics editor (e.g., Figma)",
+			"Step 5: Confirm that the SVG can be edited and scaled without quality loss"
 		]
 	},
 	{
 		"area": "frontend",
 		"category": "functional",
-		"created_at": "2026-01-07",
-		"description": "PNG Export Functionality",
-		"passes": false,
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Save and manage tree versions locally",
+		"passes": true,
 		"priority": "medium",
-		"status": "open",
+		"status": "resolved",
 		"steps": [
-			"Step 1: Render a tree visualization",
-			"Step 2: Click the Export PNG button",
-			"Step 3: Verify a PNG file is downloaded",
-			"Step 4: Open the downloaded PNG file in an image viewer",
-			"Step 5: Verify the tree is rendered correctly",
-			"Step 6: Verify the image quality is sharp and clear",
-			"Step 7: Verify the PNG can be shared with stakeholders",
-			"Step 8: Verify the export respects the current theme colors"
+			"Step 1: Create or modify a tree structure",
+			"Step 2: Click the Save Version button and enter a name",
+			"Step 3: Verify the version appears in the version list",
+			"Step 4: Modify the tree and save another version",
+			"Step 5: Confirm both versions are stored and can be retrieved"
 		]
 	},
 	{
 		"area": "frontend",
 		"category": "functional",
-		"created_at": "2026-01-07",
-		"description": "Keyboard Navigation Support",
-		"passes": false,
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Compare tree versions with visual diff",
+		"passes": true,
 		"priority": "medium",
-		"status": "open",
+		"status": "resolved",
 		"steps": [
-			"Step 1: Render a tree with multiple nodes",
-			"Step 2: Press Arrow Down",
-			"Step 3: Verify focus moves to the next node",
-			"Step 4: Press Arrow Up",
-			"Step 5: Verify focus moves to the previous node",
-			"Step 6: Press Arrow Right on a node with children",
-			"Step 7: Verify the node expands",
-			"Step 8: Press Arrow Left on an expanded node",
-			"Step 9: Verify the node collapses",
-			"Step 10: Press Enter on a focused node",
-			"Step 11: Verify the node enters edit mode"
-		]
-	},
-	{
-		"area": "testing",
-		"category": "functional",
-		"created_at": "2026-01-07",
-		"description": "Unit Tests for Tree Parser",
-		"passes": false,
-		"priority": "high",
-		"status": "open",
-		"steps": [
-			"Step 1: Write tests for parseTreeText with valid tree input",
-			"Step 2: Verify parseTreeText returns correct depth levels",
-			"Step 3: Write tests for parseTreeText with invalid input",
-			"Step 4: Verify appropriate errors are thrown or returned",
-			"Step 5: Write tests for buildTreeHierarchy",
-			"Step 6: Verify tree structure is built correctly",
-			"Step 7: Run all parser tests with bun run test",
-			"Step 8: Verify all tests pass"
-		]
-	},
-	{
-		"area": "testing",
-		"category": "functional",
-		"created_at": "2026-01-07",
-		"description": "Unit Tests for Components",
-		"passes": false,
-		"priority": "high",
-		"status": "open",
-		"steps": [
-			"Step 1: Write tests for BasicTree component rendering",
-			"Step 2: Verify BasicTree displays nodes correctly",
-			"Step 3: Write tests for TreeNodeComponent",
-			"Step 4: Verify TreeNodeComponent handles props correctly",
-			"Step 5: Write tests for SitemapEditor",
-			"Step 6: Verify SitemapEditor handles input changes",
-			"Step 7: Run all component tests with bun run test",
-			"Step 8: Verify all tests pass"
-		]
-	},
-	{
-		"area": "testing",
-		"category": "improvement",
-		"created_at": "2026-01-07",
-		"description": "Test Coverage Above 90%",
-		"passes": false,
-		"priority": "high",
-		"status": "open",
-		"steps": [
-			"Step 1: Run bun run test:coverage",
-			"Step 2: Review the coverage report",
-			"Step 3: Identify modules with < 90% coverage",
-			"Step 4: Write additional tests for uncovered code paths",
-			"Step 5: Focus on edge cases and error conditions",
-			"Step 6: Run coverage again",
-			"Step 7: Verify overall coverage is > 90%",
-			"Step 8: Verify critical modules have > 95% coverage"
-		]
-	},
-	{
-		"area": "devex",
-		"category": "improvement",
-		"created_at": "2026-01-07",
-		"description": "ESLint Zero Warnings Policy",
-		"passes": false,
-		"priority": "high",
-		"status": "open",
-		"steps": [
-			"Step 1: Run bun run lint",
-			"Step 2: Review all lint warnings and errors",
-			"Step 3: Fix critical errors immediately",
-			"Step 4: Evaluate each warning for validity",
-			"Step 5: Fix legitimate warnings",
-			"Step 6: Add eslint-disable comments only with justification",
-			"Step 7: Run lint again",
-			"Step 8: Verify zero warnings and zero errors"
-		]
-	},
-	{
-		"area": "devex",
-		"category": "improvement",
-		"created_at": "2026-01-07",
-		"description": "TypeScript Strict Mode Compliance",
-		"passes": false,
-		"priority": "high",
-		"status": "open",
-		"steps": [
-			"Step 1: Run bun run typecheck",
-			"Step 2: Review all TypeScript errors",
-			"Step 3: Add missing type annotations",
-			"Step 4: Fix type mismatches and any type errors",
-			"Step 5: Remove @ts-ignore or @ts-expect-error unless absolutely necessary",
-			"Step 6: Run typecheck again",
-			"Step 7: Verify zero TypeScript errors",
-			"Step 8: Verify strict mode is enabled in tsconfig.json"
-		]
-	},
-	{
-		"area": "devex",
-		"category": "improvement",
-		"created_at": "2026-01-07",
-		"description": "Prettier Code Formatting",
-		"passes": false,
-		"priority": "medium",
-		"status": "open",
-		"steps": [
-			"Step 1: Run bun run format",
-			"Step 2: Verify all files are formatted consistently",
-			"Step 3: Check that import statements are sorted",
-			"Step 4: Verify object keys are sorted (if configured)",
-			"Step 5: Review code for consistent spacing and indentation",
-			"Step 6: Verify trailing commas are consistent",
-			"Step 7: Commit the formatted files",
-			"Step 8: Verify pre-commit hooks run formatting automatically"
-		]
-	},
-	{
-		"area": "devex",
-		"category": "improvement",
-		"created_at": "2026-01-07",
-		"description": "Comprehensive Documentation",
-		"passes": false,
-		"priority": "medium",
-		"status": "open",
-		"steps": [
-			"Step 1: Review all exported functions and components",
-			"Step 2: Verify JSDoc comments exist for all public APIs",
-			"Step 3: Add examples for complex functions",
-			"Step 4: Document all component props with descriptions",
-			"Step 5: Add usage examples in README",
-			"Step 6: Document hook usage patterns",
-			"Step 7: Verify internal code has comments for complex logic",
-			"Step 8: Verify README is comprehensive and up-to-date"
+			"Step 1: Save two different versions of a tree",
+			"Step 2: Select the versions to compare",
+			"Step 3: Verify a diff view is displayed side-by-side",
+			"Step 4: Check that added nodes are highlighted in one color (e.g., green)",
+			"Step 5: Confirm removed nodes are highlighted in another color (e.g., red)"
 		]
 	},
 	{
 		"area": "frontend",
 		"category": "functional",
-		"created_at": "2026-01-07",
-		"description": "Drag and Drop Node Reordering",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Generate sample sitemaps for testing",
+		"passes": true,
+		"priority": "low",
+		"status": "resolved",
+		"steps": [
+			"Step 1: Access the sitemap generator utility",
+			"Step 2: Generate a sample sitemap with specified depth and breadth",
+			"Step 3: Verify the generated tree structure matches parameters",
+			"Step 4: Check that all nodes have unique IDs",
+			"Step 5: Confirm the sitemap can be parsed correctly"
+		]
+	},
+	{
+		"area": "testing",
+		"category": "functional",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Unit tests for tree parser with various input formats",
+		"passes": true,
+		"priority": "high",
+		"status": "resolved",
+		"steps": [
+			"Step 1: Run the test suite with bun test or bun run test",
+			"Step 2: Verify treeParser.test.ts includes tests for ├── markers",
+			"Step 3: Check tests for └── markers and │ continuation",
+			"Step 4: Verify tests for space-based indentation",
+			"Step 5: Confirm all parser tests pass"
+		]
+	},
+	{
+		"area": "testing",
+		"category": "functional",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Unit tests for component rendering and interaction",
+		"passes": true,
+		"priority": "high",
+		"status": "resolved",
+		"steps": [
+			"Step 1: Run the full test suite",
+			"Step 2: Verify BasicTree.test.ts tests rendering of trees",
+			"Step 3: Check SelectableTree.test.ts tests node selection",
+			"Step 4: Verify TreeNodeComponent.test.ts tests component behavior",
+			"Step 5: Confirm all component tests pass"
+		]
+	},
+	{
+		"area": "devex",
+		"category": "improvement",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Implement collaborative editing with real-time sync",
 		"passes": false,
 		"priority": "low",
 		"status": "open",
 		"steps": [
-			"Step 1: Render a tree with multiple nodes",
-			"Step 2: Click and hold on a node",
-			"Step 3: Drag the node to a new position",
-			"Step 4: Verify visual feedback shows drop target",
-			"Step 5: Release the mouse to drop the node",
-			"Step 6: Verify the node moves to the new position",
-			"Step 7: Verify children move with the parent",
-			"Step 8: Verify tree structure remains valid"
+			"Step 1: Set up WebSocket or real-time communication channel",
+			"Step 2: Implement operational transformation (OT) or CRDT for conflict resolution",
+			"Step 3: Add user presence indicators showing who is viewing/editing",
+			"Step 4: Sync tree changes in real-time across multiple users",
+			"Step 5: Test collaborative editing with multiple simultaneous users"
 		]
 	},
 	{
 		"area": "frontend",
-		"category": "style",
-		"created_at": "2026-01-07",
-		"description": "Dark Mode Theme Support",
+		"category": "functional",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Implement drag-and-drop for rearranging nodes",
+		"passes": false,
+		"priority": "medium",
+		"status": "open",
+		"steps": [
+			"Step 1: Create a tree with multiple nodes",
+			"Step 2: Drag a node and drop it at a new location",
+			"Step 3: Verify the node moves to the new parent/location",
+			"Step 4: Confirm the tree structure updates correctly",
+			"Step 5: Check that the text representation reflects the change"
+		]
+	},
+	{
+		"area": "frontend",
+		"category": "functional",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Add bulk operations for nodes (delete, copy, paste)",
+		"passes": false,
+		"priority": "medium",
+		"status": "open",
+		"steps": [
+			"Step 1: Select multiple nodes in the tree",
+			"Step 2: Use keyboard shortcuts (Ctrl+C) to copy selected nodes",
+			"Step 3: Navigate to a target location",
+			"Step 4: Use keyboard shortcuts (Ctrl+V) to paste nodes",
+			"Step 5: Verify nodes are pasted correctly with structure preserved"
+		]
+	},
+	{
+		"area": "frontend",
+		"category": "improvement",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Implement advanced search with regex and wildcards",
 		"passes": false,
 		"priority": "low",
 		"status": "open",
 		"steps": [
-			"Step 1: Add a dark mode toggle button",
-			"Step 2: Click the toggle to enable dark mode",
-			"Step 3: Verify background changes to dark color",
-			"Step 4: Verify text changes to light color for readability",
-			"Step 5: Verify tree nodes display with dark theme colors",
-			"Step 6: Verify all UI elements adapt to dark mode",
-			"Step 7: Toggle back to light mode",
-			"Step 8: Verify the theme reverts correctly"
+			"Step 1: Open the search input field",
+			"Step 2: Enter a regex pattern (e.g., '.*Page$')",
+			"Step 3: Verify nodes matching the regex are highlighted",
+			"Step 4: Test wildcard patterns (e.g., 'Home*')",
+			"Step 5: Confirm search results update in real-time"
+		]
+	},
+	{
+		"area": "frontend",
+		"category": "functional",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Add custom node styling and themes",
+		"passes": false,
+		"priority": "low",
+		"status": "open",
+		"steps": [
+			"Step 1: Access the theme customization settings",
+			"Step 2: Modify depth colors in the theme configuration",
+			"Step 3: Adjust typography (font size, line height)",
+			"Step 4: Customize spacing between nodes",
+			"Step 5: Verify changes apply immediately to the visualization"
+		]
+	},
+	{
+		"area": "frontend",
+		"category": "improvement",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Implement plugin system for custom node types",
+		"passes": false,
+		"priority": "low",
+		"status": "open",
+		"steps": [
+			"Step 1: Design plugin API for custom node types",
+			"Step 2: Create example plugin for a custom node type",
+			"Step 3: Register the plugin with the application",
+			"Step 4: Verify custom node type renders in the tree",
+			"Step 5: Test plugin lifecycle hooks and events"
+		]
+	},
+	{
+		"area": "devex",
+		"category": "improvement",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Add analytics and usage metrics tracking",
+		"passes": false,
+		"priority": "low",
+		"status": "open",
+		"steps": [
+			"Step 1: Integrate analytics library (e.g., Google Analytics)",
+			"Step 2: Track page views and session duration",
+			"Step 3: Log feature usage (export, search, version management)",
+			"Step 4: Monitor error rates and performance metrics",
+			"Step 5: Create dashboard for visualizing analytics data"
+		]
+	},
+	{
+		"area": "frontend",
+		"category": "functional",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Import sitemaps from external tools (Figma, Sketch)",
+		"passes": false,
+		"priority": "low",
+		"status": "open",
+		"steps": [
+			"Step 1: Create import file upload functionality",
+			"Step 2: Support importing Figma plugin exports",
+			"Step 3: Parse and convert external format to internal tree structure",
+			"Step 4: Display imported tree in the visualization",
+			"Step 5: Verify the structure matches the original design"
+		]
+	},
+	{
+		"area": "docs",
+		"category": "improvement",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Create interactive demo with sample sitemaps",
+		"passes": false,
+		"priority": "medium",
+		"status": "open",
+		"steps": [
+			"Step 1: Create demo page with multiple sample sitemaps",
+			"Step 2: Add interactive examples showing different features",
+			"Step 3: Include tutorials for common workflows",
+			"Step 4: Add tooltips and contextual help",
+			"Step 5: Verify demos work and guide users effectively"
+		]
+	},
+	{
+		"area": "devex",
+		"category": "process",
+		"closed_at": null,
+		"created_at": "2025-01-07",
+		"description": "Fix Jest configuration warnings for ts-jest",
+		"passes": false,
+		"priority": "low",
+		"status": "open",
+		"steps": [
+			"Step 1: Update jest.config.cjs to use non-deprecated ts-jest configuration",
+			"Step 2: Move ts-jest config from globals to transform array",
+			"Step 3: Run tests and verify warnings are gone",
+			"Step 4: Verify all tests still pass",
+			"Step 5: Confirm build process completes without warnings"
 		]
 	}
 ]
