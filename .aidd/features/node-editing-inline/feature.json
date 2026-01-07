@@ -1,0 +1,15 @@
+{
+	"branchName": "master",
+	"category": "UI",
+	"complexity": "moderate",
+	"createdAt": "2025-12-20T18:16:16.170Z",
+	"dependencies": ["tree-node-component"],
+	"description": "Enable users to double-click or click an edit button to inline-edit node labels. Changes update the visualization in real-time without requiring re-parsing.",
+	"id": "node-editing-inline",
+	"justFinishedAt": "2025-12-20T19:11:19.112Z",
+	"priority": 2,
+	"startedAt": "2025-12-20T18:58:41.066Z",
+	"status": "completed",
+	"title": "Inline Node Editing",
+	"updatedAt": "2025-12-20T19:11:19.112Z"
+}

@@ -1,0 +1,15 @@
+{
+	"branchName": "master",
+	"category": "Core",
+	"complexity": "moderate",
+	"createdAt": "2025-12-20T18:16:16.170Z",
+	"dependencies": ["tree-node-component"],
+	"description": "Apply React.memo() to TreeNode components and useMemo() to parse results. Prevents unnecessary re-renders when handling large sitemaps with hundreds of nodes.",
+	"id": "performance-memoization",
+	"justFinishedAt": "2025-12-20T19:09:48.706Z",
+	"priority": 2,
+	"startedAt": "2025-12-20T18:58:42.328Z",
+	"status": "completed",
+	"title": "Performance Optimization with Memoization",
+	"updatedAt": "2025-12-20T19:09:48.706Z"
+}

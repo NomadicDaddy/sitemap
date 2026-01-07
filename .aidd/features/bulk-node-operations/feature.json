@@ -1,0 +1,15 @@
+{
+	"category": "UI",
+	"commitHash": "8f97f1e0d15110f97a3342f06f01a6c199ead11c",
+	"complexity": "moderate",
+	"createdAt": "2025-12-20T18:16:16.171Z",
+	"dependencies": ["node-selection", "node-editing-inline"],
+	"description": "Add buttons to perform bulk actions on selected nodes: delete, change color, add tag, or modify properties. Includes confirmation dialogs for destructive operations.",
+	"id": "bulk-node-operations",
+	"justFinishedAt": "2025-12-20T22:09:00.000Z",
+	"priority": 2,
+	"startedAt": "2025-12-20T19:13:58.280Z",
+	"status": "completed",
+	"title": "Bulk Node Operations",
+	"updatedAt": "2025-12-20T22:09:00.000Z"
+}

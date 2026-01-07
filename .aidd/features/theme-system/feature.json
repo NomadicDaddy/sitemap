@@ -1,0 +1,15 @@
+{
+	"category": "UI",
+	"commitHash": "1bdb00b38577ea0bfa722a7ebf55906c229a111f",
+	"complexity": "moderate",
+	"createdAt": "2025-12-20T18:16:16.166Z",
+	"dependencies": ["depth-based-styling"],
+	"description": "Create a centralized theme configuration system with customizable colors, spacing, and typography for different node depths. Allow users to define color schemes programmatically.",
+	"id": "theme-system",
+	"justFinishedAt": "2025-12-20T19:37:34.000Z",
+	"priority": 2,
+	"startedAt": "2025-12-20T19:14:02.155Z",
+	"status": "completed",
+	"title": "Theme & Color Customization System",
+	"updatedAt": "2025-12-20T19:33:34.000Z"
+}

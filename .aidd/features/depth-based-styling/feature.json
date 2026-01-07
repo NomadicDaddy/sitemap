@@ -1,0 +1,15 @@
+{
+	"branchName": "master",
+	"category": "UI",
+	"complexity": "simple",
+	"createdAt": "2025-12-20T18:16:16.164Z",
+	"dependencies": ["basic-tree-component"],
+	"description": "Apply progressive color and size styling based on node depth levels. Top-level pages appear blue, sub-sections white, and sub-components gray with visual hierarchy.",
+	"id": "depth-based-styling",
+	"justFinishedAt": "2025-12-20T18:57:22.261Z",
+	"priority": 1,
+	"startedAt": "2025-12-20T18:48:52.247Z",
+	"status": "completed",
+	"title": "Depth-Based Node Styling",
+	"updatedAt": "2025-12-20T18:57:22.261Z"
+}

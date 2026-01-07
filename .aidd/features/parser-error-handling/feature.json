@@ -1,0 +1,15 @@
+{
+	"branchName": "master",
+	"category": "Core",
+	"complexity": "moderate",
+	"createdAt": "2025-12-20T18:16:16.169Z",
+	"dependencies": ["text-input-parser"],
+	"description": "Add error detection and user-friendly error messages for malformed tree structures. Validates input format and provides suggestions for fixing common parsing errors.",
+	"id": "parser-error-handling",
+	"justFinishedAt": "2025-12-20T18:45:03.003Z",
+	"priority": 2,
+	"startedAt": "2025-12-20T18:36:02.205Z",
+	"status": "completed",
+	"title": "Parser Error Handling & Validation",
+	"updatedAt": "2025-12-20T18:45:03.003Z"
+}

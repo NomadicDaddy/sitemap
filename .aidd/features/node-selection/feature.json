@@ -1,0 +1,15 @@
+{
+	"branchName": "master",
+	"category": "UI",
+	"complexity": "simple",
+	"createdAt": "2025-12-20T18:16:16.171Z",
+	"dependencies": ["tree-node-component"],
+	"description": "Implement click-to-select functionality for nodes with visual highlighting. Support multi-select with Ctrl/Cmd-click and display selection state in the UI.",
+	"id": "node-selection",
+	"justFinishedAt": "2025-12-20T19:10:22.734Z",
+	"priority": 2,
+	"startedAt": "2025-12-20T18:58:41.555Z",
+	"status": "completed",
+	"title": "Node Selection & Highlighting",
+	"updatedAt": "2025-12-20T19:10:22.734Z"
+}

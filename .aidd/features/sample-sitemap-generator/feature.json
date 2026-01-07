@@ -1,0 +1,15 @@
+{
+	"branchName": "master",
+	"category": "Utility",
+	"complexity": "simple",
+	"createdAt": "2025-12-20T18:16:16.175Z",
+	"dependencies": ["text-input-parser"],
+	"description": "Provide a utility function to programmatically generate large test sitemaps with configurable depth and breadth. Useful for performance testing and demo purposes.",
+	"id": "sample-sitemap-generator",
+	"justFinishedAt": "2025-12-20T18:44:29.243Z",
+	"priority": 3,
+	"startedAt": "2025-12-20T18:36:02.547Z",
+	"status": "completed",
+	"title": "Large Sitemap Test Data Generator",
+	"updatedAt": "2025-12-20T18:44:29.243Z"
+}
